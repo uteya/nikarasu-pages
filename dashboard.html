@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす事業ダッシュボード</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.login{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px}
+.login input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:8px;font-size:16px;width:260px;text-align:center}
+.login button{background:var(--accent);color:#fff;border:none;padding:10px 32px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+.login h1{color:var(--text);font-size:20px}
+.login .error{color:var(--red);font-size:13px;display:none}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.hidden{display:none}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+header h1{font-size:22px;color:var(--text)}
+header .meta{color:var(--text-dim);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card h2{font-size:15px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3{font-size:13px;color:var(--text-dim);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.ms-card{border-left:4px solid var(--border)}
+.ms-card.active{border-left-color:var(--yellow)}
+.ms-card.done{border-left-color:var(--green)}
+.ms-card.future{border-left-color:var(--border)}
+.ms-label{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-bottom:8px}
+.ms-label.active{background:rgba(210,153,34,.15);color:var(--yellow)}
+.ms-label.done{background:rgba(63,185,80,.15);color:var(--green)}
+.ms-label.future{background:rgba(139,148,158,.1);color:var(--text-dim)}
+.progress-bar{background:var(--border);border-radius:4px;height:6px;margin:8px 0}
+.progress-bar .fill{height:100%;border-radius:4px;transition:width .3s}
+.task-list{list-style:none}
+.task-list li{padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.task-list li:last-child{border-bottom:none}
+.task-list .owner{color:var(--purple);font-size:11px;white-space:nowrap}
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.badge.urgent{background:rgba(248,81,73,.15);color:var(--red)}
+.badge.warn{background:rgba(210,153,34,.15);color:var(--yellow)}
+.badge.ok{background:rgba(63,185,80,.15);color:var(--green)}
+.deadline-list{list-style:none}
+.deadline-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.deadline-list li:last-child{border-bottom:none}
+.revenue-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px}
+.revenue-row .bar{flex:1;margin:0 12px;height:8px;background:var(--border);border-radius:4px;position:relative}
+.revenue-row .bar .fill{position:absolute;height:100%;border-radius:4px;background:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 6px;border-bottom:2px solid var(--border);color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase}
+td{padding:8px 6px;border-bottom:1px solid var(--border)}
+.section-title{font-size:18px;color:var(--text);margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+@media(max-width:640px){.container{padding:12px}.grid{grid-template-columns:1fr}header h1{font-size:18px}}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login">
+<h1>にからす事業ダッシュボード</h1>
+<input type="password" id="pw" placeholder="パスワード" onkeydown="if(event.key==='Enter')checkPw()">
+<button onclick="checkPw()">ログイン</button>
+<div id="loginError" class="error">パスワードが違います</div>
+</div>
+
+<div id="app" class="hidden">
+<div class="container">
+
+<header>
+<h1>にからす事業ダッシュボード</h1>
+<div class="meta">最終更新: 2026-03-10 | WBS v1.0 | FY2026 ¥1.25億目標</div>
+</header>
+
+<!-- Milestones -->
+<div class="grid">
+<div class="card ms-card active">
+<span class="ms-label active">進行中</span>
+<h2>MS-A: 戦略完成</h2>
+<div style="font-size:13px;color:var(--text-dim)">3/14（金）— CC駆動で自走可能な状態</div>
+<div class="progress-bar"><div class="fill" style="width:30%;background:var(--yellow)"></div></div>
+<div style="font-size:12px;color:var(--text-dim);margin-top:4px">A-1完了 / 全21タスク</div>
+<h3>達成基準</h3>
+<ul class="task-list">
+<li>D1-D8 v4.0完成 <span class="badge warn">作業中</span></li>
+<li>WBS完全版 v1.0 <span class="badge ok">完了</span></li>
+<li>CC駆動自走環境 <span class="badge warn">作業中</span></li>
+<li>営業・プロダクト準備 <span class="badge urgent">未着手</span></li>
+</ul>
+</div>
+
+<div class="card ms-card future">
+<span class="ms-label future">予定</span>
+<h2>MS-B: 実行フェーズ</h2>
+<div style="font-size:13px;color:var(--text-dim)">3月末 — DM送付開始・Sharp報告・運用ルール</div>
+<div class="progress-bar"><div class="fill" style="width:0%;background:var(--border)"></div></div>
+<h3>キーアイテム</h3>
+<ul class="task-list">
+<li>税理士DM 20件送付</li>
+<li>Sharp事業化報告（3/20）</li>
+<li>ダッシュボード GitHub Pages公開</li>
+<li>辻井・ペりん業務委託契約</li>
+</ul>
+</div>
+
+<div class="card ms-card future">
+<span class="ms-label future">予定</span>
+<h2>MS-C: 仕組み一周</h2>
+<div style="font-size:13px;color:var(--text-dim)">4月末 — 初受注・月次管理サイクル確立</div>
+<div class="progress-bar"><div class="fill" style="width:0%;background:var(--border)"></div></div>
+<h3>キーアイテム</h3>
+<ul class="task-list">
+<li>初受注 or パイプライン3件+</li>
+<li>WazaAI HW統合MVP</li>
+<li>持続化補助金申請（4/30）</li>
+<li>HP刷新MVP版公開</li>
+</ul>
+</div>
+</div>
+
+<!-- Revenue + Deadlines -->
+<div class="grid">
+<div class="card">
+<h2>Year 1 売上構成</h2>
+<div class="revenue-row">
+<span>AI駆動開発</span>
+<div class="bar"><div class="fill" style="width:40%"></div></div>
+<span>¥2,800万 (40%)</span>
+</div>
+<div class="revenue-row">
+<span>中小DX</span>
+<div class="bar"><div class="fill" style="width:30%"></div></div>
+<span>¥2,100万 (30%)</span>
+</div>
+<div class="revenue-row">
+<span>Physical AI</span>
+<div class="bar"><div class="fill" style="width:20%"></div></div>
+<span>¥1,400万 (20%)</span>
+</div>
+<div class="revenue-row">
+<span>プロダクト</span>
+<div class="bar"><div class="fill" style="width:10%"></div></div>
+<span>¥700万 (10%)</span>
+</div>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:13px">
+<strong>新規合計: ¥7,000万</strong> + 既存 ¥5,500万 = <strong>¥1.25億</strong>
+</div>
+</div>
+
+<div class="card">
+<h2>期限・デッドライン</h2>
+<ul class="deadline-list">
+<li><span>MS-A: 戦略完成</span><span class="badge urgent">3/14</span></li>
+<li><span>Sharp事業化報告</span><span class="badge urgent">3/20</span></li>
+<li><span>MS-B: 実行フェーズ</span><span class="badge warn">3/31</span></li>
+<li><span>H.C.R. 2026 出展申込</span><span class="badge warn">3/31</span></li>
+<li><span>Sharp報告書提出</span><span class="badge warn">3/31</span></li>
+<li><span>持続化補助金 第19回</span><span class="badge future">4/30</span></li>
+<li><span>ものづくり補助金 第23次</span><span class="badge future">5/8</span></li>
+<li><span>★6月末デッドライン</span><span class="badge urgent">6/30</span></li>
+<li><span>ものづくりワールド2026</span><span class="badge future">7/1-3</span></li>
+</ul>
+</div>
+</div>
+
+<!-- Person Views -->
+<h2 class="section-title">担当別タスク（今週 3/10-3/14）</h2>
+<div class="grid">
+<div class="card">
+<h2>小竹（PM/戦略）</h2>
+<table>
+<thead><tr><th>ID</th><th>タスク</th><th>期限</th><th>状態</th></tr></thead>
+<tbody>
+<tr><td>A-1</td><td>WBSトップダウン構築</td><td>3/10</td><td><span class="badge ok">完了</span></td></tr>
+<tr><td>A-2</td><td>辻井MTG: WBS確認+CCオンボ</td><td>3/10</td><td><span class="badge warn">本日</span></td></tr>
+<tr><td>A-3</td><td>MTG結果 decisions.md記録</td><td>3/10</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-4</td><td>D1事業定義書 v4.0</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-5</td><td>D3市場分析 v4.0</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-6</td><td>CC環境データ層構築</td><td>3/11</td><td><span class="badge warn">作業中</span></td></tr>
+<tr><td>A-7</td><td>戦略定例 第1回（火）</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-8</td><td>D4サービス設計書 v3.0</td><td>3/12</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-9</td><td>D5 GTM戦略 v4.0</td><td>3/12</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-10</td><td>Sharp提案骨格+連絡</td><td>3/12</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-11</td><td>D6財務計画 v4.0</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-12</td><td>D7ロードマップ v4.0</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-13</td><td>プロダクトアイデア方向確定</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-14</td><td>発信設計ベース</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-15</td><td>戦略定例 第2回（木）</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-16</td><td>D2/D8整合確認</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-17</td><td>D1-D8整合確認</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-18</td><td>成果物カタログ v1.0</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-19</td><td>WBS完全版 v1.0最終化</td><td>3/14</td><td><span class="badge warn">作業中</span></td></tr>
+<tr><td>A-20</td><td>TASKS.mdチーム版更新</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-21</td><td>MS-Aレビュー</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>辻井（CSO/営業）</h2>
+<table>
+<thead><tr><th>ID</th><th>タスク</th><th>期限</th><th>状態</th></tr></thead>
+<tbody>
+<tr><td>A-T1</td><td>GitHubアカウント+リポジトリアクセス</td><td>3/10</td><td><span class="badge warn">本日</span></td></tr>
+<tr><td>A-T2</td><td>Claude Code Max セットアップ</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
+<tr><td>A-T3</td><td>税理士パッケージ商品設計着手</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
+</tbody>
+</table>
+<h3 style="margin-top:20px">Week 2-4 タスク</h3>
+<table>
+<thead><tr><th>ID</th><th>タスク</th><th>期限</th></tr></thead>
+<tbody>
+<tr><td>B-T1</td><td>商品設計 v1.0</td><td>3/18</td></tr>
+<tr><td>B-T2</td><td>税理士向け提案書テンプレ</td><td>3/21</td></tr>
+<tr><td>B-T3</td><td>DMリスト着手（50件+）</td><td>3/21</td></tr>
+<tr><td>B-T4</td><td>財務Excel雛形</td><td>3/21</td></tr>
+<tr><td>B-T5</td><td>パイプライン管理シート</td><td>3/21</td></tr>
+<tr><td>B-T6</td><td>DMリスト完成（100件）</td><td>3/28</td></tr>
+<tr><td>B-T7</td><td>DM文面作成</td><td>3/28</td></tr>
+<tr><td>B-T8</td><td>財務Excel完成→小竹ハンドオフ</td><td>3/28</td></tr>
+<tr><td>B-T9</td><td>ROI試算シート</td><td>3/28</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- 3-Year Overview -->
+<h2 class="section-title">3年ロードマップ</h2>
+<div class="card">
+<table>
+<thead><tr><th>年度</th><th>売上</th><th>成長率</th><th>主要テーマ</th></tr></thead>
+<tbody>
+<tr><td><strong>Year 1</strong> (FY2026)</td><td>¥1.25億</td><td>—</td><td>土台構築 → 営業開始 → PoC → 受注</td></tr>
+<tr><td><strong>Year 2</strong> (FY2027)</td><td>¥2.5億</td><td>2x</td><td>スケール（エンジニア採用、CRM導入、5ライン目標）</td></tr>
+<tr><td><strong>Year 3</strong> (FY2028)</td><td>¥5億</td><td>2x</td><td>HW量産判断、プロダクト売上30%超、資金調達検討</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- Meeting Schedule -->
+<h2 class="section-title">会議体</h2>
+<div class="card">
+<table>
+<thead><tr><th>会議</th><th>頻度</th><th>参加者</th><th>時間</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td><strong>戦略定例</strong></td><td>週2回（火・木）</td><td>全員</td><td>30分</td><td>進捗・ブロッカー・DM反応・発信KPI</td></tr>
+<tr><td>月次レビュー</td><td>毎月末</td><td>全員</td><td>30分</td><td>予実+KPI+WBS更新+翌月計画</td></tr>
+<tr><td>MSレビュー</td><td>MS日</td><td>全員</td><td>60分</td><td>達成基準の✅/❌判定</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- Critical Risks -->
+<h2 class="section-title">要注意リスク</h2>
+<div class="grid">
+<div class="card" style="border-left:4px solid var(--red)">
+<h2 style="color:var(--red)">G6: 6月資金繰り</h2>
+<div style="font-size:13px">5月末残高¥215万。6月末までに新規案件必須（D29）。DM以外の受注経路も確保が必要。</div>
+<div style="font-size:12px;color:var(--text-dim);margin-top:8px">対応: B-22 バックアップ策検討 + B-12 既存クライアント継続確認</div>
+</div>
+<div class="card" style="border-left:4px solid var(--yellow)">
+<h2 style="color:var(--yellow)">G2: ペりん合流日未定</h2>
+<div style="font-size:13px">CTOとして技術設計・税理士パッケージ横展開を担当予定。合流時期は次回戦略定例で確認。</div>
+</div>
+</div>
+
+<div style="text-align:center;padding:40px 0;color:var(--text-dim);font-size:12px">
+にからす事業ダッシュボード v1.0 | WBS v1.0ベース | CC駆動
+</div>
+
+</div>
+</div>
+
+<script>
+function checkPw(){
+  const pw=document.getElementById('pw').value;
+  if(pw==='nikarasu'){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    try{sessionStorage.setItem('nk_auth','1')}catch(e){}
+  }else{
+    document.getElementById('loginError').style.display='block';
+  }
+}
+try{if(sessionStorage.getItem('nk_auth')==='1'){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden')}}catch(e){}
+</script>
+</body>
+</html>

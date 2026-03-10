@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす Claude Code チームガイド</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #12121a;
+    --card-border: #1e1e2e;
+    --accent: #4361ee;
+    --accent-light: #5a7bff;
+    --accent-dim: #2a3a8a;
+    --text: #e0e0e8;
+    --text-muted: #8888a0;
+    --text-dim: #5a5a72;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --code-bg: #1a1a28;
+    --nav-bg: #0e0e16;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* --- Navigation --- */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--card-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-logo {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+  .nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    white-space: nowrap;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--card);
+  }
+
+  /* --- Main layout --- */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 20px 60px;
+  }
+
+  /* --- Header --- */
+  .header {
+    text-align: center;
+    padding: 48px 0 40px;
+  }
+
+  .header h1 {
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--accent), #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header p {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 540px;
+    margin: 0 auto 28px;
+  }
+
+  .team-badges {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .team-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 100px;
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+
+  .team-badge .role {
+    color: var(--accent-light);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* --- Section --- */
+  section {
+    margin-bottom: 56px;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  p {
+    margin-bottom: 12px;
+    color: var(--text-muted);
+  }
+
+  /* --- Cards --- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .card h3 {
+    margin-bottom: 8px;
+  }
+
+  /* --- Steps --- */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .step-content {
+    flex: 1;
+    padding-top: 4px;
+  }
+
+  .step-content strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .step-content p {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+
+  /* --- Example cards --- */
+  .examples {
+    display: grid;
+    gap: 12px;
+  }
+
+  .example {
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+
+  .example-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .example code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 14px;
+    color: var(--accent-light);
+    word-break: break-all;
+  }
+
+  .example .desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* --- Table --- */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--card-border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 400px;
+  }
+
+  th {
+    background: var(--card);
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-muted);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  td code, p code, li code, strong code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: var(--accent-light);
+  }
+
+  /* --- Rules list --- */
+  .rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rules-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 14px;
+  }
+
+  .rule-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 12px;
+  }
+
+  .rule-text {
+    flex: 1;
+    padding-top: 2px;
+    color: var(--text);
+  }
+
+  .rule-text span {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* --- Flow diagram --- */
+  .flow {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .flow-box {
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .flow-arrow {
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* --- Accordion FAQ --- */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .faq-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text);
+    text-align: left;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+
+  .faq-question:hover {
+    background: rgba(67, 97, 238, 0.05);
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+    transition: transform 0.25s;
+    color: var(--text-dim);
+  }
+
+  .faq-item.open .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .faq-answer-inner {
+    padding: 0 20px 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .faq-item.open .faq-answer {
+    max-height: 300px;
+  }
+
+  /* --- Phase 2 box --- */
+  .phase2-box {
+    background: var(--card);
+    border: 1px solid var(--accent-dim);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .phase2-trigger {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .os-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .os-card {
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+
+  .os-card .os-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .os-card code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 13px;
+    color: var(--accent-light);
+  }
+
+  /* --- Context file cards --- */
+  .context-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .context-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+
+  .context-card .filepath {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 13px;
+    color: var(--accent-light);
+    margin-bottom: 4px;
+  }
+
+  .context-card .ctx-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .context-card .ctx-how {
+    font-size: 13px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--card-border);
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+
+  /* --- Footer --- */
+  footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px;
+    border-top: 1px solid var(--card-border);
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  footer a {
+    color: var(--accent-light);
+    text-decoration: none;
+  }
+
+  /* --- Misc --- */
+  .divider {
+    height: 1px;
+    background: var(--card-border);
+    margin: 48px 0;
+  }
+
+  .highlight {
+    color: var(--accent-light);
+    font-weight: 600;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+  }
+
+  .tag-green {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--success);
+  }
+
+  .tag-yellow {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning);
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 640px) {
+    main {
+      padding: 68px 16px 48px;
+    }
+
+    .header {
+      padding: 32px 0 28px;
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .os-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .flow-steps {
+      flex-direction: column;
+    }
+
+    .flow-arrow {
+      transform: rotate(90deg);
+    }
+
+    .team-badges {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">nikarasu</span>
+    <a href="#quickstart" class="nav-link">Quick Start</a>
+    <a href="#claude-action" class="nav-link">@claude</a>
+    <a href="#project-files" class="nav-link">PJ構造</a>
+    <a href="#rules" class="nav-link">ルール</a>
+    <a href="#phase2" class="nav-link">Phase 2</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Header -->
+  <header class="header" id="top">
+    <h1>にからす Claude Code チームガイド</h1>
+    <p>GitHub + @claude でプロジェクトを非同期に回すためのチーム向けマニュアル。ブラウザだけで今日から使える。</p>
+    <div class="team-badges">
+      <div class="team-badge">
+        <strong>小竹</strong>
+        <span class="role">PM / 戦略</span>
+      </div>
+      <div class="team-badge">
+        <strong>辻井</strong>
+        <span class="role">CSO / 営業</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section 1: Quick Start -->
+  <section id="quickstart">
+    <span class="section-label">Quick Start</span>
+    <h2>今日から使える 3 ステップ</h2>
+    <p>ソフトウェアのインストールは不要。ブラウザだけで完結する。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>GitHub にログイン</strong>
+          <p><a href="https://github.com" style="color: var(--accent-light);">github.com</a> にアクセスしてログイン。アカウントがなければ無料で作成する。nikarasu-inc Org への招待メールが届いていれば「Accept invitation」をクリック。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>nikarasu-strategy リポジトリを開く</strong>
+          <p><code>github.com/nikarasu-inc/nikarasu-strategy</code> にアクセス。ファイル一覧と <code>.context/STATUS.md</code> が見えればOK。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Issue で @claude に依頼 &rarr; PR &rarr; マージ</strong>
+          <p>「Issues」タブ &rarr; 「New issue」 &rarr; タイトルと依頼内容を書き、本文に <code>@claude</code> を含める &rarr; Submit。数分後に Claude が PR を作成するので、確認して「Merge」。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow" style="margin-top: 24px;">
+      <div class="flow-steps">
+        <div class="flow-box">Issue 作成</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box">@claude メンション</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box">自動で PR 作成</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box">レビュー &amp; マージ</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 2: claude-code-action -->
+  <section id="claude-action">
+    <span class="section-label">claude-code-action</span>
+    <h2>@claude の使い方</h2>
+
+    <div class="card">
+      <h3>基本</h3>
+      <p><code>@claude</code> は GitHub の Issue コメントや PR コメントに書くことで Claude Code を呼び出す仕組み。リポジトリに設定された GitHub Actions ワークフロー（<code>claude-code-action</code>）が自動で起動し、ブランチ作成・ファイル編集・PR 作成まで行う。</p>
+      <p>Issue の本文に書いても、コメント欄に書いてもOK。PR のレビューコメントでも使える。</p>
+    </div>
+
+    <div class="card">
+      <h3>依頼の書き方のコツ</h3>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+        <li style="color: var(--text);">
+          <span class="highlight">具体的に書く</span>
+          <span style="color: var(--text-muted);"> &#8212; 「資料を作って」より「Q1の売上データを表形式でまとめて」</span>
+        </li>
+        <li style="color: var(--text);">
+          <span class="highlight">ファイル名を指定する</span>
+          <span style="color: var(--text-muted);"> &#8212; 「docs/report.md に書いて」と出力先を明示</span>
+        </li>
+        <li style="color: var(--text);">
+          <span class="highlight">1つの依頼に1つのタスク</span>
+          <span style="color: var(--text-muted);"> &#8212; 複数タスクは別 Issue に分ける方が精度が上がる</span>
+        </li>
+        <li style="color: var(--text);">
+          <span class="highlight">修正は PR コメントで</span>
+          <span style="color: var(--text-muted);"> &#8212; PR のコメント欄に <code>@claude</code> で修正を依頼できる</span>
+        </li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top: 24px; margin-bottom: 12px;">実行例</h3>
+    <div class="examples">
+      <div class="example">
+        <div class="example-label">例 1: レポート作成</div>
+        <code>@claude docs/report.md にQ1の売上データを表形式でまとめて。前年比も入れてください。</code>
+        <div class="desc">指定ファイルにデータを構造化して書き込む</div>
+      </div>
+      <div class="example">
+        <div class="example-label">例 2: 仕様書の修正</div>
+        <code>@claude この仕様書の「対象ユーザー」セクションを中小企業向けに修正して。具体的なペルソナを2つ追加してください。</code>
+        <div class="desc">既存ファイルの特定セクションを編集する</div>
+      </div>
+      <div class="example">
+        <div class="example-label">例 3: ステータス更新</div>
+        <code>@claude .context/CHANGES.md に「2026-03-09: GTM戦略書v4.0レビュー完了」を追記して。</code>
+        <div class="desc">変更履歴への追記（CHANGES.md は全員が追記可能）</div>
+      </div>
+      <div class="example">
+        <div class="example-label">例 4: 調査依頼</div>
+        <code>@claude docs/research/ に中小企業DX市場の調査レポートを作成して。市場規模、主要プレイヤー、トレンドをカバーしてください。</code>
+        <div class="desc">新規ファイルを作成して調査結果をまとめる</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 3: Project files -->
+  <section id="project-files">
+    <span class="section-label">Project Structure</span>
+    <h2>プロジェクトの見方</h2>
+    <p>プロジェクトの状態は 3 つのファイルで把握できる。全て GitHub Web 上で閲覧可能。</p>
+
+    <div class="context-grid">
+      <div class="context-card">
+        <div class="filepath">.context/STATUS.md</div>
+        <div class="ctx-desc">プロジェクトの現在の状態。フェーズ、進捗率、メンバー別タスク、次のマイルストーンが記載されている。</div>
+        <div class="ctx-how"><strong>読み方:</strong> セッション開始時にまず確認。自分の担当タスクと期限を把握する。<br><span class="tag-green tag">PM管理</span> &#8212; 小竹が更新。他メンバーは閲覧のみ。</div>
+      </div>
+      <div class="context-card">
+        <div class="filepath">.context/CHANGES.md</div>
+        <div class="ctx-desc">変更履歴。いつ、誰が、何をしたかが時系列で記録されている。</div>
+        <div class="ctx-how"><strong>読み方:</strong> 前回から何が変わったか確認する。自分の作業完了時にも追記する。<br><span class="tag tag-yellow">全員追記可</span> &#8212; Append-Only。既存エントリは消さない。</div>
+      </div>
+      <div class="context-card">
+        <div class="filepath">docs/decisions.md</div>
+        <div class="ctx-desc">意思決定ログ。なぜその判断をしたか、根拠チェーン付きで記録される。</div>
+        <div class="ctx-how"><strong>読み方:</strong> 過去の判断理由を知りたいときに参照する。「なぜこうなっている？」の答えがここにある。</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 4: Rules -->
+  <section id="rules">
+    <span class="section-label">Rules</span>
+    <h2>守ってほしいルール（5つだけ）</h2>
+
+    <ol class="rules-list">
+      <li>
+        <div class="rule-num">1</div>
+        <div class="rule-text">
+          <code>STATUS.md</code> は PM（小竹）が管理 &#8212; 編集しない
+          <span>プロジェクトの状態は PM が責任を持つ。参照は自由。</span>
+        </div>
+      </li>
+      <li>
+        <div class="rule-num">2</div>
+        <div class="rule-text">
+          <code>CHANGES.md</code> は追記のみ &#8212; 既存エントリを消さない
+          <span>履歴は積み重ね。誰の記録も消さないこと。</span>
+        </div>
+      </li>
+      <li>
+        <div class="rule-num">3</div>
+        <div class="rule-text">
+          PR にはレビュアーを指定する
+          <span>作成したPRには相手をレビュアーに設定。内容確認を経てからマージ。</span>
+        </div>
+      </li>
+      <li>
+        <div class="rule-num">4</div>
+        <div class="rule-text">
+          直接 <code>main</code> に push しない &#8212; PR 経由で
+          <span>main は保護ブランチ。全ての変更は PR を経由する。</span>
+        </div>
+      </li>
+      <li>
+        <div class="rule-num">5</div>
+        <div class="rule-text">
+          困ったら Issue で相談
+          <span>判断に迷うこと、ブロッカー、疑問は全て Issue に書く。記録が残り、後から参照できる。</span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 5: Phase 2 -->
+  <section id="phase2">
+    <span class="section-label">Phase 2</span>
+    <h2>Desktop App が必要になったら</h2>
+
+    <div class="phase2-box">
+      <h3>いつ必要になるか</h3>
+      <p class="phase2-trigger">以下のケースに該当する場合、ローカルに Claude Code Desktop App を導入する:</p>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
+        <li style="color: var(--text); font-size: 14px;">&#8226; ローカルファイルの操作が必要（大量のファイル編集、ビルド作業など）</li>
+        <li style="color: var(--text); font-size: 14px;">&#8226; MCP 連携を使いたい（Google Calendar、Slack、Backlog 等）</li>
+        <li style="color: var(--text); font-size: 14px;">&#8226; 複雑な Claude Code セッションを実行したい</li>
+        <li style="color: var(--text); font-size: 14px;">&#8226; Skills や Hooks を活用したい</li>
+      </ul>
+
+      <h3>セットアップ概要</h3>
+      <p style="font-size: 14px;">詳細手順は <code>claude-bootstrap/guides/team-collaboration.md</code> の「Phase 2: Desktop App」を参照。</p>
+
+      <div class="os-grid">
+        <div class="os-card">
+          <div class="os-name">Windows</div>
+          <code>winget install Anthropic.ClaudeCode</code>
+        </div>
+        <div class="os-card">
+          <div class="os-name">Mac</div>
+          <code>brew install claude-code</code>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-dim); margin-top: 16px; margin-bottom: 0;">インストール後: リポジトリ clone &rarr; <code>CLAUDE.local.md</code> 作成 &rarr; <code>claude</code> 起動。npm（<code>npm install -g @anthropic-ai/claude-code</code>）でもインストール可能。</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 6: FAQ -->
+  <section id="faq">
+    <span class="section-label">FAQ</span>
+    <h2>よくある質問</h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          @claude が反応しない
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            以下を確認してください:<br>
+            1. リポジトリに <code>.github/workflows/claude-code.yml</code> が存在するか<br>
+            2. GitHub リポジトリの Settings &rarr; Secrets に <code>ANTHROPIC_API_KEY</code> が設定されているか<br>
+            3. Actions タブでワークフローが有効になっているか<br>
+            <br>
+            解決しない場合は Issue で小竹に相談してください。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          PR の内容を修正したい
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            PR のコメント欄に <code>@claude [修正内容]</code> と書けば、Claude が修正を加えてコミットします。具体的に書くほど精度が上がります。<br>
+            例: <code>@claude 表の3列目を「前年比」から「成長率(%)」に変更して</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          自分で直接ファイルを編集したい
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            GitHub Web 上でファイルを開き、右上の鉛筆アイコン（Edit this file）をクリックすれば直接編集できます。編集後は「Commit changes」で保存。<br>
+            <br>
+            ただし <code>main</code> ブランチに直接コミットせず、「Create a new branch for this commit and start a pull request」を選択して PR 経由でマージしてください。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          大きな変更をしたい
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            複数ファイルにまたがる大きな変更や、ビルド・テストが必要な作業は Desktop App の導入を検討してください。<br>
+            <br>
+            セットアップ手順は上記「Phase 2: Desktop App が必要になったら」セクションを参照。Windows: <code>winget install Anthropic.ClaudeCode</code> / Mac: <code>brew install claude-code</code> でインストールできます。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <p>このガイドは <code>docs/collaboration-spec.md</code> に基づいています。</p>
+  <p style="margin-top: 6px;">最終更新: 2026-03-09</p>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const wasOpen = item.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.faq-item').forEach(function(el) {
+    el.classList.remove('open');
+  });
+
+  // Open clicked (if it was closed)
+  if (!wasOpen) {
+    item.classList.add('open');
+  }
+}
+</script>
+
+</body>
+</html>

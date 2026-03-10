@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>辻井タスクビュー — にからす事業WBS</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;--highlight:rgba(188,140,255,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+/* Login */
+.login{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px}
+.login input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:8px;font-size:16px;width:260px;text-align:center}
+.login input::placeholder{color:var(--text-dim)}
+.login button{background:var(--accent);color:#fff;border:none;padding:10px 32px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+.login button:hover{opacity:.9}
+.login h1{color:var(--text);font-size:20px}
+.login .sub{color:var(--text-dim);font-size:13px}
+.login .error{color:var(--red);font-size:13px;display:none}
+.hidden{display:none}
+
+/* Layout */
+.container{max-width:960px;margin:0 auto;padding:20px}
+header{margin-bottom:24px}
+header h1{font-size:22px;color:var(--text);margin-bottom:4px}
+header .meta{color:var(--text-dim);font-size:13px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card h2{font-size:15px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3{font-size:13px;color:var(--text-dim);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+
+/* MS Cards */
+.ms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:24px}
+.ms-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;border-left:4px solid var(--border)}
+.ms-item.active{border-left-color:var(--yellow)}
+.ms-item.future{border-left-color:var(--border)}
+.ms-item .ms-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.ms-item .ms-date{font-size:12px;color:var(--text-dim)}
+.ms-item .ms-desc{font-size:12px;color:var(--text-dim);margin-top:4px}
+.ms-label{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-bottom:6px}
+.ms-label.active{background:rgba(210,153,34,.15);color:var(--yellow)}
+.ms-label.future{background:rgba(139,148,158,.1);color:var(--text-dim)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th{text-align:left;padding:8px 6px;border-bottom:2px solid var(--border);color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase}
+td{padding:8px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr.highlight{background:var(--highlight)}
+tr.highlight td:first-child{font-weight:600;color:var(--purple)}
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.badge.urgent{background:rgba(248,81,73,.15);color:var(--red)}
+.badge.warn{background:rgba(210,153,34,.15);color:var(--yellow)}
+.badge.ok{background:rgba(63,185,80,.15);color:var(--green)}
+.badge.info{background:rgba(88,166,255,.15);color:var(--accent)}
+
+/* Section nav */
+.section-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.section-nav a{color:var(--accent);font-size:13px;text-decoration:none;padding:4px 12px;border:1px solid var(--border);border-radius:16px;transition:all .2s}
+.section-nav a:hover{background:rgba(88,166,255,.1);border-color:var(--accent)}
+
+/* Callout */
+.callout{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.3);border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--yellow)}
+.callout strong{color:var(--yellow)}
+
+/* Legend */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;color:var(--text-dim)}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* Products grid */
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.product-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px}
+.product-card .label{color:var(--text-dim);font-size:11px;text-transform:uppercase;margin-bottom:4px}
+.product-card .value{font-size:14px;font-weight:600}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:12px}
+  header h1{font-size:18px}
+  .ms-grid{grid-template-columns:1fr}
+  table{font-size:12px}
+  th,td{padding:6px 4px}
+  .section-nav a{font-size:12px;padding:3px 10px}
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login" id="loginScreen">
+  <h1>にからす WBS — 辻井タスクビュー</h1>
+  <p class="sub">パスワードを入力してください</p>
+  <input type="password" id="pw" placeholder="パスワード" autocomplete="off">
+  <button onclick="doLogin()">ログイン</button>
+  <p class="error" id="loginError">パスワードが違います</p>
+</div>
+
+<!-- Main Content -->
+<div class="container hidden" id="main">
+
+<header>
+  <h1>辻井タスクビュー — にからす事業WBS</h1>
+  <div class="meta">WBS v1.0 | 最終更新: 2026-03-10 | FY2026（2026年1月〜12月決算）</div>
+</header>
+
+<!-- Section Nav -->
+<div class="section-nav">
+  <a href="#thisweek">今週のタスク</a>
+  <a href="#milestones">マイルストーン</a>
+  <a href="#march">3月タスク</a>
+  <a href="#april">4月タスク</a>
+  <a href="#q2q4">Q2以降</a>
+  <a href="#products">担当する資料一覧</a>
+  <a href="#3year">3年目標</a>
+</div>
+
+<!-- Callout: 今週やること -->
+<div class="callout" id="thisweek">
+  <strong>今週（3/10-3/14 ★MS-A）</strong>: 下の3タスクが最優先。A-T1, A-T2が完了したらA-T3に着手。
+</div>
+
+<!-- 今週のタスク -->
+<div class="card">
+  <h2>今週のタスク（3/10-3/14）</h2>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th><th>状態</th></tr>
+    <tr class="highlight">
+      <td>A-T1</td>
+      <td>GitHubアカウント確認 + リポジトリアクセス</td>
+      <td>3/10</td>
+      <td>nikarasu-strategy が閲覧可能</td>
+      <td><span class="badge warn">今日</span></td>
+    </tr>
+    <tr class="highlight">
+      <td>A-T2</td>
+      <td>Claude Code Max セットアップ</td>
+      <td>3/11</td>
+      <td>CC が動く状態</td>
+      <td><span class="badge warn">明日</span></td>
+    </tr>
+    <tr class="highlight">
+      <td>A-T3</td>
+      <td>税理士パッケージ商品設計着手</td>
+      <td>3/14</td>
+      <td>ドラフト v0.1</td>
+      <td><span class="badge info">金曜</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- マイルストーン一覧 -->
+<div class="card" id="milestones">
+  <h2>マイルストーン一覧</h2>
+  <div class="ms-grid">
+    <div class="ms-item active">
+      <span class="ms-label active">進行中</span>
+      <div class="ms-name">MS-A: 戦略完成</div>
+      <div class="ms-date">3/14（金）</div>
+      <div class="ms-desc">WBS確定、CC環境構築、辻井CCオンボーディング完了</div>
+    </div>
+    <div class="ms-item future">
+      <span class="ms-label future">予定</span>
+      <div class="ms-name">MS-B: 実行フェーズ突入</div>
+      <div class="ms-date">3月末</div>
+      <div class="ms-desc">DM送付開始、Sharp報告書提出、運用ルール完成</div>
+    </div>
+    <div class="ms-item future">
+      <span class="ms-label future">予定</span>
+      <div class="ms-name">MS-C: 仕組み一周</div>
+      <div class="ms-date">4月末</div>
+      <div class="ms-desc">初受注 or パイプライン3件+、月次管理サイクル確立</div>
+    </div>
+    <div class="ms-item future">
+      <span class="ms-label future">予定</span>
+      <div class="ms-name">MS-D: 展示会+PoC</div>
+      <div class="ms-date">10月末</div>
+      <div class="ms-desc">CEATEC出展、WazaAI PoC完了、リード獲得</div>
+    </div>
+    <div class="ms-item future">
+      <span class="ms-label future">予定</span>
+      <div class="ms-name">MS-E: Year 1完了</div>
+      <div class="ms-date">12月末</div>
+      <div class="ms-desc">¥1.25億達成判定、Year 2計画策定</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3月タスク全体 -->
+<div class="card" id="march">
+  <h2>3月の辻井タスク（全体像）</h2>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--purple)"></span> 辻井が主担当</span>
+    <span><span class="dot" style="background:var(--accent)"></span> 辻井+小竹</span>
+  </div>
+
+  <h3>Week 1: 3/10-3/14（MS-A）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th><th>依存</th></tr>
+    <tr class="highlight"><td>A-T1</td><td>GitHubアカウント確認+リポジトリアクセス</td><td>3/10</td><td>nikarasu-strategy閲覧可能</td><td>—</td></tr>
+    <tr class="highlight"><td>A-T2</td><td>Claude Code Max セットアップ</td><td>3/11</td><td>CCが動く状態</td><td>—</td></tr>
+    <tr class="highlight"><td>A-T3</td><td>税理士パッケージ商品設計着手</td><td>3/14</td><td>ドラフトv0.1</td><td>—</td></tr>
+  </table>
+
+  <h3>Week 2: 3/15-3/21（CC環境構築 + DM準備）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th><th>依存</th></tr>
+    <tr class="highlight"><td>B-T1</td><td>商品設計 v1.0（パッケージ名・価格・内容・期間）</td><td>3/18</td><td>確定</td><td>A-T3</td></tr>
+    <tr class="highlight"><td>B-T2</td><td>税理士向け提案書テンプレート（1枚もの+詳細版）</td><td>3/21</td><td>DM添付可能</td><td>B-T1</td></tr>
+    <tr class="highlight"><td>B-T3</td><td>DMリスト着手（freee認定・AI税理士）</td><td>3/21</td><td>50件+</td><td>—</td></tr>
+    <tr class="highlight"><td>B-T4</td><td>財務Excel雛形作成（P&L月次+KPIツリーシート）</td><td>3/21</td><td>Sheet 1-3ドラフト</td><td>—</td></tr>
+    <tr class="highlight"><td>B-T5</td><td>中小DXパイプライン管理シート</td><td>3/21</td><td>DM→返信→商談→受注の追跡フォーマット</td><td>—</td></tr>
+  </table>
+
+  <h3>Week 3: 3/22-3/28（Sharp報告 + 運用ルール）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th><th>依存</th></tr>
+    <tr class="highlight"><td>B-T6</td><td>DMリスト完成</td><td>3/28</td><td>100件</td><td>B-T3</td></tr>
+    <tr class="highlight"><td>B-T7</td><td>DM文面作成（初回接触用+フォローアップ用）</td><td>3/28</td><td>送付可能</td><td>B-T1</td></tr>
+    <tr class="highlight"><td>B-T8</td><td>財務Excel完成 → <strong>小竹にハンドオフ</strong></td><td>3/28</td><td>P&L月次+予実+KPI+CF 全4シート。小竹レビュー+FB</td><td>B-T4</td></tr>
+    <tr class="highlight"><td>B-T9</td><td>ROI試算シート（税理士事務所向け）</td><td>3/28</td><td>年371h削減、ROI 1.9-4.2倍ベース</td><td>B-T1</td></tr>
+  </table>
+
+  <h3>Week 4: 3/29-3/31（★MS-B）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th><th>依存</th></tr>
+    <tr class="highlight"><td>B-17</td><td><strong>DM送付開始</strong>（上位20件）</td><td>3/31</td><td>20件送付完了</td><td>B-T6, B-T7</td></tr>
+    <tr class="highlight"><td>B-19</td><td>DM初回結果確認（本格分析は4月定例）</td><td>3/31</td><td>送付開始状態の確認</td><td>B-17</td></tr>
+  </table>
+</div>
+
+<!-- 4月タスク -->
+<div class="card" id="april">
+  <h2>4月の辻井タスク（★MS-C: 4月末）</h2>
+
+  <h3>4月上旬（4/1-4/11）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>C-5</td><td>税理士パッケージ商品設計 v2.0</td><td>小竹レビュー合格</td></tr>
+    <tr class="highlight"><td>C-7</td><td>DM累計40件送付</td><td>送付記録</td></tr>
+  </table>
+
+  <h3>4月中旬（4/12-4/21）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>C-9</td><td>営業資料一式（会社紹介1枚もの、WazaAI紹介、ROI試算）</td><td>小竹レビュー合格</td></tr>
+    <tr class="highlight"><td>C-12</td><td>DM累計60件送付</td><td>送付記録</td></tr>
+    <tr class="highlight"><td>C-15</td><td>税理士業務×Claude Code適合マッピング詳細</td><td>辻井I2ベース深掘り</td></tr>
+    <tr class="highlight"><td>C-16</td><td>AI駆動開発事例資料（Chibicベース）</td><td>営業発信用</td></tr>
+  </table>
+
+  <h3>4月下旬（4/22-4/30 ★MS-C）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>C-20</td><td>3月分P/L記録完了</td><td>Excel記入→小竹確認</td></tr>
+    <tr class="highlight"><td>C-21</td><td>DM結果分析+戦略修正判断</td><td>継続/修正/撤退の方針決定</td></tr>
+    <tr class="highlight"><td>C-22</td><td>3段ロケット各フェーズ詳細設計</td><td>Phase 1→Phase 2の具体</td></tr>
+  </table>
+</div>
+
+<!-- Q2以降 -->
+<div class="card" id="q2q4">
+  <h2>Q2以降の辻井タスク</h2>
+
+  <h3>5月</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>D-9</td><td>中小DXパッケージ商品設計完了</td><td>杉江商会提案可能</td></tr>
+  </table>
+
+  <h3>6月-8月（★6月末デッドライン: 新規案件必須）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>E-1</td><td>杉江商会Claude Code提案</td><td>6月末</td><td>提案実施</td></tr>
+    <tr class="highlight"><td>E-4</td><td><strong>★6月末デッドライン対応</strong>（新規案件必須）</td><td>6月末</td><td>辻井支払い原資確保</td></tr>
+    <tr class="highlight"><td>E-6</td><td>ものづくりワールド出展（7/1-3）</td><td>7/3</td><td>出展完了</td></tr>
+    <tr class="highlight"><td>E-11</td><td>パイプライン管理10件+</td><td>6月末</td><td>管理シートで追跡</td></tr>
+    <tr class="highlight"><td>E-12</td><td>補助金採択後フォロー営業</td><td>8月末</td><td>2社+にPoC提案</td></tr>
+  </table>
+
+  <h3>9月-10月（★MS-D: 10月末）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>F-5</td><td>CEATEC出展（10/13-16）</td><td>10/16</td><td>リード名刺50件+</td></tr>
+    <tr class="highlight"><td>F-8</td><td>Physical AIコンサル紹介資料</td><td>10月末</td><td>CEATEC配布用</td></tr>
+    <tr class="highlight"><td>F-9</td><td>Sharp報告書フォロー</td><td>9月末</td><td>Sharp返答確認</td></tr>
+  </table>
+
+  <h3>11月-2月（★MS-E: 12月末）</h3>
+  <table>
+    <tr><th>ID</th><th>タスク</th><th>期限</th><th>完了基準</th></tr>
+    <tr class="highlight"><td>G-1</td><td>CEATECリード商談化</td><td>12月末</td><td>10件→5件商談。提案書5件</td></tr>
+    <tr class="highlight"><td>G-2</td><td>年度末予算消化提案</td><td>12月末</td><td>1件+PoC開始</td></tr>
+    <tr class="highlight"><td>G-7</td><td>エンジニア採用活動開始</td><td>1月末</td><td>候補者面談開始</td></tr>
+    <tr class="highlight"><td>G-8</td><td>Year 1売上達成判定</td><td>12月末</td><td>¥1.25億に対する実績確認</td></tr>
+    <tr class="highlight"><td>G-9</td><td>各事業カテゴリ実績分析</td><td>2月末</td><td>全カテゴリ分析完了</td></tr>
+  </table>
+</div>
+
+<!-- 担当する資料一覧（§5） -->
+<div class="card" id="products">
+  <h2>辻井が作る資料一覧</h2>
+
+  <h3>中小DX事業（辻井主担当）</h3>
+  <table>
+    <tr><th>ID</th><th>資料</th><th>時期</th><th>完了基準</th></tr>
+    <tr><td>T-1</td><td>税理士パッケージ商品設計書</td><td>v1.0: 3/18 → v2.0: 4月末</td><td>確定</td></tr>
+    <tr><td>T-2</td><td>税理士向け提案書テンプレート</td><td>MS-B（3/28）</td><td>DM添付可能</td></tr>
+    <tr><td>T-3</td><td>ROI試算シート（税理士向け）</td><td>MS-B（3/28）</td><td>年371h削減ベース</td></tr>
+    <tr><td>T-4</td><td>DM文面（初回+フォローアップ）</td><td>MS-B（3/28）</td><td>送付可能</td></tr>
+    <tr><td>T-5</td><td>税理士業務×CC適合マッピング詳細</td><td>MS-C（4月末）</td><td>深掘り完了</td></tr>
+    <tr><td>T-6</td><td>中小DXパイプライン管理シート</td><td>MS-B（3月末）</td><td>追跡フォーマット</td></tr>
+    <tr><td>T-7</td><td>3段ロケット各フェーズ詳細設計</td><td>MS-C（4月末）</td><td>Phase 1→2の具体</td></tr>
+  </table>
+
+  <h3>営業全体（辻井主担当）</h3>
+  <table>
+    <tr><th>ID</th><th>資料</th><th>時期</th><th>完了基準</th></tr>
+    <tr><td>T-8</td><td>会社紹介1枚もの（全事業共通）</td><td>MS-C（4月末）</td><td>完成</td></tr>
+    <tr><td>T-9</td><td>WazaAIサービス紹介資料</td><td>MS-C（4月末）</td><td>完成</td></tr>
+    <tr><td>T-10</td><td>Physical AIコンサル紹介資料</td><td>MS-D（10月）</td><td>CEATEC配布用</td></tr>
+    <tr><td>T-11</td><td>AI駆動開発事例資料（Chibicベース）</td><td>MS-C〜D</td><td>営業発信用</td></tr>
+  </table>
+
+  <h3>財務管理</h3>
+  <table>
+    <tr><th>資料</th><th>時期</th><th>フロー</th></tr>
+    <tr><td>財務Excel雛形（P&L月次+KPIツリー）</td><td>3/21</td><td>辻井が雛形作成</td></tr>
+    <tr><td>財務Excel完成（予実+CFシート追加）</td><td>3/28</td><td>辻井が完成→小竹にハンドオフ</td></tr>
+    <tr><td>小竹がExcelに数字記入</td><td>3/31</td><td>小竹が売上目標・KPI・コスト記入</td></tr>
+    <tr><td>月次実績入力</td><td>毎月末</td><td>辻井が記入→小竹確認→月次レビュー</td></tr>
+  </table>
+</div>
+
+<!-- 3年目標 -->
+<div class="card" id="3year">
+  <h2>3年売上目標</h2>
+  <div class="products">
+    <div class="product-card">
+      <div class="label">Year 1（FY2026）</div>
+      <div class="value" style="color:var(--green)">¥1.25億</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px">既存¥5,500万 + 新規¥7,000万</div>
+    </div>
+    <div class="product-card">
+      <div class="label">Year 2（FY2027）</div>
+      <div class="value" style="color:var(--accent)">¥2.5億</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px">2x成長。内訳はYear 1末に策定</div>
+    </div>
+    <div class="product-card">
+      <div class="label">Year 3（FY2028）</div>
+      <div class="value" style="color:var(--purple)">¥5億</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px">2x成長。内訳はYear 2末に策定</div>
+    </div>
+  </div>
+
+  <h3>Year 1 新規¥7,000万の内訳</h3>
+  <table>
+    <tr><th>カテゴリ</th><th>金額</th><th>比率</th><th>獲得方法</th></tr>
+    <tr><td>AI駆動開発</td><td>¥2,800万</td><td>40%</td><td>技術発信→問合せ→新規3-4件</td></tr>
+    <tr><td><strong>中小DX</strong>（辻井主担当）</td><td>¥2,100万</td><td>30%</td><td>税理士DM→紹介→7-10件</td></tr>
+    <tr><td>Physical AIコンサル/開発</td><td>¥1,400万</td><td>20%</td><td>展示会+ブランド発信→2-3件</td></tr>
+    <tr><td>プロダクト</td><td>¥700万</td><td>10%</td><td>PoC+技能記録+トレーニングツール</td></tr>
+  </table>
+</div>
+
+<!-- 会議体 -->
+<div class="card">
+  <h2>会議体（辻井参加）</h2>
+  <table>
+    <tr><th>会議</th><th>頻度</th><th>時間</th><th>内容</th></tr>
+    <tr><td><strong>戦略定例</strong></td><td>週2回（火・木）</td><td>30分</td><td>タスク進捗・ブロッカー・DM反応・発信KPI・既存PJ確認</td></tr>
+    <tr><td>月次レビュー</td><td>毎月末</td><td>30分</td><td>予実確認・KPI・WBS更新・翌月計画FIX</td></tr>
+    <tr><td>MSレビュー</td><td>MS日</td><td>60分</td><td>達成基準の✅/❌判定</td></tr>
+  </table>
+</div>
+
+<!-- 重要期限 -->
+<div class="card">
+  <h2>重要な期限（★要注意）</h2>
+  <table>
+    <tr><th>期限</th><th>内容</th><th>辻井の関与</th></tr>
+    <tr><td><span class="badge urgent">3/14</span></td><td>MS-A: 戦略完成</td><td>A-T1〜T3完了</td></tr>
+    <tr><td><span class="badge warn">3/31</span></td><td>MS-B: 実行フェーズ突入</td><td>DM20件送付</td></tr>
+    <tr><td><span class="badge warn">4/30</span></td><td>MS-C: 仕組み一周</td><td>DM60件+結果分析</td></tr>
+    <tr><td><span class="badge urgent">6月末</span></td><td>★新規案件必須（D29）</td><td>辻井支払い原資確保</td></tr>
+    <tr><td><span class="badge info">7/1-3</span></td><td>ものづくりワールド2026</td><td>出展サポート</td></tr>
+    <tr><td><span class="badge info">10/13-16</span></td><td>CEATEC 2026</td><td>出展+営業</td></tr>
+    <tr><td><span class="badge info">12月末</span></td><td>MS-E: Year 1完了判定</td><td>売上達成判定</td></tr>
+  </table>
+</div>
+
+<div style="text-align:center;color:var(--text-dim);font-size:11px;padding:20px 0">
+  にからす事業WBS v1.0 — 辻井タスクビュー | 詳細: docs/wbs-complete.md
+</div>
+
+</div>
+
+<script>
+function doLogin(){
+  var p=document.getElementById('pw').value;
+  if(p==='nikarasu'){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('main').classList.remove('hidden');
+  }else{
+    document.getElementById('loginError').style.display='block';
+  }
+}
+document.getElementById('pw').addEventListener('keydown',function(e){
+  if(e.key==='Enter')doLogin();
+});
+</script>
+</body>
+</html>
