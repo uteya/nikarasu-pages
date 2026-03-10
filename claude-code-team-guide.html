@@ -634,11 +634,13 @@
 <nav>
   <div class="nav-inner">
     <span class="nav-logo">nikarasu</span>
+    <a href="#architecture" class="nav-link">3層構造</a>
     <a href="#quickstart" class="nav-link">Quick Start</a>
     <a href="#claude-action" class="nav-link">@claude</a>
     <a href="#project-files" class="nav-link">PJ構造</a>
     <a href="#rules" class="nav-link">ルール</a>
-    <a href="#phase2" class="nav-link">Phase 2</a>
+    <a href="#roadmap" class="nav-link">進化計画</a>
+    <a href="#add-member" class="nav-link">メンバー追加</a>
     <a href="#faq" class="nav-link">FAQ</a>
   </div>
 </nav>
@@ -658,8 +660,109 @@
         <strong>辻井</strong>
         <span class="role">CSO / 営業</span>
       </div>
+      <div class="team-badge">
+        <strong>ペりん</strong>
+        <span class="role">CTO / エンジニアリング</span>
+      </div>
     </div>
   </header>
+
+  <!-- Section 0: Architecture -->
+  <section id="architecture">
+    <span class="section-label">Architecture</span>
+    <h2>CC環境の3層構造</h2>
+    <p>にからすのCC駆動環境は3つの層で構成されている。各層が連携して「AIと人間が協業する事業管理基盤」を実現する。</p>
+
+    <div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:28px;margin-bottom:20px">
+      <!-- Layer 3: Agent -->
+      <div style="border:2px solid var(--accent);border-radius:10px;padding:16px;margin-bottom:12px;position:relative">
+        <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px">Layer 3: Agent層</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:4px">
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">Claude Code</div>
+            <div style="font-size:11px;color:var(--text-dim)">ローカル実行</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">claude-code-action</div>
+            <div style="font-size:11px;color:var(--text-dim)">GitHub Issue → PR</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">SessionEnd Hook</div>
+            <div style="font-size:11px;color:var(--text-dim)">自動commit</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">GitHub Actions</div>
+            <div style="font-size:11px;color:var(--text-dim)">CI/CD・自動化</div>
+          </div>
+        </div>
+      </div>
+      <!-- Arrow -->
+      <div style="text-align:center;color:var(--accent);font-size:18px;margin:4px 0">&#8595; 読み書き &#8595;</div>
+      <!-- Layer 2: UI -->
+      <div style="border:2px solid var(--success);border-radius:10px;padding:16px;margin-bottom:12px;position:relative">
+        <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:1px">Layer 2: UI層</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:4px">
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">ダッシュボード</div>
+            <div style="font-size:11px;color:var(--text-dim)">KPI・タスク一覧</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">辻井タスクビュー</div>
+            <div style="font-size:11px;color:var(--text-dim)">個人タスク表示</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">このガイド</div>
+            <div style="font-size:11px;color:var(--text-dim)">チーム運用説明</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">GitHub Pages</div>
+            <div style="font-size:11px;color:var(--text-dim)">静的ホスティング</div>
+          </div>
+        </div>
+      </div>
+      <!-- Arrow -->
+      <div style="text-align:center;color:var(--success);font-size:18px;margin:4px 0">&#8595; 参照 &#8595;</div>
+      <!-- Layer 1: Data -->
+      <div style="border:2px solid var(--warning);border-radius:10px;padding:16px;position:relative">
+        <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--warning);text-transform:uppercase;letter-spacing:1px">Layer 1: Data層</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:4px">
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">STATUS.md</div>
+            <div style="font-size:11px;color:var(--text-dim)">現在の状態</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">CHANGES.md</div>
+            <div style="font-size:11px;color:var(--text-dim)">変更履歴</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">wbs-complete.md</div>
+            <div style="font-size:11px;color:var(--text-dim)">WBS全体</div>
+          </div>
+          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">decisions.md</div>
+            <div style="font-size:11px;color:var(--text-dim)">意思決定ログ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>各層の役割</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>層</th><th>役割</th><th>更新者</th><th>参照者</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--warning);font-weight:600">Data層</td><td>事業の真実（Single Source of Truth）</td><td>小竹(PM) + CC</td><td>全員</td></tr>
+            <tr><td style="color:var(--success);font-weight:600">UI層</td><td>データを人間が見やすい形で表示</td><td>CC（自動生成）</td><td>全員（ブラウザ）</td></tr>
+            <tr><td style="color:var(--accent);font-weight:600">Agent層</td><td>データの読み書き・タスク実行を自動化</td><td>小竹（設定）</td><td>全員（利用）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;margin-bottom:0">Data層が全ての源。UI層はData層を見やすく表示するだけ。Agent層がData層を自動更新する。この分離により、どの層に問題があっても他の層には影響しない。</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
 
   <!-- Section 1: Quick Start -->
   <section id="quickstart">
@@ -874,7 +977,134 @@
 
   <div class="divider"></div>
 
-  <!-- Section 6: FAQ -->
+  <!-- Section 6: Roadmap (G3) -->
+  <section id="roadmap">
+    <span class="section-label">Evolution</span>
+    <h2>CC環境 進化計画</h2>
+    <p>CC駆動環境は段階的に進化する。現在は v1。各バージョンで何ができるようになるかの計画。</p>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <!-- v1 -->
+      <div class="card" style="border-left:4px solid var(--success)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="tag tag-green">現在</span>
+          <h3 style="margin-bottom:0">v1.0 — 基盤構築（MS-A〜MS-B）</h3>
+        </div>
+        <p style="font-size:14px;margin-bottom:8px">手動運用だが、全ての仕組みが揃っている状態。</p>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:4px">
+          <li style="font-size:13px;color:var(--text)">&#10003; CLAUDE.md + CLAUDE.local.md（チーム設定）</li>
+          <li style="font-size:13px;color:var(--text)">&#10003; .context/ コンベンション（STATUS/CHANGES/SPECS）</li>
+          <li style="font-size:13px;color:var(--text)">&#10003; ダッシュボードHTML（KPI+財務+タスク）</li>
+          <li style="font-size:13px;color:var(--text)">&#10003; GitHub Pages デプロイ</li>
+          <li style="font-size:13px;color:var(--text)">&#10003; 運用ルール定義書</li>
+          <li style="font-size:13px;color:var(--text)">&#10003; WBS v1.0-draft</li>
+          <li style="font-size:13px;color:var(--text-muted)">&#9744; claude-code-action（@claude Issue対応）— MS-B</li>
+          <li style="font-size:13px;color:var(--text-muted)">&#9744; SessionEnd Hook — MS-B</li>
+        </ul>
+      </div>
+      <!-- v2 -->
+      <div class="card" style="border-left:4px solid var(--accent)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="tag">MS-C (4月末)</span>
+          <h3 style="margin-bottom:0">v2.0 — 自動化（4-5月）</h3>
+        </div>
+        <p style="font-size:14px;margin-bottom:8px">手動だった作業を自動化。データ更新→表示が自動で回る。</p>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:4px">
+          <li style="font-size:13px;color:var(--text)">&#9633; ダッシュボード自動更新（push→GitHub Actions→HTML再生成）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; 会議→WBS自動更新フロー（議事録→差分→PR）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; 月次レビュー自動起票（GitHub Actions）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; 予実自動照合（財務Excel→計画→差分レポート）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; MSレビューチェックリスト自動生成</li>
+        </ul>
+      </div>
+      <!-- v3 -->
+      <div class="card" style="border-left:4px solid var(--purple);opacity:0.85">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="tag" style="background:rgba(188,140,255,.15);color:var(--purple)">Year 2</span>
+          <h3 style="margin-bottom:0">v3.0 — インテリジェント（Year 2）</h3>
+        </div>
+        <p style="font-size:14px;margin-bottom:8px">AI が事業管理に能動的に関与する状態。</p>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:4px">
+          <li style="font-size:13px;color:var(--text)">&#9633; CRM連携（パイプライン自動追跡）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; AI広報パイプライン（自律コンテンツ生成）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; 予測ダッシュボード（CF予測・売上予測）</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; クライアントPJ統合管理</li>
+          <li style="font-size:13px;color:var(--text)">&#9633; A/Bテスト・効果測定自動化</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 7: Add Member (G4) -->
+  <section id="add-member">
+    <span class="section-label">Onboarding</span>
+    <h2>新メンバー追加手順</h2>
+    <p>新しいメンバーがチームに参加する際の手順。PM（小竹）が実施する。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>GitHubアクセス権付与</strong>
+          <p>GitHub リポジトリ Settings → Collaborators → <code>Add people</code> で新メンバーを招待。Write 権限を付与。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>リポジトリ clone + CC セットアップ</strong>
+          <p><code>git clone</code> → <code>npm install -g @anthropic-ai/claude-code</code> → <code>claude</code> 起動。詳細は <code>docs/onboarding-guide.md</code> 参照。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>CLAUDE.local.md 作成</strong>
+          <p>テンプレートを作成: 名前・役割・担当領域・参照ドキュメント・ブランチ戦略を記載。<code>CLAUDE.local.md.[名前]</code> としてリポジトリに配置（.gitignore 対象）。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>WBS にタスクを追加</strong>
+          <p><code>docs/wbs-complete.md</code> に新メンバーの担当タスクを追加。タスクID・担当・期限・完了基準・依存を記載。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>ダッシュボードに反映</strong>
+          <p><code>docs/dashboard.html</code> の <code>DASHBOARD_DATA.tasks</code> に新タスクを追加。フィルタの担当者リストにも名前を追加。<code>scripts/sync-pages.sh</code> で GitHub Pages に反映。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <strong>CLAUDE.md のチーム表を更新</strong>
+          <p><code>CLAUDE.md</code> のチーム表に新メンバーを追加（名前・役割・担当領域）。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>チェックリスト</h3>
+      <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:14px;color:var(--text)">&#9744; GitHub Collaborator 招待 → 承認済み</li>
+        <li style="font-size:14px;color:var(--text)">&#9744; CC インストール → <code>claude --version</code> 成功</li>
+        <li style="font-size:14px;color:var(--text)">&#9744; <code>CLAUDE.local.md.[名前]</code> 作成 → リポジトリに配置</li>
+        <li style="font-size:14px;color:var(--text)">&#9744; WBS にタスク追加 → コミット</li>
+        <li style="font-size:14px;color:var(--text)">&#9744; ダッシュボードに反映 → GitHub Pages 確認</li>
+        <li style="font-size:14px;color:var(--text)">&#9744; CLAUDE.md チーム表更新 → コミット</li>
+        <li style="font-size:14px;color:var(--text)">&#9744; 初回コミットテスト → PR 作成成功</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Section 8: FAQ -->
   <section id="faq">
     <span class="section-label">FAQ</span>
     <h2>よくある質問</h2>
@@ -945,7 +1175,7 @@
 <!-- Footer -->
 <footer>
   <p>このガイドは <code>docs/collaboration-spec.md</code> に基づいています。</p>
-  <p style="margin-top: 6px;">最終更新: 2026-03-09</p>
+  <p style="margin-top: 6px;">最終更新: 2026-03-10</p>
 </footer>
 
 <script>
