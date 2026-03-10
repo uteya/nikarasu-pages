@@ -5,52 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>にからす事業ダッシュボード</title>
 <style>
-:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;--cyan:#39d2c0}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:14px}
 .login{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px}
 .login input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:8px;font-size:16px;width:260px;text-align:center}
 .login button{background:var(--accent);color:#fff;border:none;padding:10px 32px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
 .login h1{color:var(--text);font-size:20px}
 .login .error{color:var(--red);font-size:13px;display:none}
-.container{max-width:1200px;margin:0 auto;padding:20px}
+.container{max-width:1400px;margin:0 auto;padding:20px}
 .hidden{display:none}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-header h1{font-size:22px;color:var(--text)}
-header .meta{color:var(--text-dim);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:24px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
-.card h2{font-size:15px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.card h3{font-size:13px;color:var(--text-dim);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+header h1{font-size:20px;color:var(--text)}
+header .meta{color:var(--text-dim);font-size:12px}
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.kpi-card .label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kpi-card .value{font-size:28px;font-weight:700;color:var(--text)}
+.kpi-card .value span{font-size:14px;color:var(--text-dim);font-weight:400}
+.kpi-card .bar{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
+.kpi-card .bar .fill{height:100%;border-radius:2px;transition:width .3s}
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:20px}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card h2{font-size:14px;color:var(--accent);margin-bottom:10px}
+.card h3{font-size:12px;color:var(--text-dim);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+/* MS */
 .ms-card{border-left:4px solid var(--border)}
 .ms-card.active{border-left-color:var(--yellow)}
 .ms-card.done{border-left-color:var(--green)}
-.ms-card.future{border-left-color:var(--border)}
-.ms-label{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-bottom:8px}
+.ms-label{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:600;margin-bottom:6px}
 .ms-label.active{background:rgba(210,153,34,.15);color:var(--yellow)}
 .ms-label.done{background:rgba(63,185,80,.15);color:var(--green)}
 .ms-label.future{background:rgba(139,148,158,.1);color:var(--text-dim)}
-.progress-bar{background:var(--border);border-radius:4px;height:6px;margin:8px 0}
-.progress-bar .fill{height:100%;border-radius:4px;transition:width .3s}
-.task-list{list-style:none}
-.task-list li{padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between;align-items:center}
-.task-list li:last-child{border-bottom:none}
-.task-list .owner{color:var(--purple);font-size:11px;white-space:nowrap}
-.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.progress-bar{background:var(--border);border-radius:3px;height:5px;margin:6px 0}
+.progress-bar .fill{height:100%;border-radius:3px}
+.criteria-list{list-style:none}
+.criteria-list li{padding:3px 0;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+/* Revenue */
+.rev-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px}
+.rev-row .bar{flex:1;margin:0 10px;height:8px;background:var(--border);border-radius:4px;position:relative;overflow:hidden}
+.rev-row .bar .fill{position:absolute;height:100%;border-radius:4px;background:var(--accent)}
+/* Badges */
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:600;white-space:nowrap}
+.badge.todo{background:rgba(248,81,73,.12);color:var(--red)}
+.badge.wip{background:rgba(210,153,34,.12);color:var(--yellow)}
+.badge.done{background:rgba(63,185,80,.12);color:var(--green)}
 .badge.urgent{background:rgba(248,81,73,.15);color:var(--red)}
 .badge.warn{background:rgba(210,153,34,.15);color:var(--yellow)}
-.badge.ok{background:rgba(63,185,80,.15);color:var(--green)}
-.deadline-list{list-style:none}
-.deadline-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between;align-items:center}
-.deadline-list li:last-child{border-bottom:none}
-.revenue-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px}
-.revenue-row .bar{flex:1;margin:0 12px;height:8px;background:var(--border);border-radius:4px;position:relative}
-.revenue-row .bar .fill{position:absolute;height:100%;border-radius:4px;background:var(--accent)}
+.badge.info{background:rgba(88,166,255,.12);color:var(--accent)}
+/* Filters */
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.filter-bar .label{font-size:12px;color:var(--text-dim);margin-right:4px}
+.filter-btn{background:var(--card);border:1px solid var(--border);color:var(--text-dim);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .15s}
+.filter-btn:hover{border-color:var(--accent);color:var(--text)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+/* Task Table */
+.task-group{margin-bottom:16px}
+.task-group-header{font-size:13px;font-weight:600;color:var(--text-dim);padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:2px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.task-group-header:hover{color:var(--text)}
+.task-group-header .count{font-size:11px;font-weight:400}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:8px 6px;border-bottom:2px solid var(--border);color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase}
-td{padding:8px 6px;border-bottom:1px solid var(--border)}
-.section-title{font-size:18px;color:var(--text);margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-@media(max-width:640px){.container{padding:12px}.grid{grid-template-columns:1fr}header h1{font-size:18px}}
+th{text-align:left;padding:6px;border-bottom:2px solid var(--border);color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase}
+td{padding:5px 6px;border-bottom:1px solid rgba(48,54,61,.5)}
+tr:hover td{background:rgba(88,166,255,.04)}
+.owner-tag{color:var(--purple);font-size:11px}
+.section-title{font-size:16px;color:var(--text);margin:24px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+/* Deadline */
+.dl-list{list-style:none}
+.dl-list li{padding:6px 0;border-bottom:1px solid rgba(48,54,61,.5);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.dl-list li:last-child{border-bottom:none}
+/* Risk */
+.risk-card{border-left:4px solid var(--red)}
+.risk-card.medium{border-left-color:var(--yellow)}
+/* Stats */
+.stat-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.stat-item{font-size:12px;color:var(--text-dim)}
+.stat-item strong{color:var(--text);font-size:16px;display:block}
+/* Footer */
+.footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:11px}
+/* Responsive */
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:1fr}}
+@media(max-width:640px){.container{padding:12px}.kpi-grid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}header h1{font-size:16px}.filter-bar{gap:4px}}
 </style>
 </head>
 <body>
@@ -64,223 +103,491 @@ td{padding:8px 6px;border-bottom:1px solid var(--border)}
 
 <div id="app" class="hidden">
 <div class="container">
-
 <header>
 <h1>にからす事業ダッシュボード</h1>
-<div class="meta">最終更新: 2026-03-10 | WBS v1.0 | FY2026 ¥1.25億目標</div>
+<div class="meta" id="headerMeta"></div>
 </header>
 
-<!-- Milestones -->
+<div class="kpi-grid" id="kpiGrid"></div>
+
+<h2 class="section-title">マイルストーン</h2>
+<div class="grid grid-3" id="msGrid"></div>
+
+<h2 class="section-title">Year 1 売上進捗</h2>
 <div class="grid">
-<div class="card ms-card active">
-<span class="ms-label active">進行中</span>
-<h2>MS-A: 戦略完成</h2>
-<div style="font-size:13px;color:var(--text-dim)">3/14（金）— CC駆動で自走可能な状態</div>
-<div class="progress-bar"><div class="fill" style="width:30%;background:var(--yellow)"></div></div>
-<div style="font-size:12px;color:var(--text-dim);margin-top:4px">A-1完了 / 全21タスク</div>
-<h3>達成基準</h3>
-<ul class="task-list">
-<li>D1-D8 v4.0完成 <span class="badge warn">作業中</span></li>
-<li>WBS完全版 v1.0 <span class="badge ok">完了</span></li>
-<li>CC駆動自走環境 <span class="badge warn">作業中</span></li>
-<li>営業・プロダクト準備 <span class="badge urgent">未着手</span></li>
-</ul>
+<div class="card" id="revenueCard"></div>
+<div class="card" id="revenueDetail"></div>
 </div>
 
-<div class="card ms-card future">
-<span class="ms-label future">予定</span>
-<h2>MS-B: 実行フェーズ</h2>
-<div style="font-size:13px;color:var(--text-dim)">3月末 — DM送付開始・Sharp報告・運用ルール</div>
-<div class="progress-bar"><div class="fill" style="width:0%;background:var(--border)"></div></div>
-<h3>キーアイテム</h3>
-<ul class="task-list">
-<li>税理士DM 20件送付</li>
-<li>Sharp事業化報告（3/20）</li>
-<li>ダッシュボード GitHub Pages公開</li>
-<li>辻井・ペりん業務委託契約</li>
-</ul>
-</div>
+<h2 class="section-title">
+<span>タスク一覧</span>
+<span id="taskCount" style="font-size:12px;font-weight:400;color:var(--text-dim)"></span>
+</h2>
+<div class="filter-bar" id="filterBar"></div>
+<div id="taskList"></div>
 
-<div class="card ms-card future">
-<span class="ms-label future">予定</span>
-<h2>MS-C: 仕組み一周</h2>
-<div style="font-size:13px;color:var(--text-dim)">4月末 — 初受注・月次管理サイクル確立</div>
-<div class="progress-bar"><div class="fill" style="width:0%;background:var(--border)"></div></div>
-<h3>キーアイテム</h3>
-<ul class="task-list">
-<li>初受注 or パイプライン3件+</li>
-<li>WazaAI HW統合MVP</li>
-<li>持続化補助金申請（4/30）</li>
-<li>HP刷新MVP版公開</li>
-</ul>
-</div>
-</div>
-
-<!-- Revenue + Deadlines -->
+<h2 class="section-title">期限・デッドライン</h2>
 <div class="grid">
-<div class="card">
-<h2>Year 1 売上構成</h2>
-<div class="revenue-row">
-<span>AI駆動開発</span>
-<div class="bar"><div class="fill" style="width:40%"></div></div>
-<span>¥2,800万 (40%)</span>
-</div>
-<div class="revenue-row">
-<span>中小DX</span>
-<div class="bar"><div class="fill" style="width:30%"></div></div>
-<span>¥2,100万 (30%)</span>
-</div>
-<div class="revenue-row">
-<span>Physical AI</span>
-<div class="bar"><div class="fill" style="width:20%"></div></div>
-<span>¥1,400万 (20%)</span>
-</div>
-<div class="revenue-row">
-<span>プロダクト</span>
-<div class="bar"><div class="fill" style="width:10%"></div></div>
-<span>¥700万 (10%)</span>
-</div>
-<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:13px">
-<strong>新規合計: ¥7,000万</strong> + 既存 ¥5,500万 = <strong>¥1.25億</strong>
-</div>
+<div class="card"><ul class="dl-list" id="deadlineList"></ul></div>
 </div>
 
-<div class="card">
-<h2>期限・デッドライン</h2>
-<ul class="deadline-list">
-<li><span>MS-A: 戦略完成</span><span class="badge urgent">3/14</span></li>
-<li><span>Sharp事業化報告</span><span class="badge urgent">3/20</span></li>
-<li><span>MS-B: 実行フェーズ</span><span class="badge warn">3/31</span></li>
-<li><span>H.C.R. 2026 出展申込</span><span class="badge warn">3/31</span></li>
-<li><span>Sharp報告書提出</span><span class="badge warn">3/31</span></li>
-<li><span>持続化補助金 第19回</span><span class="badge future">4/30</span></li>
-<li><span>ものづくり補助金 第23次</span><span class="badge future">5/8</span></li>
-<li><span>★6月末デッドライン</span><span class="badge urgent">6/30</span></li>
-<li><span>ものづくりワールド2026</span><span class="badge future">7/1-3</span></li>
-</ul>
-</div>
-</div>
-
-<!-- Person Views -->
-<h2 class="section-title">担当別タスク（今週 3/10-3/14）</h2>
-<div class="grid">
-<div class="card">
-<h2>小竹（PM/戦略）</h2>
-<table>
-<thead><tr><th>ID</th><th>タスク</th><th>期限</th><th>状態</th></tr></thead>
-<tbody>
-<tr><td>A-1</td><td>WBSトップダウン構築</td><td>3/10</td><td><span class="badge ok">完了</span></td></tr>
-<tr><td>A-2</td><td>辻井MTG: WBS確認+CCオンボ</td><td>3/10</td><td><span class="badge warn">本日</span></td></tr>
-<tr><td>A-3</td><td>MTG結果 decisions.md記録</td><td>3/10</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-4</td><td>D1事業定義書 v4.0</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-5</td><td>D3市場分析 v4.0</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-6</td><td>CC環境データ層構築</td><td>3/11</td><td><span class="badge warn">作業中</span></td></tr>
-<tr><td>A-7</td><td>戦略定例 第1回（火）</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-8</td><td>D4サービス設計書 v3.0</td><td>3/12</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-9</td><td>D5 GTM戦略 v4.0</td><td>3/12</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-10</td><td>Sharp提案骨格+連絡</td><td>3/12</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-11</td><td>D6財務計画 v4.0</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-12</td><td>D7ロードマップ v4.0</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-13</td><td>プロダクトアイデア方向確定</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-14</td><td>発信設計ベース</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-15</td><td>戦略定例 第2回（木）</td><td>3/13</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-16</td><td>D2/D8整合確認</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-17</td><td>D1-D8整合確認</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-18</td><td>成果物カタログ v1.0</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-19</td><td>WBS完全版 v1.0最終化</td><td>3/14</td><td><span class="badge warn">作業中</span></td></tr>
-<tr><td>A-20</td><td>TASKS.mdチーム版更新</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-21</td><td>MS-Aレビュー</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
-</tbody>
-</table>
-</div>
-
-<div class="card">
-<h2>辻井（CSO/営業）</h2>
-<table>
-<thead><tr><th>ID</th><th>タスク</th><th>期限</th><th>状態</th></tr></thead>
-<tbody>
-<tr><td>A-T1</td><td>GitHubアカウント+リポジトリアクセス</td><td>3/10</td><td><span class="badge warn">本日</span></td></tr>
-<tr><td>A-T2</td><td>Claude Code Max セットアップ</td><td>3/11</td><td><span class="badge urgent">未着手</span></td></tr>
-<tr><td>A-T3</td><td>税理士パッケージ商品設計着手</td><td>3/14</td><td><span class="badge urgent">未着手</span></td></tr>
-</tbody>
-</table>
-<h3 style="margin-top:20px">Week 2-4 タスク</h3>
-<table>
-<thead><tr><th>ID</th><th>タスク</th><th>期限</th></tr></thead>
-<tbody>
-<tr><td>B-T1</td><td>商品設計 v1.0</td><td>3/18</td></tr>
-<tr><td>B-T2</td><td>税理士向け提案書テンプレ</td><td>3/21</td></tr>
-<tr><td>B-T3</td><td>DMリスト着手（50件+）</td><td>3/21</td></tr>
-<tr><td>B-T4</td><td>財務Excel雛形</td><td>3/21</td></tr>
-<tr><td>B-T5</td><td>パイプライン管理シート</td><td>3/21</td></tr>
-<tr><td>B-T6</td><td>DMリスト完成（100件）</td><td>3/28</td></tr>
-<tr><td>B-T7</td><td>DM文面作成</td><td>3/28</td></tr>
-<tr><td>B-T8</td><td>財務Excel完成→小竹ハンドオフ</td><td>3/28</td></tr>
-<tr><td>B-T9</td><td>ROI試算シート</td><td>3/28</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<!-- 3-Year Overview -->
-<h2 class="section-title">3年ロードマップ</h2>
-<div class="card">
-<table>
-<thead><tr><th>年度</th><th>売上</th><th>成長率</th><th>主要テーマ</th></tr></thead>
-<tbody>
-<tr><td><strong>Year 1</strong> (FY2026)</td><td>¥1.25億</td><td>—</td><td>土台構築 → 営業開始 → PoC → 受注</td></tr>
-<tr><td><strong>Year 2</strong> (FY2027)</td><td>¥2.5億</td><td>2x</td><td>スケール（エンジニア採用、CRM導入、5ライン目標）</td></tr>
-<tr><td><strong>Year 3</strong> (FY2028)</td><td>¥5億</td><td>2x</td><td>HW量産判断、プロダクト売上30%超、資金調達検討</td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- Meeting Schedule -->
-<h2 class="section-title">会議体</h2>
-<div class="card">
-<table>
-<thead><tr><th>会議</th><th>頻度</th><th>参加者</th><th>時間</th><th>内容</th></tr></thead>
-<tbody>
-<tr><td><strong>戦略定例</strong></td><td>週2回（火・木）</td><td>全員</td><td>30分</td><td>進捗・ブロッカー・DM反応・発信KPI</td></tr>
-<tr><td>月次レビュー</td><td>毎月末</td><td>全員</td><td>30分</td><td>予実+KPI+WBS更新+翌月計画</td></tr>
-<tr><td>MSレビュー</td><td>MS日</td><td>全員</td><td>60分</td><td>達成基準の✅/❌判定</td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- Critical Risks -->
 <h2 class="section-title">要注意リスク</h2>
-<div class="grid">
-<div class="card" style="border-left:4px solid var(--red)">
-<h2 style="color:var(--red)">G6: 6月資金繰り</h2>
-<div style="font-size:13px">5月末残高¥215万。6月末までに新規案件必須（D29）。DM以外の受注経路も確保が必要。</div>
-<div style="font-size:12px;color:var(--text-dim);margin-top:8px">対応: B-22 バックアップ策検討 + B-12 既存クライアント継続確認</div>
-</div>
-<div class="card" style="border-left:4px solid var(--yellow)">
-<h2 style="color:var(--yellow)">G2: ペりん合流日未定</h2>
-<div style="font-size:13px">CTOとして技術設計・税理士パッケージ横展開を担当予定。合流時期は次回戦略定例で確認。</div>
-</div>
-</div>
+<div class="grid" id="riskGrid"></div>
 
-<div style="text-align:center;padding:40px 0;color:var(--text-dim);font-size:12px">
-にからす事業ダッシュボード v1.0 | WBS v1.0ベース | CC駆動
-</div>
-
+<div class="footer" id="footerText"></div>
 </div>
 </div>
 
 <script>
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  DASHBOARD DATA — 更新はここの値を編集するだけ               ║
+// ║  詳細: docs/dashboard-update-guide.md 参照                   ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const DASHBOARD_DATA = {
+  meta: {
+    lastUpdated: "2026-03-10",
+    wbsVersion: "v1.0-draft",
+    fyYear: "FY2026",
+    revenueTarget: 12500
+  },
+
+  kpi: [
+    { id:"pipeline", label:"パイプライン", current:0, target:3, unit:"件" },
+    { id:"dm", label:"DM送付", current:0, target:20, unit:"件" },
+    { id:"revenue", label:"新規売上", current:0, target:7000, unit:"万円" },
+    { id:"blog", label:"ブログ投稿", current:0, target:3, unit:"本" }
+  ],
+
+  revenue: {
+    existing: 5500,
+    total: 12500,
+    categories: [
+      { name:"AI駆動開発", target:2800, current:0 },
+      { name:"中小DX", target:2100, current:0 },
+      { name:"Physical AI", target:1400, current:0 },
+      { name:"プロダクト", target:700, current:0 }
+    ]
+  },
+
+  milestones: [
+    { id:"MS-A", name:"戦略完成", date:"3/14", status:"active", progress:30,
+      criteria:[
+        {text:"D1-D8 v4.0完成",status:"wip"},{text:"WBS完全版 v1.0",status:"done"},
+        {text:"CC駆動自走環境",status:"wip"},{text:"営業・プロダクト準備",status:"todo"}
+      ]},
+    { id:"MS-B", name:"実行フェーズ", date:"3月末", status:"future", progress:0,
+      criteria:[
+        {text:"WBSに基づく実行が進行中",status:"todo"},{text:"営業・事業の実行結果",status:"todo"},
+        {text:"運用ルール+CC更新",status:"todo"}
+      ]},
+    { id:"MS-C", name:"仕組み一周", date:"4月末", status:"future", progress:0,
+      criteria:[
+        {text:"初受注+パイプライン",status:"todo"},{text:"マーケ・発信",status:"todo"},
+        {text:"プロダクト",status:"todo"},{text:"月次管理サイクル",status:"todo"}
+      ]},
+    { id:"MS-D", name:"展示会・PoC", date:"10月末", status:"future", progress:0,
+      criteria:[
+        {text:"ものづくりワールド出展",status:"todo"},{text:"CEATEC出展",status:"todo"},
+        {text:"WazaAI PoC 2件",status:"todo"},{text:"PoC協力先確保",status:"todo"}
+      ]},
+    { id:"MS-E", name:"Year 1完了", date:"12月末", status:"future", progress:0,
+      criteria:[
+        {text:"売上¥1.25億判定",status:"todo"},{text:"Year 2計画策定",status:"todo"},
+        {text:"チーム体制レビュー",status:"todo"},{text:"D1-D7 v5.0方針確定",status:"todo"}
+      ]}
+  ],
+
+  tasks: [
+    // ── 3月 Week 1 (3/10-14) MS-A ──
+    {id:"A-1",task:"WBSトップダウン構築",owner:"小竹",deadline:"3/10",status:"done",phase:"3月W1"},
+    {id:"A-2",task:"辻井MTG: WBS確認+CCオンボ",owner:"小竹",deadline:"3/10",status:"done",phase:"3月W1"},
+    {id:"A-3",task:"MTG結果をdecisions.mdに記録",owner:"小竹",deadline:"3/10",status:"todo",phase:"3月W1"},
+    {id:"A-4",task:"D1事業定義書 v4.0",owner:"小竹",deadline:"3/11",status:"todo",phase:"3月W1"},
+    {id:"A-5",task:"D3市場分析 v4.0",owner:"小竹",deadline:"3/11",status:"todo",phase:"3月W1"},
+    {id:"A-6",task:"CC環境データ層構築",owner:"小竹",deadline:"3/11",status:"wip",phase:"3月W1"},
+    {id:"A-7",task:"戦略定例 第1回（火）",owner:"全員",deadline:"3/11",status:"todo",phase:"3月W1"},
+    {id:"A-8",task:"D4サービス設計書 v3.0",owner:"小竹",deadline:"3/12",status:"todo",phase:"3月W1"},
+    {id:"A-9",task:"D5 GTM戦略 v4.0",owner:"小竹",deadline:"3/12",status:"todo",phase:"3月W1"},
+    {id:"A-10",task:"Sharp提案骨格+連絡",owner:"小竹",deadline:"3/12",status:"todo",phase:"3月W1"},
+    {id:"A-11",task:"D6財務計画 v4.0",owner:"小竹",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-12",task:"D7ロードマップ v4.0",owner:"小竹",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-13",task:"プロダクトアイデア方向確定",owner:"小竹",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-14",task:"発信設計ベース",owner:"小竹",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-15",task:"戦略定例 第2回（木）",owner:"全員",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-16",task:"D2/D8整合確認",owner:"小竹",deadline:"3/14",status:"todo",phase:"3月W1"},
+    {id:"A-17",task:"D1-D8整合確認",owner:"小竹",deadline:"3/14",status:"todo",phase:"3月W1"},
+    {id:"A-18",task:"成果物カタログ v1.0",owner:"小竹",deadline:"3/14",status:"todo",phase:"3月W1"},
+    {id:"A-19",task:"WBS完全版 v1.0最終化",owner:"小竹",deadline:"3/14",status:"wip",phase:"3月W1"},
+    {id:"A-20",task:"TASKS.mdチーム版更新",owner:"小竹",deadline:"3/14",status:"todo",phase:"3月W1"},
+    {id:"A-21",task:"MS-Aレビュー",owner:"全員",deadline:"3/14",status:"todo",phase:"3月W1"},
+    {id:"A-T1",task:"GitHubアカウント+リポアクセス",owner:"辻井",deadline:"3/10",status:"todo",phase:"3月W1"},
+    {id:"A-T2",task:"財務Excel雛形→小竹パス",owner:"辻井",deadline:"3/11",status:"todo",phase:"3月W1"},
+    {id:"A-T3",task:"Claude Code Maxセットアップ",owner:"辻井",deadline:"3/11",status:"todo",phase:"3月W1"},
+    {id:"A-T4",task:"税理士パッケージ商品設計 v1.0",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-T5",task:"提案書テンプレート",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-T6",task:"DM文面（初回+フォロー）",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-T7",task:"DMリスト100件",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-T8",task:"ROI試算シート",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-T9",task:"パイプライン管理シート",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    // ── 3月 Week 2 (3/15-21) ──
+    {id:"B-1",task:"CC環境エージェント層構築",owner:"小竹",deadline:"3/17",status:"todo",phase:"3月W2"},
+    {id:"B-2",task:"ダッシュボードHTML v1.0",owner:"小竹",deadline:"3/19",status:"wip",phase:"3月W2"},
+    {id:"B-3",task:"GitHub Pages公開",owner:"小竹",deadline:"3/19",status:"done",phase:"3月W2"},
+    {id:"B-4",task:"HP刷新着手（Next.js+Vercel）",owner:"小竹",deadline:"3/21",status:"todo",phase:"3月W2"},
+    {id:"B-5",task:"WazaAI MVP仕様書作成",owner:"小竹",deadline:"3/21",status:"todo",phase:"3月W2"},
+    {id:"B-6",task:"戦略定例×2（火・木）",owner:"全員",deadline:"—",status:"todo",phase:"3月W2"},
+    {id:"B-T1",task:"D1-D8 v4.0 レビュー",owner:"辻井",deadline:"3/19",status:"todo",phase:"3月W2"},
+    {id:"B-T2",task:"小竹FBを反映（営業ツールv1.1）",owner:"辻井",deadline:"3/19",status:"todo",phase:"3月W2"},
+    {id:"B-T3",task:"財務Excel完成版→小竹ハンドオフ",owner:"辻井",deadline:"3/19",status:"todo",phase:"3月W2"},
+    // ── 3月 Week 3 (3/20-28) ──
+    {id:"B-7",task:"運用ルール定義書 v1.0",owner:"小竹",deadline:"3/25",status:"done",phase:"3月W3"},
+    {id:"B-8",task:"CC運用ガイドHTML",owner:"小竹",deadline:"3/26",status:"todo",phase:"3月W3"},
+    {id:"B-9",task:"Sharp事業化報告実施",owner:"小竹",deadline:"3/20",status:"todo",phase:"3月W3"},
+    {id:"B-10",task:"Sharp提案パッケージ作成",owner:"小竹",deadline:"3/25",status:"todo",phase:"3月W3"},
+    {id:"B-11",task:"技術ブログ第1弾執筆",owner:"小竹",deadline:"3/28",status:"todo",phase:"3月W3"},
+    {id:"B-12",task:"既存クライアント継続確認",owner:"小竹",deadline:"3/28",status:"todo",phase:"3月W3"},
+    {id:"B-13",task:"辻井・ペりん業務委託契約",owner:"小竹",deadline:"3/28",status:"todo",phase:"3月W3"},
+    {id:"B-14",task:"戦略定例×2（火・木）",owner:"全員",deadline:"—",status:"todo",phase:"3月W3"},
+    {id:"B-T10",task:"★DM送付ルーティン開始",owner:"辻井",deadline:"3/20~",status:"todo",phase:"3月W3"},
+    {id:"B-T11",task:"営業会議（週次）",owner:"辻井",deadline:"3/20~",status:"todo",phase:"3月W3"},
+    {id:"B-T12",task:"会社紹介1枚もの",owner:"辻井",deadline:"並行",status:"todo",phase:"3月W3"},
+    {id:"B-T13",task:"Physical AIコンサル紹介資料",owner:"辻井",deadline:"並行",status:"todo",phase:"3月W3"},
+    {id:"B-T14",task:"AI駆動開発事例資料",owner:"辻井",deadline:"並行",status:"todo",phase:"3月W3"},
+    // ── 3月 Week 4 (3/29-31) MS-B ──
+    {id:"B-15",task:"Sharp報告書提出",owner:"小竹",deadline:"3/31",status:"todo",phase:"3月W4"},
+    {id:"B-16",task:"H.C.R.2026出展判断",owner:"小竹",deadline:"3/31",status:"todo",phase:"3月W4"},
+    {id:"B-17",task:"小竹がExcelに数字記入",owner:"小竹",deadline:"3/25",status:"todo",phase:"3月W4"},
+    {id:"B-18",task:"DM成果確認",owner:"辻井+小竹",deadline:"3/31",status:"todo",phase:"3月W4"},
+    {id:"B-19",task:"CC環境アップデート計画書",owner:"小竹",deadline:"3/31",status:"todo",phase:"3月W4"},
+    {id:"B-20",task:"技術ブログ第1弾公開",owner:"小竹",deadline:"3/31",status:"todo",phase:"3月W4"},
+    {id:"B-21",task:"6月資金繰りバックアップ策",owner:"小竹+辻井",deadline:"3/31",status:"todo",phase:"3月W4"},
+    {id:"B-22",task:"MS-Bレビュー",owner:"全員",deadline:"3/31",status:"todo",phase:"3月W4"},
+    // ── 4月 ──
+    {id:"C-1",task:"ペりんCCオンボーディング",owner:"小竹+ペりん",deadline:"4/4",status:"todo",phase:"4月"},
+    {id:"C-2",task:"4月目標設定",owner:"小竹+辻井",deadline:"4/4",status:"todo",phase:"4月"},
+    {id:"C-3",task:"CC環境v2実装",owner:"小竹",deadline:"4/11",status:"todo",phase:"4月"},
+    {id:"C-4",task:"HP刷新開発（Next.js）",owner:"小竹",deadline:"4/11",status:"todo",phase:"4月"},
+    {id:"C-5",task:"税理士パッケージ v2.0",owner:"辻井+ペりん",deadline:"4/11",status:"todo",phase:"4月"},
+    {id:"C-6",task:"WazaAIプロト構築開始",owner:"小竹",deadline:"4/11",status:"todo",phase:"4月"},
+    {id:"C-7",task:"DM累計送付（継続）",owner:"辻井",deadline:"4/11",status:"todo",phase:"4月"},
+    {id:"C-8",task:"Sharp包括事業提案",owner:"小竹",deadline:"4/11",status:"todo",phase:"4月"},
+    {id:"C-9",task:"営業資料一式（WazaAI紹介等）",owner:"辻井",deadline:"4/18",status:"todo",phase:"4月"},
+    {id:"C-10",task:"ものづくり補助金申請書ドラフト",owner:"小竹",deadline:"4/18",status:"todo",phase:"4月"},
+    {id:"C-11",task:"HP刷新続き（MVV・事例・問合せ）",owner:"小竹",deadline:"4/21",status:"todo",phase:"4月"},
+    {id:"C-12",task:"DM累計送付（継続）",owner:"辻井",deadline:"4/21",status:"todo",phase:"4月"},
+    {id:"C-13",task:"マーケ発信1サイクル目",owner:"小竹",deadline:"4/21",status:"todo",phase:"4月"},
+    {id:"C-14",task:"発信KPI管理の仕組み構築",owner:"小竹",deadline:"4/21",status:"todo",phase:"4月"},
+    {id:"C-15",task:"税理士業務×CC適合マッピング",owner:"辻井",deadline:"4/21",status:"todo",phase:"4月"},
+    {id:"C-16",task:"AI駆動開発事例資料",owner:"辻井",deadline:"4/21",status:"todo",phase:"4月"},
+    {id:"C-25",task:"初受注獲得活動",owner:"辻井+小竹",deadline:"4/30",status:"todo",phase:"4月"},
+    {id:"C-17",task:"持続化補助金申請提出",owner:"小竹",deadline:"4/30",status:"todo",phase:"4月"},
+    {id:"C-18",task:"HP刷新MVP版公開",owner:"小竹",deadline:"4/28",status:"todo",phase:"4月"},
+    {id:"C-19",task:"WazaAI HW統合MVP完成",owner:"小竹+ペりん",deadline:"4/28",status:"todo",phase:"4月"},
+    {id:"C-20",task:"3月分P/L記録完了",owner:"辻井",deadline:"4/25",status:"todo",phase:"4月"},
+    {id:"C-21",task:"DM結果分析+戦略修正判断",owner:"辻井+小竹",deadline:"4/28",status:"todo",phase:"4月"},
+    {id:"C-22",task:"3段ロケット詳細設計",owner:"辻井",deadline:"4/28",status:"todo",phase:"4月"},
+    {id:"C-23",task:"月次レビュー+WBS精緻化",owner:"全員",deadline:"4/30",status:"todo",phase:"4月"},
+    {id:"C-24",task:"MS-Cレビュー",owner:"全員",deadline:"4/30",status:"todo",phase:"4月"},
+    // ── 5月 ──
+    {id:"D-1",task:"ものづくり補助金申請提出",owner:"小竹",deadline:"5/8",status:"todo",phase:"5月"},
+    {id:"D-2",task:"WazaAIプロト完成",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-3",task:"WazaAIデモ動画（30秒）",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-4",task:"ものづくりワールド出展申込",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-5",task:"KataribeAIプロト開発開始",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-6",task:"AI広報キャラクター初期設計",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-7",task:"SNS発信体制構築",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-8",task:"CF予測モデル作成",owner:"小竹",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-9",task:"中小DXパッケージ設計完了",owner:"辻井+ペりん",deadline:"5月末",status:"todo",phase:"5月"},
+    {id:"D-10",task:"月次レビュー+WBS精緻化",owner:"全員",deadline:"5月末",status:"todo",phase:"5月"},
+    // ── 6-8月 ──
+    {id:"E-1",task:"杉江商会CC提案",owner:"小竹+辻井",deadline:"6月末",status:"todo",phase:"6-8月"},
+    {id:"E-2",task:"ものづくりワールド展示準備",owner:"小竹",deadline:"6月末",status:"todo",phase:"6-8月"},
+    {id:"E-3",task:"CEATEC申込",owner:"小竹",deadline:"6/30",status:"todo",phase:"6-8月"},
+    {id:"E-4",task:"★6月末デッドライン対応",owner:"全員",deadline:"6月末",status:"todo",phase:"6-8月"},
+    {id:"E-5",task:"WazaAI PoC 1社目",owner:"小竹",deadline:"7月末",status:"todo",phase:"6-8月"},
+    {id:"E-6",task:"ものづくりワールド出展",owner:"小竹+辻井",deadline:"7/3",status:"todo",phase:"6-8月"},
+    {id:"E-7",task:"WazaAI PoC 2社目",owner:"小竹",deadline:"8月末",status:"todo",phase:"6-8月"},
+    {id:"E-8",task:"WazaAIプロダクト改善",owner:"小竹",deadline:"8月末",status:"todo",phase:"6-8月"},
+    {id:"E-9",task:"AI駆動開発ショーケース公開",owner:"小竹",deadline:"7月末",status:"todo",phase:"6-8月"},
+    {id:"E-10",task:"技術ブログ累計5本+",owner:"小竹",deadline:"8月末",status:"todo",phase:"6-8月"},
+    {id:"E-11",task:"パイプライン管理10件+",owner:"辻井",deadline:"6月末",status:"todo",phase:"6-8月"},
+    {id:"E-12",task:"補助金採択後フォロー営業",owner:"辻井",deadline:"8月末",status:"todo",phase:"6-8月"},
+    {id:"E-13",task:"★6ヶ月撤退判断",owner:"全員",deadline:"8月末",status:"todo",phase:"6-8月"},
+    {id:"E-14",task:"月次レビュー×3+WBS精緻化",owner:"全員",deadline:"各月末",status:"todo",phase:"6-8月"},
+    {id:"E-15",task:"PoC協力先確保",owner:"小竹",deadline:"8月末",status:"todo",phase:"6-8月"},
+    // ── 9-10月 ──
+    {id:"F-1",task:"WazaAI月額SaaS提案",owner:"小竹",deadline:"9月末",status:"todo",phase:"9-10月"},
+    {id:"F-2",task:"WazaAI技能記録 初案件",owner:"小竹",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-3",task:"CEATEC展示デモ最終準備",owner:"小竹",deadline:"10月初旬",status:"todo",phase:"9-10月"},
+    {id:"F-4",task:"CEATEC展示用動画（3分）",owner:"小竹",deadline:"10月初旬",status:"todo",phase:"9-10月"},
+    {id:"F-5",task:"CEATEC出展",owner:"小竹+辻井",deadline:"10/16",status:"todo",phase:"9-10月"},
+    {id:"F-6",task:"KataribeAI βテスト開始",owner:"小竹",deadline:"10月",status:"todo",phase:"9-10月"},
+    {id:"F-7",task:"Physical AIコンサル提案書",owner:"小竹+辻井",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-8",task:"Physical AI紹介資料(更新版)",owner:"辻井",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-9",task:"Sharp報告書フォロー",owner:"辻井",deadline:"9月末",status:"todo",phase:"9-10月"},
+    {id:"F-10",task:"論文テーマ選定",owner:"小竹",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-11",task:"上期実績棚卸し+下期計画修正",owner:"全員",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-12",task:"採用チャネル調査+JD作成",owner:"小竹",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-13",task:"MS-Dレビュー",owner:"全員",deadline:"10月末",status:"todo",phase:"9-10月"},
+    {id:"F-14",task:"月次レビュー×2+WBS精緻化",owner:"全員",deadline:"各月末",status:"todo",phase:"9-10月"},
+    // ── 11-2月 ──
+    {id:"G-1",task:"CEATECリード商談化",owner:"辻井",deadline:"12月末",status:"todo",phase:"11-2月"},
+    {id:"G-2",task:"年度末予算消化提案",owner:"辻井",deadline:"12月末",status:"todo",phase:"11-2月"},
+    {id:"G-3",task:"WazaAI技能記録PJ完了",owner:"小竹",deadline:"12月末",status:"todo",phase:"11-2月"},
+    {id:"G-4",task:"KataribeAI βテスト結果",owner:"小竹",deadline:"1月末",status:"todo",phase:"11-2月"},
+    {id:"G-5",task:"AI広報パイプラインv1.0",owner:"小竹",deadline:"1月末",status:"todo",phase:"11-2月"},
+    {id:"G-6",task:"論文ドラフト執筆",owner:"小竹",deadline:"2月末",status:"todo",phase:"11-2月"},
+    {id:"G-7",task:"エンジニア採用活動開始",owner:"小竹+辻井",deadline:"1月末",status:"todo",phase:"11-2月"},
+    {id:"G-8",task:"Year 1売上達成判定",owner:"辻井+小竹",deadline:"12月末",status:"todo",phase:"11-2月"},
+    {id:"G-9",task:"事業カテゴリ分析+12ヶ月判断",owner:"辻井+小竹",deadline:"2月末",status:"todo",phase:"11-2月"},
+    {id:"G-10",task:"Year 2計画策定+WBS精緻化",owner:"小竹+辻井",deadline:"2月末",status:"todo",phase:"11-2月"},
+    {id:"G-11",task:"チーム体制レビュー+採用計画",owner:"小竹",deadline:"2月末",status:"todo",phase:"11-2月"},
+    {id:"G-12",task:"MS-Eレビュー",owner:"全員",deadline:"12月末",status:"todo",phase:"11-2月"},
+    {id:"G-13",task:"D1-D7 v5.0更新方針確定",owner:"小竹",deadline:"12月末",status:"todo",phase:"11-2月"},
+    {id:"G-14",task:"月次レビュー×4+WBS精緻化",owner:"全員",deadline:"各月末",status:"todo",phase:"11-2月"}
+  ],
+
+  deadlines: [
+    {label:"全営業ツール完成",date:"3/13",urgency:"urgent"},
+    {label:"MS-A: 戦略完成",date:"3/14",urgency:"urgent"},
+    {label:"DM送付開始",date:"3/20",urgency:"urgent"},
+    {label:"Sharp事業化報告",date:"3/20",urgency:"urgent"},
+    {label:"MS-B: 実行フェーズ",date:"3/31",urgency:"warn"},
+    {label:"H.C.R. 2026出展申込",date:"3/31",urgency:"warn"},
+    {label:"Sharp報告書提出",date:"3/31",urgency:"warn"},
+    {label:"持続化補助金 第19回",date:"4/30",urgency:"info"},
+    {label:"MS-C: 仕組み一周",date:"4/30",urgency:"info"},
+    {label:"ものづくり補助金 第23次",date:"5/8",urgency:"info"},
+    {label:"★6月末デッドライン（新規案件必須）",date:"6/30",urgency:"urgent"},
+    {label:"ものづくりワールド2026",date:"7/1-3",urgency:"info"},
+    {label:"CEATEC 2026",date:"10/13-16",urgency:"info"},
+    {label:"MS-E: Year 1完了判定",date:"12月末",urgency:"info"}
+  ],
+
+  risks: [
+    {id:"G6",title:"6月資金繰り",severity:"high",detail:"5月末残高¥215万。6月末までに新規案件必須（D29）。対応: B-21バックアップ策+B-12既存確認"},
+    {id:"G2",title:"ペりん合流日未定",severity:"medium",detail:"CTO技術設計・税理士パッケージ横展開を担当予定。次回戦略定例で確認"}
+  ]
+};
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  以下はレンダリングロジック（通常編集不要）                    ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const D = DASHBOARD_DATA;
+let filters = { owner:'全員', status:'all' };
+
 function checkPw(){
-  const pw=document.getElementById('pw').value;
-  if(pw==='nikarasu'){
+  if(document.getElementById('pw').value==='nikarasu'){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     try{sessionStorage.setItem('nk_auth','1')}catch(e){}
-  }else{
+    render();
+  } else {
     document.getElementById('loginError').style.display='block';
   }
 }
-try{if(sessionStorage.getItem('nk_auth')==='1'){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden')}}catch(e){}
+
+function render(){
+  renderHeader();
+  renderKPI();
+  renderMS();
+  renderRevenue();
+  renderFilters();
+  renderTasks();
+  renderDeadlines();
+  renderRisks();
+  renderFooter();
+}
+
+function renderHeader(){
+  document.getElementById('headerMeta').textContent =
+    `最終更新: ${D.meta.lastUpdated} | WBS ${D.meta.wbsVersion} | ${D.meta.fyYear} ¥${(D.meta.revenueTarget/10000).toFixed(2)}億目標`;
+}
+
+function renderKPI(){
+  const el = document.getElementById('kpiGrid');
+  el.innerHTML = D.kpi.map(k => {
+    const pct = k.target > 0 ? Math.min(100, Math.round(k.current/k.target*100)) : 0;
+    const color = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--yellow)' : 'var(--accent)';
+    return `<div class="kpi-card">
+      <div class="label">${k.label}</div>
+      <div class="value">${k.current}<span> / ${k.target}${k.unit}</span></div>
+      <div class="bar"><div class="fill" style="width:${pct}%;background:${color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderMS(){
+  const el = document.getElementById('msGrid');
+  // Show first 3 milestones prominently, rest collapsed
+  const visible = D.milestones.slice(0,3);
+  const rest = D.milestones.slice(3);
+  let html = visible.map(ms => msCard(ms)).join('');
+  if(rest.length){
+    html += `<div class="card" style="grid-column:1/-1">
+      <div class="task-group-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        後半マイルストーン（${rest.map(m=>m.id).join(', ')}）
+        <span class="count">クリックで展開</span>
+      </div>
+      <div class="hidden" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;padding-top:12px">
+        ${rest.map(ms => `<div class="ms-card ${ms.status}" style="border:1px solid var(--border);border-radius:8px;padding:12px;border-left:4px solid ${ms.status==='active'?'var(--yellow)':ms.status==='done'?'var(--green)':'var(--border)'}">
+          ${msInner(ms)}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+function msCard(ms){
+  return `<div class="card ms-card ${ms.status}">
+    ${msInner(ms)}
+  </div>`;
+}
+
+function msInner(ms){
+  const sLabel = ms.status==='done'?'完了':ms.status==='active'?'進行中':'予定';
+  const color = ms.status==='done'?'var(--green)':ms.status==='active'?'var(--yellow)':'var(--border)';
+  return `<span class="ms-label ${ms.status}">${sLabel}</span>
+    <h2 style="font-size:14px;color:var(--accent);margin:4px 0">${ms.id}: ${ms.name}</h2>
+    <div style="font-size:12px;color:var(--text-dim)">${ms.date}</div>
+    <div class="progress-bar"><div class="fill" style="width:${ms.progress}%;background:${color}"></div></div>
+    <div style="font-size:11px;color:var(--text-dim);margin-top:2px">${ms.progress}%</div>
+    <ul class="criteria-list">${ms.criteria.map(c =>
+      `<li><span>${c.text}</span><span class="badge ${c.status}">${{done:'完了',wip:'作業中',todo:'未着手'}[c.status]}</span></li>`
+    ).join('')}</ul>`;
+}
+
+function renderRevenue(){
+  const cats = D.revenue.categories;
+  const totalCurrent = cats.reduce((s,c)=>s+c.current,0);
+  const totalTarget = cats.reduce((s,c)=>s+c.target,0);
+  const existPct = Math.round(D.revenue.existing/D.revenue.total*100);
+  const newPct = Math.round(totalCurrent/totalTarget*100);
+
+  document.getElementById('revenueCard').innerHTML = `
+    <h2>売上サマリ</h2>
+    <div class="stat-row">
+      <div class="stat-item"><strong>¥${totalCurrent.toLocaleString()}万</strong>新規実績</div>
+      <div class="stat-item"><strong>¥${totalTarget.toLocaleString()}万</strong>新規目標</div>
+      <div class="stat-item"><strong>¥${D.revenue.existing.toLocaleString()}万</strong>既存</div>
+      <div class="stat-item"><strong>¥${D.revenue.total.toLocaleString()}万</strong>合計目標</div>
+    </div>
+    <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">新規進捗: ${newPct}%</div>
+    <div class="progress-bar" style="height:8px"><div class="fill" style="width:${newPct}%;background:var(--accent)"></div></div>
+  `;
+
+  document.getElementById('revenueDetail').innerHTML = `
+    <h2>カテゴリ別</h2>
+    ${cats.map(c => {
+      const pct = c.target>0 ? Math.round(c.current/c.target*100) : 0;
+      return `<div class="rev-row">
+        <span style="min-width:100px">${c.name}</span>
+        <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+        <span style="min-width:140px;text-align:right">¥${c.current.toLocaleString()} / ¥${c.target.toLocaleString()}万</span>
+      </div>`;
+    }).join('')}
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim)">
+      比率 4:3:2:1 | 既存 ¥${D.revenue.existing.toLocaleString()}万 + 新規 ¥${totalTarget.toLocaleString()}万 = ¥${D.revenue.total.toLocaleString()}万
+    </div>
+  `;
+}
+
+function renderFilters(){
+  const owners = ['全員','小竹','辻井','ペりん'];
+  const statuses = [{v:'all',l:'全て'},{v:'todo',l:'未着手'},{v:'wip',l:'作業中'},{v:'done',l:'完了'}];
+  document.getElementById('filterBar').innerHTML = `
+    <span class="label">担当:</span>
+    ${owners.map(o => `<button class="filter-btn ${filters.owner===o?'active':''}" onclick="setFilter('owner','${o}')">${o}</button>`).join('')}
+    <div class="filter-sep"></div>
+    <span class="label">状態:</span>
+    ${statuses.map(s => `<button class="filter-btn ${filters.status===s.v?'active':''}" onclick="setFilter('status','${s.v}')">${s.l}</button>`).join('')}
+  `;
+}
+
+function setFilter(key,val){
+  filters[key]=val;
+  renderFilters();
+  renderTasks();
+}
+
+function renderTasks(){
+  const tasks = D.tasks.filter(t => {
+    if(filters.owner!=='全員' && !t.owner.includes(filters.owner)) return false;
+    if(filters.status!=='all' && t.status!==filters.status) return false;
+    return true;
+  });
+
+  // Group by phase
+  const phaseOrder = ['3月W1','3月W2','3月W3','3月W4','4月','5月','6-8月','9-10月','11-2月'];
+  const groups = {};
+  tasks.forEach(t => {
+    if(!groups[t.phase]) groups[t.phase]=[];
+    groups[t.phase].push(t);
+  });
+
+  const totalFiltered = tasks.length;
+  const doneCount = tasks.filter(t=>t.status==='done').length;
+  document.getElementById('taskCount').textContent = `${doneCount}/${totalFiltered} 完了`;
+
+  if(totalFiltered===0){
+    document.getElementById('taskList').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim)">該当タスクなし</div>';
+    return;
+  }
+
+  let html = '';
+  phaseOrder.forEach(phase => {
+    if(!groups[phase]) return;
+    const g = groups[phase];
+    const gDone = g.filter(t=>t.status==='done').length;
+    const collapsed = ['6-8月','9-10月','11-2月'].includes(phase);
+    html += `<div class="task-group">
+      <div class="task-group-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        ${phase} <span class="count">${gDone}/${g.length} 完了</span>
+      </div>
+      <table${collapsed?' class="hidden"':''}>
+        <thead><tr><th style="width:60px">ID</th><th>タスク</th><th style="width:80px">担当</th><th style="width:70px">期限</th><th style="width:60px">状態</th></tr></thead>
+        <tbody>${g.map(t => `<tr>
+          <td><code>${t.id}</code></td>
+          <td>${t.task}</td>
+          <td class="owner-tag">${t.owner}</td>
+          <td>${t.deadline}</td>
+          <td><span class="badge ${t.status}">${{done:'完了',wip:'作業中',todo:'未着手'}[t.status]}</span></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+  });
+  document.getElementById('taskList').innerHTML = html;
+}
+
+function renderDeadlines(){
+  document.getElementById('deadlineList').innerHTML = D.deadlines.map(d =>
+    `<li><span>${d.label}</span><span class="badge ${d.urgency}">${d.date}</span></li>`
+  ).join('');
+}
+
+function renderRisks(){
+  document.getElementById('riskGrid').innerHTML = D.risks.map(r =>
+    `<div class="card risk-card${r.severity==='medium'?' medium':''}">
+      <h2 style="color:${r.severity==='high'?'var(--red)':'var(--yellow)'}">${r.id}: ${r.title}</h2>
+      <div style="font-size:13px">${r.detail}</div>
+    </div>`
+  ).join('');
+}
+
+function renderFooter(){
+  document.getElementById('footerText').textContent =
+    `にからす事業ダッシュボード v2.0 | WBS ${D.meta.wbsVersion} | 最終更新: ${D.meta.lastUpdated} | CC駆動`;
+}
+
+// Auth check + init
+try{if(sessionStorage.getItem('nk_auth')==='1'){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  render();
+}}catch(e){}
 </script>
 </body>
 </html>
