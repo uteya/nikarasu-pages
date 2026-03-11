@@ -146,8 +146,8 @@ tr:hover td{background:rgba(88,166,255,.04)}
 
 const DASHBOARD_DATA = {
   meta: {
-    lastUpdated: "2026-03-10",
-    wbsVersion: "v1.0-draft",
+    lastUpdated: "2026-03-11",
+    wbsVersion: "v1.1",
     fyYear: "FY2026",
     revenueTarget: 12500
   },
@@ -171,10 +171,10 @@ const DASHBOARD_DATA = {
   },
 
   milestones: [
-    { id:"MS-A", name:"戦略完成", date:"3/14", status:"active", progress:30,
+    { id:"MS-A", name:"戦略完成", date:"3/14", status:"active", progress:45,
       criteria:[
-        {text:"D1-D8 v4.0完成",status:"wip"},{text:"WBS完全版 v1.0",status:"done"},
-        {text:"CC駆動自走環境",status:"wip"},{text:"営業・プロダクト準備",status:"todo"}
+        {text:"D1-D8 v4.0完成",status:"wip"},{text:"WBS完全版 v1.1",status:"done"},
+        {text:"CC駆動自走環境",status:"done"},{text:"営業・プロダクト準備",status:"wip"}
       ]},
     { id:"MS-B", name:"実行フェーズ", date:"3月末", status:"future", progress:0,
       criteria:[
@@ -221,13 +221,13 @@ const DASHBOARD_DATA = {
     {id:"A-19",task:"WBS完全版 v1.0最終化",owner:"小竹",deadline:"3/14",status:"wip",phase:"3月W1"},
     {id:"A-20",task:"TASKS.mdチーム版更新",owner:"小竹",deadline:"3/14",status:"todo",phase:"3月W1"},
     {id:"A-21",task:"MS-Aレビュー",owner:"全員",deadline:"3/14",status:"todo",phase:"3月W1"},
-    {id:"A-T1",task:"GitHubアカウント+リポアクセス",owner:"辻井",deadline:"3/10",status:"todo",phase:"3月W1"},
-    {id:"A-T2",task:"財務Excel雛形→小竹パス",owner:"辻井",deadline:"3/11",status:"todo",phase:"3月W1"},
-    {id:"A-T3",task:"Claude Code Maxセットアップ",owner:"辻井",deadline:"3/11",status:"todo",phase:"3月W1"},
+    {id:"A-T1",task:"GitHubアカウント+リポアクセス",owner:"辻井",deadline:"3/10",status:"done",phase:"3月W1"},
+    {id:"A-T2",task:"財務Excel雛形→小竹パス",owner:"辻井",deadline:"3/11",status:"done",phase:"3月W1"},
+    {id:"A-T3",task:"Claude Code Maxセットアップ",owner:"辻井",deadline:"3/11",status:"done",phase:"3月W1"},
     {id:"A-T4",task:"税理士パッケージ商品設計 v1.0",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
-    {id:"A-T5",task:"提案書テンプレート",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
-    {id:"A-T6",task:"DM文面（初回+フォロー）",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
-    {id:"A-T7",task:"DMリスト100件",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
+    {id:"A-T5",task:"提案書テンプレート",owner:"辻井",deadline:"3/20",status:"todo",phase:"3月W1"},
+    {id:"A-T6",task:"DM文面（初回+フォロー）",owner:"辻井",deadline:"3/20",status:"todo",phase:"3月W1"},
+    {id:"A-T7",task:"DMリスト100件",owner:"辻井",deadline:"3/20",status:"todo",phase:"3月W1"},
     {id:"A-T8",task:"ROI試算シート",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
     {id:"A-T9",task:"パイプライン管理シート",owner:"辻井",deadline:"3/13",status:"todo",phase:"3月W1"},
     // ── 3月 Week 2 (3/15-21) ──
@@ -249,7 +249,7 @@ const DASHBOARD_DATA = {
     {id:"B-12",task:"既存クライアント継続確認",owner:"小竹",deadline:"3/28",status:"todo",phase:"3月W3"},
     {id:"B-13",task:"辻井・ペりん業務委託契約",owner:"小竹",deadline:"3/28",status:"todo",phase:"3月W3"},
     {id:"B-14",task:"戦略定例×2（火・木）",owner:"全員",deadline:"—",status:"todo",phase:"3月W3"},
-    {id:"B-T10",task:"★DM送付ルーティン開始",owner:"辻井",deadline:"3/20~",status:"todo",phase:"3月W3"},
+    {id:"B-T10",task:"★DM送付ルーティン開始",owner:"辻井",deadline:"3/23~",status:"todo",phase:"3月W3"},
     {id:"B-T11",task:"営業会議（週次）",owner:"辻井",deadline:"3/20~",status:"todo",phase:"3月W3"},
     {id:"B-T12",task:"会社紹介1枚もの",owner:"辻井",deadline:"並行",status:"todo",phase:"3月W3"},
     {id:"B-T13",task:"Physical AIコンサル紹介資料",owner:"辻井",deadline:"並行",status:"todo",phase:"3月W3"},
