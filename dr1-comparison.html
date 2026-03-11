@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DR① 比較ダッシュボード — 成功する事業の設計図とは何か</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #14141f;
+    --surface2: #1e1e2e;
+    --border: #2a2a3e;
+    --text: #e0e0e8;
+    --text-dim: #8888a0;
+    --accent: #6366f1;
+    --accent2: #818cf8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --cyan: #06b6d4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section h2 .num {
+    background: var(--accent);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .col {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+  .col-header {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-header.claude { color: var(--accent2); }
+  .col-header.gemini { color: var(--cyan); }
+  .col ul { list-style: none; padding: 0; }
+  .col li {
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .col li:last-child { border-bottom: none; }
+  .agree-row {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+  }
+  .agree-row .label {
+    color: var(--green);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .differ-row {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+  }
+  .differ-row .label {
+    color: var(--amber);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  th {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .tag-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .tag-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); }
+  .summary-box {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(6,182,212,0.1));
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  .summary-box h2 { color: var(--accent2); }
+  .action-item {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    border-left: 3px solid var(--accent);
+  }
+  .action-item .priority {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .blind-spot {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .metric-card {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .metric-card .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .metric-card .label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+  }
+  .decision-box {
+    background: var(--surface);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .decision-box h2 { color: var(--green); }
+  .decided {
+    background: rgba(34,197,94,0.1);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    border-left: 3px solid var(--green);
+  }
+  .open-q {
+    background: rgba(245,158,11,0.06);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    border-left: 3px solid var(--amber);
+  }
+  @media (max-width: 768px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    body { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>DR① 比較ダッシュボード</h1>
+<p class="subtitle">テーマ: 成功する事業の設計図とは何か — Claude vs Gemini Deep Research</p>
+
+<!-- Key Metrics -->
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="value">15-20%</div>
+    <div class="label">成功確率（現状）— Claude</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">25-30%</div>
+    <div class="label">成功確率（条件付き）— Claude</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">59%↑</div>
+    <div class="label">HaaS収益マルチプル（一致）</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">24%</div>
+    <div class="label">HWスタートアップ 2nd Round到達率</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">11-15ヶ月</div>
+    <div class="label">CAC回収期間ベンチマーク</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">18-24ヶ月</div>
+    <div class="label">競合優位ウィンドウ — Claude</div>
+  </div>
+</div>
+
+<!-- Section 1: VC -->
+<div class="section" style="margin-top: 1.5rem;">
+  <h2><span class="num">1</span> VCの投資判断基準</h2>
+
+  <div class="agree-row">
+    <div class="label">一致</div>
+    HaaS（HW+SaaS）モデルは高い評価。J-KISS ¥30-50Mがシード投資スキーム。日本のHW VC: Monozukuri Ventures、HAX Tokyo
+  </div>
+  <div class="agree-row">
+    <div class="label">一致</div>
+    にからすの既存¥12M売上 + Sharp採択は、シードのポジティブシグナル
+  </div>
+
+  <div class="compare-grid">
+    <div class="col">
+      <div class="col-header claude">Claude</div>
+      <ul>
+        <li>日本VC市場 ¥761.3B（2025年）、中央値¥62.4M</li>
+        <li>AI = 米国VC資金の70%（Q1 2025）</li>
+        <li>HW seed平均$3M、pre-money $12-13M</li>
+        <li>チーム→市場→ビジネスモデルの順で評価</li>
+        <li>Gazelle Capital: 「同じ予算で10個実験するチーム」を評価</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-header gemini">Gemini</div>
+      <ul>
+        <li>AI SaaS: バリュエーションプレミアム42%（非AI比）</li>
+        <li>AI Supernovas: 1人当たりARR $113万</li>
+        <li>MIT 2025: 生成AIパイロットの95%がROI未達</li>
+        <li>PMF→ユニットエコノミクス→Moat→成長効率→量産リスクの順</li>
+        <li>「BOMの罠 = 魚を飲み込む」キャッシュフロー曲線の指摘</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="differ-row" style="margin-top: 1rem;">
+    <div class="label">Gemini独自の指摘</div>
+    「薄いLLMラッパー企業はOpenAI/Appleの機能アップデートで駆逐される。エッジデバイスの物理的データモートがVCの高マルチプルの理由」— にからすにとってはポジティブ
+  </div>
+</div>
+
+<!-- Section 2: Success/Failure -->
+<div class="section">
+  <h2><span class="num">2</span> 類似事業の成功・失敗</h2>
+
+  <div class="agree-row">
+    <div class="label">完全一致 — 最重要</div>
+    <strong>全成功企業がB2Bファースト。</strong>プライバシー保護（非カメラ or エッジ骨格化）が差別化要因。B2C直販AIデバイスは全滅。
+  </div>
+
+  <table>
+    <tr><th>企業</th><th>調達額</th><th>特徴</th><th>ソース</th></tr>
+    <tr><td>Butlr</td><td>$68M</td><td>熱センサー（非カメラ）、B2B建物分析</td><td>両方</td></tr>
+    <tr><td>Vayyar</td><td>$296M</td><td>レーダー（非カメラ）、高齢者転倒検知</td><td>Claude</td></tr>
+    <tr><td>SafelyYou</td><td>$134M</td><td>AI映像転倒検知、認知症ケア</td><td>Claude</td></tr>
+    <tr><td>Sensi.AI</td><td>$76M+</td><td>音声のみ（非カメラ）、3x YoY成長</td><td>Claude</td></tr>
+    <tr><td>CarePredict</td><td>$42M+</td><td>$169ウェアラブル+月額、シニアケア予測</td><td>Claude</td></tr>
+    <tr><td>EcoNaviSta</td><td>TSE上場</td><td>時価総額¥15.8B、SaaS介護モニタリング</td><td>Claude</td></tr>
+    <tr><td>Glory mirAI-EYE</td><td>—</td><td>エッジAI骨格認識、¥2,000/ベッド/月</td><td>Claude</td></tr>
+    <tr><td>Displaid</td><td>—</td><td>橋梁監視エッジAI、コスト70%削減</td><td>Gemini</td></tr>
+    <tr><td>Tombot</td><td>—</td><td>認知症向けロボット犬、ニッチ成功</td><td>Gemini</td></tr>
+  </table>
+
+  <div class="differ-row" style="margin-top: 1rem;">
+    <div class="label">失敗事例の比較</div>
+  </div>
+  <div class="compare-grid">
+    <div class="col">
+      <div class="col-header claude">Claude — 失敗事例</div>
+      <ul>
+        <li><strong>Ultraleap</strong>: $242M調達→ROLI買収。ジェスチャー追跡のPMF不在</li>
+        <li><strong>Cipia</strong>: $80M→$3.6Mで買収。自動車ジェスチャー市場が不発</li>
+        <li>= 「Leap Motion Trap」: デモ映えするが継続収益にならない</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-header gemini">Gemini — 失敗事例</div>
+      <ul>
+        <li><strong>Humane AI Pin</strong>: 発熱、遅延、月$24 → HP売却</li>
+        <li><strong>Rabbit R1</strong>: LAMが実態はAndroidアプリ</li>
+        <li><strong>Plenty</strong>: 自動化HWのユニットエコノミクス崩壊</li>
+        <li>= 「汎用アンビエントAIは既存UIに勝てない」</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 3: KPI -->
+<div class="section">
+  <h2><span class="num">3</span> KPIベンチマーク</h2>
+
+  <div class="agree-row">
+    <div class="label">一致</div>
+    CAC回収期間（11-15ヶ月）がHaaSの生命線。フェーズ別KPI管理が必須。
+  </div>
+
+  <table>
+    <tr><th>指標</th><th>Seed目標</th><th>Series A目標</th><th>ソース</th></tr>
+    <tr><td>ARR成長率</td><td>68%+ YoY</td><td>45%+ YoY</td><td>Claude</td></tr>
+    <tr><td>月次チャーン</td><td>3-7%</td><td>&lt;1%</td><td>Claude</td></tr>
+    <tr><td>LTV:CAC</td><td>&gt;3:1</td><td>3.6:1</td><td>Claude</td></tr>
+    <tr><td>CAC Payback</td><td>&lt;18ヶ月</td><td>11ヶ月</td><td>両方</td></tr>
+    <tr><td>GRR</td><td>—</td><td>85-95%</td><td>Gemini</td></tr>
+    <tr><td>NRR</td><td>100%</td><td>102%+</td><td>Claude</td></tr>
+    <tr><td>NPS</td><td>ベースライン確立</td><td>30-40+</td><td>両方</td></tr>
+  </table>
+
+  <div class="differ-row" style="margin-top: 1rem;">
+    <div class="label">Gemini独自</div>
+    ADS（請求書発行リードタイム）とADC（代金回収日数）— HaaSでのキャッシュフロー直結指標。リファビッシュ率（解約デバイス再整備率）で粗利改善。
+  </div>
+
+  <div class="compare-grid" style="margin-top: 0.75rem;">
+    <div class="col">
+      <div class="col-header claude">Claude — 価格帯提案</div>
+      <ul>
+        <li>B2C HWキット: ¥15,000-30,000（or 12ヶ月縛りで¥0）</li>
+        <li>B2C月額: ¥1,500-3,000 / ¥3,000-5,000（プレミアム）</li>
+        <li>B2B施設: HW ¥30,000-50,000 + SaaS ¥3,000-8,000/月</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-header gemini">Gemini — 価格戦略</div>
+      <ul>
+        <li>高齢者B2C: 初期費用ゼロ必須（心理的障壁）</li>
+        <li>月額にBOMコスト内包のサブスクモデル</li>
+        <li>初期製造コストはデット（融資）/助成金で賄う</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 4: RaaC -->
+<div class="section">
+  <h2><span class="num">4</span> Repository-as-a-Company</h2>
+
+  <div class="agree-row">
+    <div class="label">一致</div>
+    RaaCは実証済みモデル（Kasava.dev: 5,470ファイルmonorepo）。Progressive Disclosure必須。YAML + JSONL + SOPS暗号化。
+  </div>
+
+  <div class="differ-row">
+    <div class="label">差異 — CLAUDE.md行数</div>
+    Claude: 150行以下 / Gemini: 500行以下 / prior知見: 100行以下 → <strong>100行以下を採用</strong>
+  </div>
+
+  <div class="compare-grid">
+    <div class="col">
+      <div class="col-header claude">Claude — リポジトリ構造</div>
+      <ul>
+        <li>skills/で業務ドメインを分離</li>
+        <li>agents/でサブエージェント定義</li>
+        <li>data/metrics/monthly/*.yaml</li>
+        <li>accounting/journal/*.yaml（SOPS暗号化）</li>
+        <li>セマンティックバージョニング: v0.x=プレ収益、v1.0.0=初有料顧客</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-header gemini">Gemini — リポジトリ構造</div>
+      <ul>
+        <li>nikarasu-core（開発）/ admin（経理）/ sales（営業）のマルチリポ案</li>
+        <li>AIのステートレス性を理解 → リポジトリ=完璧な外部記憶</li>
+        <li>フェーズ遷移でCLAUDE.mdの指示重心を変える</li>
+        <li>.claudeignoreで個人情報ディレクトリを物理遮断</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 5: Blind Spots -->
+<div class="section">
+  <h2><span class="num">5</span> 盲点・リスク</h2>
+
+  <div class="agree-row">
+    <div class="label">完全一致 — 3大リスク</div>
+    ① カメラプライバシー（APPI + 48自治体条例 + 心理的抵抗）<br>
+    ② 2名体制の限界（バスファクター1、HW+SW+営業は物理的に不可能）<br>
+    ③ Apple Home Hub 2026年がPhase 1と直接衝突
+  </div>
+
+  <div class="blind-spot">
+    <strong>Claude独自</strong>: Datamancer（CHI 2025）がRPi5ベースのジェスチャー制御マルチディスプレイを学術発表済み。コンセプトの新規性は部分的に失われている
+  </div>
+  <div class="blind-spot">
+    <strong>Claude独自</strong>: AI HAT+ 2（40 TOPS、Hailo-10H）が既にリリース → 現26TOPS設計の陳腐化リスク。HW抽象化レイヤー必須
+  </div>
+  <div class="blind-spot">
+    <strong>Claude独自</strong>: RPi5のPCIe Gen3 x1レーンでAI HAT+とNVMe共存不可。帯域ボトルネック
+  </div>
+  <div class="blind-spot">
+    <strong>Gemini独自</strong>: 生体認証データ規制が2027年頃に新規施行見込み → 設計時点で対応必須
+  </div>
+  <div class="blind-spot">
+    <strong>Gemini独自</strong>: HWスタートアップ失敗後の再投資率わずか19% → 初回ハードウェア設計の失敗は致命傷
+  </div>
+  <div class="blind-spot">
+    <strong>両方</strong>: 日本の介護現場IoT失敗パターン = 既存システム（電子カルテ・ナースコール）との統合不足で「ノイズ」化
+  </div>
+
+  <div class="compare-grid" style="margin-top: 1rem;">
+    <div class="col">
+      <div class="col-header claude">Claude — 競合</div>
+      <ul>
+        <li>Tobii（$200M+売上）: 視線追跡技術</li>
+        <li>Idein/Actcast: 日本最大のRPiエッジAI基盤</li>
+        <li>Neural Pocket（上場）: 3D空間認識</li>
+        <li>Sony AITRIOS: イメージセンサ内蔵AI</li>
+        <li>優位ウィンドウ: 18-24ヶ月</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-header gemini">Gemini — 競合</div>
+      <ul>
+        <li>Apple Home Hub 2026: 顔認識+パーソナライズ</li>
+        <li>巨大テックはプライバシー保護+エコシステムで圧倒</li>
+        <li>対策: ニッチバーティカル（介護×医療記録連携）に逃げる</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Decisions Already Made -->
+<div class="decision-box">
+  <h2>意思決定済み（Decision 6-8、2026-02-27）</h2>
+
+  <div class="decided">
+    <strong>D6: 全社事業構造</strong> — 三層戦略（B2B開発・コンサルで収益 ＋ プロダクトで技術力証明 ＋ HWスケールで跳ねる）。フォールバック: HW→SW/データ→論文→コンサル
+  </div>
+  <div class="decided">
+    <strong>D7: Phase 1</strong> — ドッグフード＋仲間づくり。売らない。収益はB2B開発・コンサルから
+  </div>
+  <div class="decided">
+    <strong>D8: HW筐体</strong> — 泉里が試作設計、SharpがDFM量産化。フォールバック: さくらインターネット経由→汎用エンクロージャー→SWピボット
+  </div>
+</div>
+
+<!-- Summary & Next -->
+<div class="summary-box">
+  <h2>CP-1: 事業の方向性 — 確認事項</h2>
+
+  <p style="margin: 1rem 0; font-size: 0.9rem;">
+    両DRの分析と既に下したDecision 6-8を踏まえて、以下がPhase 1で確定させる「どんな会社を作るのか」の核心。
+  </p>
+
+  <div class="action-item">
+    <div class="priority" style="color: var(--green);">確定済み</div>
+    <strong>にからす = Physical AI領域のB2B開発・コンサル会社</strong>。自社プロダクト（Spatial AI Orchestration）を技術力の証明として持ち、HWスケールのオプションを常に保持する。
+  </div>
+
+  <div class="action-item">
+    <div class="priority" style="color: var(--green);">確定済み</div>
+    <strong>マネタイズ = B2B DX案件</strong>。「現実世界のデータ × AIエージェント × 能動的察知」をバーティカル（製造業、介護、物流等）に提供。
+  </div>
+
+  <div class="action-item">
+    <div class="priority" style="color: var(--green);">確定済み</div>
+    <strong>Privacy by Design必須</strong>。エッジ側で骨格化＋生映像即時破棄。これは技術要件ではなく事業要件。
+  </div>
+
+  <div class="action-item">
+    <div class="priority" style="color: var(--amber);">要確認</div>
+    <strong>B2B施設向け（高齢者介護）のタイミングと優先度</strong>。DRは「最速でB2B施設向けに軸足を移せ」と言っている。Phase 2の開始をいつにするか？
+  </div>
+
+  <div class="action-item">
+    <div class="priority" style="color: var(--amber);">要確認</div>
+    <strong>ブランド構築の具体策</strong>。論文発表のテーマ・学会・タイムライン。OSSのスコープ。
+  </div>
+
+  <div class="action-item">
+    <div class="priority" style="color: var(--amber);">要確認</div>
+    <strong>Sharp報告書（3月末）に何を盛り込むか</strong>。DFM協力要請、Privacy by Designの技術実証、B2B施設向けパイロット提案 — どこまで踏み込むか？
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<style id="auth-gate-style">
+body>*:not(#auth-gate){display:none!important}
+#auth-gate{display:flex!important;position:fixed;top:0;left:0;width:100%;height:100%;background:#1e3a5f;z-index:99999;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#auth-gate .box{max-width:340px;width:100%;padding:2rem;text-align:center}
+#auth-gate h1{font-size:1.1rem;color:#fff;margin-bottom:1.5rem;font-weight:500}
+#auth-gate input{width:100%;padding:.65rem 1rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);border-radius:6px;color:#fff;font-size:1rem;outline:none;margin-bottom:.6rem}
+#auth-gate input:focus{border-color:rgba(255,255,255,0.6)}
+#auth-gate button{width:100%;padding:.65rem;background:#fff;color:#1e3a5f;border:none;border-radius:6px;font-size:.9rem;font-weight:600;cursor:pointer}
+#auth-gate button:hover{background:#dbeafe}
+#auth-gate .err{color:#fca5a5;font-size:.8rem;margin-top:.5rem;visibility:hidden}
+#auth-gate .err.show{visibility:visible}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす事業戦略ブリーフィング</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --card: #ffffff;
+    --text: #1c1917;
+    --muted: #78716c;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-light: #fef9c3;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --border: #e7e5e4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .header .tagline { font-size: 1.3rem; font-weight: 300; opacity: 0.95; margin-bottom: 0.3rem; }
+  .header .subtitle { font-size: 1rem; opacity: 0.85; }
+  .header .date { font-size: 0.85rem; opacity: 0.6; margin-top: 1rem; }
+  .header .revenue { font-size: 1.1rem; font-weight: 600; margin-top: 0.8rem; background: rgba(255,255,255,0.15); display: inline-block; padding: 0.3rem 1.2rem; border-radius: 999px; }
+
+  /* Message box */
+  .message-box {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+  .message-box strong { color: var(--accent); }
+
+  /* Section */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 1.2rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .section-header:hover { background: #fafaf9; }
+  .section.open .section-header { border-bottom-color: var(--border); }
+  .section-num {
+    background: var(--accent);
+    color: white;
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 1.1rem; font-weight: 700; flex: 1; }
+  .section-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .badge-done { background: var(--green-light); color: var(--green); }
+  .badge-new { background: var(--red-light); color: var(--red); }
+  .badge-discuss { background: var(--accent-light); color: var(--accent); }
+  .chevron {
+    width: 1.2rem; height: 1.2rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .section.open .chevron { transform: rotate(180deg); }
+  .section-body {
+    display: none;
+    padding: 1.5rem;
+  }
+  .section.open .section-body { display: block; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+  }
+  th {
+    background: #f5f5f4;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* Status indicators */
+  .status { font-weight: 600; white-space: nowrap; }
+  .status-done { color: var(--green); }
+  .status-gap { color: var(--red); }
+
+  /* Discussion points */
+  .discuss-box {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .discuss-box h4 {
+    color: #92400e;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  .discuss-box ul, .discuss-box ol { padding-left: 1.2rem; font-size: 0.9rem; }
+  .discuss-box li { margin-bottom: 0.3rem; color: #78350f; }
+
+  /* Key insight boxes */
+  .insight-box {
+    background: #eff6ff;
+    border: 1px solid #93c5fd;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .insight-box h4 { color: #1e40af; font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .insight-box p { font-size: 0.9rem; color: #1e3a5f; }
+
+  /* Diagram/code blocks */
+  .diagram {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.2rem;
+    border-radius: 8px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 1rem 0;
+    white-space: pre;
+  }
+
+  /* Section subtitles */
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3:first-child { margin-top: 0; }
+
+  h4 { font-size: 0.95rem; font-weight: 600; margin: 1rem 0 0.5rem; }
+  p { margin: 0.5rem 0; font-size: 0.95rem; }
+  ul, ol { padding-left: 1.5rem; margin: 0.5rem 0; font-size: 0.95rem; }
+  li { margin-bottom: 0.3rem; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  /* Print */
+  @media print {
+    body { padding: 0; background: white; }
+    .section-body { display: block !important; }
+    .section { break-inside: avoid; box-shadow: none; }
+    .header { background: #1e3a5f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div id="auth-gate">
+<div class="box">
+<h1>パスワードを入力してください</h1>
+<form id="auth-form">
+<input type="password" id="auth-pw" placeholder="パスワード" autofocus required>
+<button type="submit">入る</button>
+</form>
+<p class="err" id="auth-err">パスワードが違います</p>
+</div>
+</div>
+<script>
+(function(){
+var K="nikarasu-docs-auth";
+if(sessionStorage.getItem(K)==="ok"){
+document.getElementById("auth-gate").remove();
+document.getElementById("auth-gate-style").remove();
+return;
+}
+document.getElementById("auth-form").addEventListener("submit",function(e){
+e.preventDefault();
+if(document.getElementById("auth-pw").value==="nikarasu"){
+sessionStorage.setItem(K,"ok");
+document.getElementById("auth-gate").remove();
+document.getElementById("auth-gate-style").remove();
+}else{
+document.getElementById("auth-err").classList.add("show");
+document.getElementById("auth-pw").value="";
+document.getElementById("auth-pw").focus();
+}
+});
+})();
+</script>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <div class="tagline">AIで現実を変える</div>
+  <h1>にからす事業戦略ブリーフィング v3</h1>
+  <div class="revenue">FY2026 売上目標: &yen;1.25億</div>
+  <div class="date">2026年3月2日 作成</div>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- Section 1: 事業構造の全体像 -->
+<!-- ================================================================== -->
+<div class="section open">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">1</div>
+    <div class="section-title">事業構造の全体像 &mdash; にからすの因果ループ</div>
+    <span class="section-badge badge-done">確定</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>にからすとは何か（1文）</h3>
+    <p><strong>「AIで現実を変える」</strong> &mdash; デジタルの中に閉じたAIを、カメラ・センサー・エッジデバイスを通じて現実世界と接続する会社。</p>
+
+    <h3>事業の因果構造（ぐるぐるモデル v3.0）</h3>
+    <p>にからすのビジネスは以下のループで回る。これが全戦略の土台。</p>
+<div class="diagram">プロダクト開発（WazaAI / KataribeAI）+ AI駆動開発（受託で鍛えた技術力）
+    |
+    v 実績・技術ナレッジ
+AI広報自動発信（技術ブログ / SNS / デモ動画 / AI広報キャラ）
+    |
+    v ブランド認知「AIで現実を変える = にからす」
+    |
+    +------+------+------+
+    |      |      |      |
+    v      v      v      v
+  Physical  AI駆動   中小DX   既存コンサル
+  AIコンサル  開発案件  案件獲得   維持・深耕
+    |      |      |      |
+    +------+------+------+
+              |
+              v 売上 + 現場知見
+         プロダクト開発にフィードバック --> ループ</div>
+
+    <h3>売上構造（5カテゴリ）</h3>
+<div class="diagram">[FY2026 売上目標: ¥1.25億]
+
+[新規 ¥7,000万 = 4:3:2:1]
+  +-- (1) AI駆動開発（自律型PO代行）     ¥2,800万（40%）  <-- 最大の成長エンジン
+  +-- (2) 中小企業DX（Claude Code経営）   ¥2,100万（30%）  <-- 辻井が開拓
+  +-- (3) Physical AIコンサル/開発       ¥1,400万（20%）  <-- ブランドで呼び込む
+  +-- (4) プロダクト（WazaAI/KataribeAI）  ¥700万（10%）   <-- 本丸。ブランドの源泉
+
+[既存 ¥5,500万]
+  +-- (5) 既存コンサル案件              ¥5,500万         <-- 安定基盤を維持</div>
+
+    <h3>As-Is / To-Be</h3>
+    <table>
+      <tr><th>区分</th><th>内容</th><th>ポイント</th></tr>
+      <tr>
+        <td><strong>As-Is</strong><br>今すぐ売れる</td>
+        <td>
+          (1) 中小DX &mdash; 杉江商会型紹介で展開<br>
+          (2) AI駆動開発 &mdash; 開発環境を見せて受注<br>
+          (5) 既存コンサル維持
+        </td>
+        <td>辻井の営業力 + 小竹の技術力で回す</td>
+      </tr>
+      <tr>
+        <td><strong>To-Be</strong><br>ブランドが呼ぶ</td>
+        <td>
+          (3) Physical AIコンサル &mdash; ブランド発信から案件<br>
+          (4) プロダクト &mdash; WazaAI/KataribeAI
+        </td>
+        <td>「こういうの作ってます」が営業になる状態</td>
+      </tr>
+    </table>
+
+    <div class="insight-box">
+      <h4>因果構造の要点</h4>
+      <p><strong>プロダクトを作ること自体がブランドを生み、ブランドが案件を呼ぶ。</strong>
+      だから「プロダクト開発に時間を使う」は「営業している」のと同義。逆に、プロダクト開発が止まると発信が止まり、案件が細る。</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 2: 戦略の背景 -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">2</div>
+    <div class="section-title">戦略の背景 &mdash; なぜ今Physical AIか</div>
+    <span class="section-badge badge-done">確定</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>AIコンサル市場のコモディティ化</h3>
+    <p>クラウドAIコンサルは急速にコモディティ化。McKinsey自身が5,000名削減、コンサル求人40%減。<strong>ExaWizards/ABEJAのビジネスモデルはClaude Code等に食われるリスクが大きい</strong>。</p>
+
+    <table>
+      <tr><th>データポイント</th><th>数値</th><th>出典</th></tr>
+      <tr><td>国内AIシステム市場</td><td>&yen;1.34兆（2024、+56.5%）&rarr; &yen;4.19兆（2029）</td><td>IDC Japan 2025年5月</td></tr>
+      <tr><td>グローバルAIコンサル市場</td><td>$110.7B &rarr; $909.9B by 2035（CAGR 26.2%）</td><td>Future Market Insights</td></tr>
+      <tr><td><strong>McKinsey人員削減</strong></td><td><strong>約5,000名削減</strong>（45,000&rarr;40,000名）。12,000 AIエージェント運用</td><td>HBR 2025年9月</td></tr>
+      <tr><td><strong>コンサル求人激減</strong></td><td>非シニア求人<strong>40%減少</strong>（2022-2025）。PwC米国1,500人削減</td><td>The Logic / Indeed</td></tr>
+      <tr><td>元コンサルがAIを訓練</td><td>McKinsey等の<strong>元コンサル約150名</strong>がAIモデル訓練に従事</td><td>Bloomberg 2025年10月</td></tr>
+      <tr><td>「McKinsey in a Box」</td><td>AIが戦略コンサルの分析能力を再現・超越</td><td>INSEAD Knowledge</td></tr>
+      <tr><td>AIコーディング利用率</td><td>開発者の<strong>92%</strong>がAIコーディングアシスタントを定常利用</td><td>Digital Applied 2025</td></tr>
+      <tr><td>専門特化のプレミアム</td><td>業界特化企業は汎用型比<strong>15-25%高いマージン</strong></td><td>McKinsey Research</td></tr>
+      <tr><td>ExaWizards</td><td>売上 &yen;98.1億（+17%）、<span class="status status-done">初の営業黒字 &yen;2,300万</span>（純利益△&yen;25.8億）</td><td>2025年3月期決算</td></tr>
+      <tr><td>ABEJA</td><td>売上 &yen;35.9億、125名、<span class="status status-done">黒字 10.5%</span></td><td>決算</td></tr>
+    </table>
+
+    <div class="insight-box">
+      <h4>にからすの競合戦略</h4>
+      <p>ExaWizards/ABEJAはクラウドコンサル中心 &rarr; Claude Codeに食われる。McKinsey自身がAIで5,000名削減する世界。<br>
+      にからすは<strong>AIにできない領域で戦う = エッジ + フィジカル</strong>。<br>
+      HWとの統合 / 現場の暗黙知のデジタル化 / Privacy by Designのエッジ処理 &mdash; これらはAIツールだけでは実現できない。</p>
+    </div>
+
+    <h3>Physical AI市場への投資集中</h3>
+    <table>
+      <tr><th>データポイント</th><th>数値</th><th>出典</th></tr>
+      <tr><td>Physical AI市場（グローバル）</td><td>$5.4B（2025）&rarr; $61B（2034）、CAGR 31%</td><td>SNS Insider他</td></tr>
+      <tr><td><strong>ヒューマノイドVC投資 2025年</strong></td><td><strong>$61億/139件</strong>（前年$15億から<strong>300%超増</strong>）</td><td>PitchBook 2025</td></tr>
+      <tr><td>ロボティクスQ2ディール</td><td><strong>$88億</strong>（前四半期比170.5%増）</td><td>Qubit Capital</td></tr>
+      <tr><td>主要調達</td><td>Figure AI $1B @$39B、Physical Intelligence $600M @$56B、Apptronik $520M</td><td>各社PR</td></tr>
+      <tr><td><strong>日本: Mujin</strong></td><td>2025年国内調達<strong>1位 &yen;362億</strong>（累計&yen;596億）</td><td>東洋経済</td></tr>
+      <tr><td>NVIDIA</td><td>GR00T N1&rarr;N1.5（36h学習）&rarr;<strong>N1.6</strong>（推論型VLA、全身制御）</td><td>NVIDIA Newsroom</td></tr>
+      <tr><td>Jensen Huang（CES 2026）</td><td>「ロボティクスのChatGPTモーメントは<strong>ここに来た</strong>」</td><td>Fortune 2026年1月</td></tr>
+      <tr><td>Goldman Sachs予測</td><td>ヒューマノイド市場 <strong>2035年$380億</strong></td><td>Goldman Sachs</td></tr>
+      <tr><td>国内エッジAI市場</td><td>&yen;117億（2022）&rarr; <strong>&yen;431億</strong>（2026、年率41.3%増）</td><td>デロイト トーマツ</td></tr>
+    </table>
+
+    <h3>にからすの差別化ポイント</h3>
+<div class="diagram">ExaWizards / ABEJA                   にからす
+  +-- クラウドAIコンサル中心         +-- AIにできない領域で戦う = エッジ + フィジカル
+  +-- Claude Code等に代替リスク      +-- HWとの統合（設計・調達・製造連携）
+  +-- 大企業向け                    +-- 現場の暗黙知のデジタル化（映像→骨格→教材）
+                                    +-- Privacy by Designのエッジ処理
+                                    +-- 小竹がHWを自作設計できる（Exa/ABEJAにはない）</div>
+
+    <h3>労働力不足 &mdash; Physical AIの根本的需要</h3>
+    <table>
+      <tr><th>問題</th><th>数値</th><th>出典</th></tr>
+      <tr><td>製造業熟練工の減少</td><td>25万人 &rarr; 15万人</td><td>ものづくり白書</td></tr>
+      <tr><td><strong>技能継承に不安を感じる企業</strong></td><td><strong>約8割</strong></td><td>労働政策研究機構</td></tr>
+      <tr><td>後継者不在率</td><td><strong>50.1%</strong>（約13.8万社が後継者不在）</td><td>帝国DB 2025年11月</td></tr>
+      <tr><td>後継者難倒産</td><td><strong>507件</strong>（2024年度、2年連続500件超）</td><td>帝国DB</td></tr>
+      <tr><td>中小企業AI導入率</td><td><strong>17.3-25.2%</strong>（大企業43.3%との格差）</td><td>帝国DB/東京商工リサーチ</td></tr>
+      <tr><td>AI導入阻害1位</td><td>人材・ノウハウ不足 <strong>54-55%</strong></td><td>帝国DB/東京商工リサーチ</td></tr>
+      <tr><td>介護人材不足（2040年）</td><td>57万人</td><td>厚生労働省</td></tr>
+      <tr><td>介護センサー導入率</td><td>わずか<strong>2%</strong>（巨大な未開拓市場）</td><td>厚生労働省</td></tr>
+      <tr><td>事業承継が進まなければ</td><td><strong>650万人の雇用と22兆円のGDP喪失</strong></td><td>経産省試算</td></tr>
+    </table>
+
+    <div class="insight-box">
+      <h4>中小企業のAI導入実態</h4>
+      <p>中小企業のIT投資自体が<strong>年間100万円未満が半数以上</strong>。しかし生成AI利用中の経営者の<strong>73.1%が「投資を増やしたい」</strong>。<br>
+      &rarr; にからすの中小DXパッケージ（&yen;200-400万）は、「AIに投資したいが何から始めていいかわからない」層の受け皿になる。<br>
+      同族承継後の後継者平均年齢<strong>46.8歳</strong>と若く、DX推進意欲が高い。</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 3: マッピング表 -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">3</div>
+    <div class="section-title">マッピング表 &mdash; 辻井要件 &times; D1-D8</div>
+    <span class="section-badge badge-done">全カバー</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <p>辻井の要件リスト（I-III）に対するドキュメント対応状況。</p>
+
+    <table>
+      <tr>
+        <th>辻井の要件</th>
+        <th>対応ドキュメント</th>
+        <th>ステータス</th>
+        <th>辻井と詰めたい点</th>
+      </tr>
+      <tr>
+        <td>I-1 PEST分析</td>
+        <td>D3 &sect;1</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>I-2 TAM/SAM/SOM</td>
+        <td>D3 &sect;2</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>SOMの算出ロジックのレビュー</td>
+      </tr>
+      <tr>
+        <td>I-3 競合分析</td>
+        <td>D3 &sect;3</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>辻井が展示会等で見聞きした競合情報</td>
+      </tr>
+      <tr>
+        <td>I-4 ICP定義</td>
+        <td>D3 &sect;5, D5 &sect;1</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>実際の購買行動の詳細</td>
+      </tr>
+      <tr>
+        <td>II-1 価格設定</td>
+        <td>D4 &sect;3, &sect;6</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>中小DXパッケージの価格帯</td>
+      </tr>
+      <tr>
+        <td>II-2 チャネル戦略</td>
+        <td>D5 &sect;2-4</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>紹介型 vs 発信型のバランス</td>
+      </tr>
+      <tr>
+        <td>II-3 パイプライン設計</td>
+        <td>D5 &sect;5</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>パイプライン転換率の妥当性</td>
+      </tr>
+      <tr>
+        <td>II-4 営業ツール</td>
+        <td>D5 &sect;6</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>営業資料のトーン確認</td>
+      </tr>
+      <tr>
+        <td>III-1 財務計画</td>
+        <td>D6 &sect;1-7</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>&yen;1.25億の達成に必要な稼働配分</td>
+      </tr>
+      <tr>
+        <td>III-2 ロードマップ</td>
+        <td>D7 全体</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>III-3 KPI</td>
+        <td>D6 &sect;9</td>
+        <td><span class="status status-done">完了</span></td>
+        <td>辻井と定義するKPI</td>
+      </tr>
+    </table>
+
+    <h3>ドキュメント一覧</h3>
+    <table>
+      <tr><th>#</th><th>ドキュメント</th><th>バージョン</th><th>内容</th></tr>
+      <tr><td>D1</td><td>事業定義書</td><td>v3.0</td><td>にからすとは何か。ぐるぐるモデル。As-Is/To-Be</td></tr>
+      <tr><td>D2</td><td>スタートアップ定義書</td><td>v2.0</td><td>WazaAI/KataribeAIの投資基準・撤退基準</td></tr>
+      <tr><td>D3</td><td>市場分析</td><td>v3.1</td><td>Physical AI市場。競合。ICP</td></tr>
+      <tr><td>D4</td><td>サービス設計書</td><td>v2.0</td><td>サービスラインナップ。価格。杉江商会モデル</td></tr>
+      <tr><td>D5</td><td>営業・GTM戦略</td><td>v3.1</td><td>GTM 2軸。広報。パイプライン。展示会・補助金</td></tr>
+      <tr><td>D6</td><td>財務計画</td><td>v3.0</td><td>&yen;1.25億。P&amp;L。3ヵ年見通し</td></tr>
+      <tr><td>D7</td><td>ロードマップ</td><td>v3.1</td><td>WBS全体。Sprint 0-3。展示会スケジュール</td></tr>
+      <tr><td>D8</td><td>Sharp報告書</td><td>v1.1</td><td>3月末提出。Physical AI方向転換報告</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 4: サービス設計 -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">4</div>
+    <div class="section-title">サービス設計 &mdash; 何を売るか</div>
+    <span class="section-badge badge-done">確定</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>(1) AI駆動開発（自律型PO代行）&mdash; &yen;2,800万</h3>
+    <p>言われたまま作るのではなく、<strong>言われなくても作る</strong>。にからすのセンスと機動力で、自律的にプロダクトをリード。</p>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>ターゲット</td><td>スタートアップ、大企業の新規事業部門</td></tr>
+      <tr><td>価格帯</td><td>&yen;300-2,000万/プロジェクト</td></tr>
+      <tr><td>差別化</td><td>「受託」ではなく「自律型開発パートナー」</td></tr>
+      <tr><td>ショーケース</td><td>にからす自身のWazaAI/KataribeAI開発環境</td></tr>
+      <tr><td>実績</td><td>Chibic（シフト最適化、Next.js/React/Laravel、AI駆動PO代行）</td></tr>
+      <tr><td>Year 1目標</td><td>新規3-4件（&yen;700-900万/件）</td></tr>
+    </table>
+
+    <h3>(2) 中小企業DX（Claude Code経営パッケージ）&mdash; &yen;2,100万</h3>
+    <p>社長にClaude Codeの使い方を教え、リポジトリで事業全体を管理できる状態にする。<strong>中小企業にとっての最大のDX。</strong></p>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>ターゲット</td><td>中小企業の経営者（30-40代、IT意欲あり）</td></tr>
+      <tr><td>価格帯</td><td>&yen;200-400万（導入+定着支援）</td></tr>
+      <tr><td>売り方</td><td>杉江商会で実績 &rarr; 紹介展開。営業コスト&asymp;ゼロ</td></tr>
+      <tr><td>商品設計</td><td>パッケージ名・価格・含まれるもの（要設計）</td></tr>
+      <tr><td>Year 1目標</td><td>7-10件（&yen;200-300万/件）</td></tr>
+    </table>
+
+    <h4>杉江商会モデル（成功事例）</h4>
+    <table>
+      <tr><th>フェーズ</th><th>内容</th><th>売上</th></tr>
+      <tr><td>(1) FAQ PoC</td><td>LINE Bot &times; RAG。社内FAQ自然言語検索</td><td>&yen;205万</td></tr>
+      <tr><td>(2) Notion導入</td><td>情報基盤の構築（ROI 4,400%）</td><td>（(1)に含む）</td></tr>
+      <tr><td>(3) AI研修 &times;3回</td><td>全社員のAIリテラシー向上</td><td>&yen;30-50万</td></tr>
+      <tr><td>(4) Claude Code提案</td><td>「事業をClaude Codeで管理しませんか」</td><td>&yen;200-400万（想定）</td></tr>
+      <tr><td>(5) 紹介パートナー化</td><td>杉江社長が同業に紹介</td><td>&mdash;</td></tr>
+    </table>
+    <p><strong>戦略的意味</strong>: (1)-(3)で信頼構築 &rarr; (4)で本命提案 &rarr; (5)で営業コストゼロの横展開。</p>
+
+    <h3>(3) Physical AIコンサル/開発 &mdash; &yen;1,400万</h3>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>ターゲット</td><td>製造業（従業員50-500名、年商&yen;5-50億）</td></tr>
+      <tr><td>獲得方法</td><td>CEATEC出展 + ブランド発信 &rarr; 商談</td></tr>
+      <tr><td>Year 1目標</td><td>2-3件（&yen;500-700万/件）</td></tr>
+    </table>
+
+    <h3>(4) プロダクト &mdash; &yen;700万</h3>
+
+    <h4>匠の眼と身体（WazaAI）</h4>
+    <p>製造業の熟練技術者の動作と知識を、カメラ&times;AIで記録・教材化。</p>
+    <table>
+      <tr><th>サービス</th><th>内容</th><th>価格</th></tr>
+      <tr><td>WazaAI PoC</td><td>1工程、2週間。カメラ2台で記録し効果レポート</td><td>&yen;50万</td></tr>
+      <tr><td>WazaAI 技能記録</td><td>3-5日記録。骨格キャプチャ+AIインタビュー+教材自動生成</td><td>&yen;50-150万/工程</td></tr>
+      <tr><td>トレーニングツール</td><td>ベテラン vs 若手の動作比較ダッシュボード</td><td>&yen;3万/ライン/月</td></tr>
+      <tr><td>HW記録キット</td><td>RPi5 &times; 2-4台 + AI HAT+ + カメラ</td><td>&yen;30万</td></tr>
+    </table>
+
+    <h4>KataribeAI（Year 2以降）</h4>
+    <p>高齢者の人生をAIが聴き取り、記録し、伝える。Year 1はR&Dフェーズ。</p>
+
+    <h4>Privacy by Design（共通基盤）</h4>
+    <p>エッジ処理で骨格化。映像は保存・送信しない。労組対応と規制クリアの<strong>唯一の解</strong>。全競合（HACARUS、VRAIN、Safie）が映像をクラウドに送る中、にからすだけがエッジ処理。</p>
+
+    <h4>二毛作（戦略オプション）</h4>
+    <p>WazaAIの骨格データは、フォーマット設計時点からヒューマノイド学習互換。追加コストゼロで将来のデータ市場に対応。</p>
+
+    <h3>(5) 既存コンサル &mdash; &yen;5,500万</h3>
+    <table>
+      <tr><th>クライアント</th><th>月額（概算）</th><th>内容</th></tr>
+      <tr><td>クロステック</td><td>&yen;143万</td><td>awabar副店長エージェント</td></tr>
+      <tr><td>ビズリンク</td><td>&yen;195万</td><td>受託開発</td></tr>
+      <tr><td>ディプルメント</td><td>&yen;127万</td><td>受託開発</td></tr>
+      <tr><td>Kiei</td><td>&yen;55万</td><td>受託開発</td></tr>
+      <tr><td>テクラボ</td><td>&yen;64万</td><td>受託開発</td></tr>
+      <tr><td><strong>合計</strong></td><td><strong>&yen;583万/月</strong></td><td></td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 5: 営業・GTM -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">5</div>
+    <div class="section-title">営業・GTM &mdash; どう売るか</div>
+    <span class="section-badge badge-discuss">要議論</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>GTMの2軸</h3>
+<div class="diagram">[As-Is GTM] -- 今すぐ動ける。営業主導
+  +-- (1) 中小DX（紹介型）: 杉江商会→紹介→紹介→ネットワーク拡大
+  +-- (2) AI駆動開発（発信型）: 開発環境を見せる→受注
+
+[To-Be GTM] -- Year 1後半~。プロダクトがブランドになる
+  +-- (3) プロダクト発信（自動ブランディング）: AI広報キャラクター→認知
+  +-- (4) 展示会（CEATEC等）: WazaAIデモ→リード→商談→PoC
+  +-- (5) 補助金連動: 導入ハードルを下げる</div>
+
+    <h3>パイプライン設計（&yen;7,000万の逆算）</h3>
+<div class="diagram">認知 200件/年
+  | 25%
+  v
+関心 50件（問い合わせ、資料請求）
+  | 50%
+  v
+商談 25件（ヒアリング、提案書）
+  | 40%
+  v
+受注 10件（平均単価 ¥700万 = ¥7,000万）
+  内訳: AI駆動 3件 + 中小DX 4件 + Physical AI 2件 + プロダクト 1件
+
+認知200件の内訳:
+  紹介経由: 30件（杉江/税理士/パートナー）
+  ブログ/SNS: 60件（月5件 x 12ヶ月）
+  展示会: 80件（ものづくりW 7月 + CEATEC 10月 + H.C.R./学会等）
+  HP直接: 30件（SEO + 少額リスティング）</div>
+
+    <h3>マーケティング施策</h3>
+
+    <h4>HP更新計画（4月末完了目標）</h4>
+    <table>
+      <tr><th>項目</th><th>現状</th><th>To-Be</th></tr>
+      <tr><td>トップメッセージ</td><td>汎用的なAI開発会社</td><td>「AIで現実を変える」&mdash; Physical AI特化</td></tr>
+      <tr><td>サービスページ</td><td>受託開発中心</td><td>3本柱: Physical AIコンサル / AI駆動開発 / 中小DX</td></tr>
+      <tr><td>事例ページ</td><td>なし</td><td>杉江商会（中小DX）、Chibic（AI駆動開発）</td></tr>
+      <tr><td>WazaAI専用LP</td><td>なし</td><td>デモ動画埋め込み枠付き</td></tr>
+      <tr><td>CTA</td><td>汎用問い合わせ</td><td>用途別: 「PoCのご相談」「開発依頼」「DX相談」</td></tr>
+    </table>
+
+    <h4>SNS戦略</h4>
+    <table>
+      <tr><th>チャネル</th><th>頻度</th><th>コンテンツ</th><th>ターゲット</th><th>KPI</th></tr>
+      <tr><td><strong>X</strong></td><td>日次</td><td>開発ログ・技術Tips</td><td>エンジニア</td><td>フォロワー500+</td></tr>
+      <tr><td><strong>LinkedIn</strong></td><td>週2回</td><td>事業洞察・導入事例</td><td>製造業経営層</td><td>コネクション200+</td></tr>
+      <tr><td><strong>note</strong></td><td>週1回</td><td>開発ストーリー・創業記</td><td>経営者・スタートアップ</td><td>フォロワー300+</td></tr>
+      <tr><td><strong>Qiita/Zenn</strong></td><td>月2回</td><td>技術Deep Dive</td><td>エンジニア&rarr;CTO</td><td>月間PV 3,000-5,000</td></tr>
+    </table>
+
+    <h4>展示会</h4>
+    <table>
+      <tr><th>展示会</th><th>時期</th><th>優先度</th><th>狙い</th></tr>
+      <tr style="background:#dcfce7;"><td><strong>ものづくりワールド2026<br>フィジカルAI展</strong></td><td><strong>7/1-3</strong></td><td><strong>S</strong></td><td>★最重要。<strong>2026年新設</strong>。70,000名。Physical AIピボットに最も直結。持続化補助金で出展費2/3補助可</td></tr>
+      <tr><td><strong>CEATEC 2026</strong></td><td>10/13-16</td><td>A</td><td>WazaAIデモ展示。98,884名（2025）。リード50件&rarr;商談5件。スタートアップ特別プラン</td></tr>
+      <tr><td><strong>H.C.R. 2026</strong></td><td>10/7-9</td><td>A</td><td>介護市場調査。10万人超。★<strong>申込期限3/31</strong>。&yen;34-37万/1小間</td></tr>
+      <tr><td>RoboNext 2026</td><td>12/2-4（大阪）</td><td>B</td><td>初開催。日本ロボット工業会主催</td></tr>
+      <tr><td>AI EXPO 秋 + ヒューマノイドEXPO</td><td>11/11-13</td><td>B</td><td>ヒューマノイドロボットEXPO<strong>新設</strong></td></tr>
+      <tr><td>HAI 2026（大阪）</td><td>11/16-19</td><td>B</td><td>Physical AI&times;Human Interaction。<strong>日本開催</strong>。論文連動</td></tr>
+    </table>
+
+    <h4>補助金</h4>
+    <p><strong>A. 顧客が使える補助金（WazaAI/中小DX導入時）:</strong></p>
+    <table>
+      <tr><th>補助金</th><th>補助率</th><th>上限</th><th>にからすの使い方</th></tr>
+      <tr><td>ものづくり補助金（第23次: <strong>5/8締切</strong>）</td><td>小規模2/3</td><td>&yen;750万-3,500万</td><td>WazaAI導入の顧客と共同申請</td></tr>
+      <tr style="background:#dcfce7;"><td><strong>省力化投資補助金（一般型）</strong></td><td>1/2</td><td><strong>&yen;500万-1億</strong></td><td>Physical AIシステム導入。上限額が最も大きい</td></tr>
+      <tr><td>デジタル化・AI導入補助金（旧IT導入）</td><td>1/2-2/3</td><td>&yen;450万</td><td>中小DXパッケージ。採択率70-80%</td></tr>
+      <tr><td>介護テクノロジー導入支援（7-10月）</td><td><strong>75-80%</strong></td><td>&yen;500-750万</td><td>Year 2。KataribeAI。予算&yen;200億</td></tr>
+    </table>
+    <p><strong>B. にからす自身が使える補助金:</strong></p>
+    <table>
+      <tr><th>補助金</th><th>補助率</th><th>上限</th><th>にからすの使い方</th></tr>
+      <tr style="background:#fef9c3;"><td><strong>小規模事業者持続化補助金</strong>（<strong>4/30締切</strong>）</td><td><strong>2/3</strong></td><td>&yen;50万</td><td>ものづくりワールド出展費の補助。採択率50-60%</td></tr>
+      <tr><td>NEDO ディープテック支援</td><td>&mdash;</td><td>基金&yen;1,500億</td><td>WazaAI R&amp;D</td></tr>
+    </table>
+
+    <h3>営業マイルストーン</h3>
+    <table>
+      <tr><th>マイルストーン</th><th>時期</th><th>達成条件</th></tr>
+      <tr><td><strong>MS-0: 営業基盤構築</strong></td><td>3-5月</td><td>HP刷新。営業資料一式。杉江商会提案。デモ動画完成</td></tr>
+      <tr><td><strong>MS-1: 初回受注</strong></td><td>6-8月</td><td>中小DX or WazaAI PoC初回受注1件。AI駆動の問合せ3件+</td></tr>
+      <tr><td><strong>MS-2: パイプライン稼働</strong></td><td>9-10月</td><td>CEATEC出展。リード50件。商談5件。SNS合計500+</td></tr>
+      <tr><td><strong>MS-3: Year 1実績</strong></td><td>12-2月</td><td>新規10件+（&yen;7,000万ペース）。紹介展開が回っている</td></tr>
+    </table>
+
+    <h3>パートナー戦略</h3>
+    <table>
+      <tr><th>パートナー</th><th>活用方法</th></tr>
+      <tr><td>Sharp</td><td>HW筐体DFM相談。介護施設への紹介（Year 2+）</td></tr>
+      <tr><td><strong>杉江商会</strong></td><td>一緒に事例を作り、一緒に売っていく。紹介パートナーとして同業中小製造業へ横展開</td></tr>
+    </table>
+
+    <div class="discuss-box">
+      <h4>詰めるべき点</h4>
+      <ul>
+        <li>中小DXパッケージの商品設計（名前・価格・含まれるもの・期間）</li>
+        <li>パイプライン転換率（25%&rarr;50%&rarr;40%）は妥当か</li>
+        <li>営業スクリプトのトーン確認</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 6: 財務計画 -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">6</div>
+    <div class="section-title">財務計画 &mdash; &yen;1.25億の中身</div>
+    <span class="section-badge badge-done">確定</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>Year 1 売上計画（&yen;1.25億）</h3>
+    <table>
+      <tr><th>カテゴリ</th><th>目標</th><th>比率</th><th>獲得方法</th></tr>
+      <tr><td>(1) AI駆動開発</td><td>&yen;2,800万</td><td>40%</td><td>技術発信&rarr;問合せ&rarr;新規3-4件</td></tr>
+      <tr><td>(2) 中小DX</td><td>&yen;2,100万</td><td>30%</td><td>辻井の営業 + 杉江紹介&rarr;7-10件</td></tr>
+      <tr><td>(3) Physical AI</td><td>&yen;1,400万</td><td>20%</td><td>CEATEC + ブランド発信&rarr;2-3件</td></tr>
+      <tr><td>(4) プロダクト</td><td>&yen;700万</td><td>10%</td><td>PoC + 技能記録 + トレーニングツール</td></tr>
+      <tr style="font-weight:700; background:#f0f9ff;">
+        <td>新規合計</td><td>&yen;7,000万</td><td>100%</td><td></td>
+      </tr>
+      <tr><td>(5) 既存コンサル</td><td>&yen;5,500万</td><td>&mdash;</td><td>現行5クライアント維持</td></tr>
+      <tr style="font-weight:700; background:#dcfce7;">
+        <td>FY2026 合計</td><td>&yen;12,500万</td><td></td><td></td>
+      </tr>
+    </table>
+
+    <h3>コスト構造（月次）</h3>
+    <table>
+      <tr><th>項目</th><th>月額</th><th>年額</th><th>備考</th></tr>
+      <tr><td>役員報酬（合計）</td><td>&yen;100万</td><td>&yen;1,200万</td><td>小竹 + 辻井の合計</td></tr>
+      <tr><td>業務委託費</td><td>要精緻化</td><td>要精緻化</td><td>★どの水準に抑えるか要検討</td></tr>
+      <tr><td>社保・労務</td><td>&yen;15万</td><td>&yen;180万</td><td></td></tr>
+      <tr><td>オフィス・ツール・税務・その他</td><td>&yen;15万</td><td>&yen;180万</td><td></td></tr>
+    </table>
+
+    <div class="discuss-box">
+      <h4>コスト計算の残課題</h4>
+      <ul>
+        <li>業務委託費の水準（どのくらいに抑えるか）</li>
+        <li>特別支出の整理（CEATEC、HW R&amp;D、営業資料、KataribeAI等）</li>
+        <li>売上はこれでいいが、<strong>コスト計算はまだ精緻化が必要</strong></li>
+      </ul>
+    </div>
+
+    <h3>P&amp;L サマリー</h3>
+    <table>
+      <tr><th>項目</th><th>金額</th></tr>
+      <tr><td>売上合計</td><td>&yen;12,500万</td></tr>
+      <tr><td>コスト合計</td><td>精緻化中（役員報酬&yen;1,200万 + 業務委託費 + 諸経費 + 特別支出）</td></tr>
+    </table>
+    <p><em>注: 売上目標は確定。コスト側は業務委託費・特別支出の精緻化が残っている。小竹の稼働限界がスケールの天井。Year 2以降はエンジニア採用でコスト増。</em></p>
+
+    <h3>3ヵ年見通し</h3>
+    <table>
+      <tr><th>年度</th><th>売上目標</th><th>ポイント</th></tr>
+      <tr><td>Year 1（FY2026）</td><td>&yen;1.25億</td><td>4カテゴリで新規&yen;7,000万獲得</td></tr>
+      <tr><td>Year 2（FY2027）</td><td>&yen;1.8-2億</td><td>プロダクト急成長。エンジニア1名採用</td></tr>
+      <tr><td>Year 3（FY2028）</td><td>&yen;2.5-3億</td><td>プロダクト売上が既存コンサルを上回る。スケール判定</td></tr>
+    </table>
+
+    <div class="discuss-box">
+      <h4>確認が必要な数字</h4>
+      <ol>
+        <li>小竹の月額報酬</li>
+        <li>辻井の報酬形態・金額</li>
+        <li>期首現預金</li>
+        <li>法人税の概算</li>
+        <li>既存クライアントの継続見通し</li>
+      </ol>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 7: ロードマップ -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">7</div>
+    <div class="section-title">ロードマップ &mdash; 明日から何をするか</div>
+    <span class="section-badge badge-new">最重要</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>全体タイムライン</h3>
+<div class="diagram">2026年3月 --- 6月 --- 7月 --- 9月 --- 12月 --- 2027年3月 --- 2028年3月
+  |           |        |       |        |           |              |
+  v           v        v       v        v           v              v
+Sprint 0    Sprint 1         Sprint 2  Sprint 3   Year 2 Q1     Year 3
+土台作り     最初の    ★ものづくり  CEATEC   商談→    エンジニア     スケール
++HP刷新     PoC      ワールド    +H.C.R.  Year 1   採用          判定
++広報設計   +広報     フィジカル   +技能記録  締め    +KataribeAI
++営業基盤   本格化    AI展               +論文    商用開始</div>
+
+    <h3>5つの並行トラック</h3>
+    <table>
+      <tr><th>トラック</th><th>内容</th><th>担当</th></tr>
+      <tr><td><strong>1. プロダクト開発</strong></td><td>WazaAI: PoC&rarr;技能記録&rarr;トレーニングツール / KataribeAI: R&D</td><td>小竹</td></tr>
+      <tr><td><strong>2. 資金エンジン</strong></td><td>既存維持 + AI駆動開発 + 中小DX + Physical AIコンサル</td><td>小竹+営業</td></tr>
+      <tr><td><strong>3. 広報/ブランド</strong></td><td>HP更新 / ブログ月2本 / SNS日次 / AI広報キャラ / 展示会 / 論文</td><td>小竹</td></tr>
+      <tr><td><strong>4. 営業基盤</strong></td><td>会社紹介・資料 / パイプライン管理 / パートナー戦略</td><td>営業</td></tr>
+      <tr><td><strong>5. 組織/インフラ</strong></td><td>採用計画 / ツール整備 / 月次P/L管理</td><td>小竹+営業</td></tr>
+    </table>
+
+    <h3>Sprint 0: 土台作り（3月&ndash;5月）</h3>
+    <p><strong>テーマ</strong>: 「売るための武器を揃え、資金エンジンを始動し、広報を立ち上げる」</p>
+
+    <h4>小竹のタスク</h4>
+    <table>
+      <tr><th>#</th><th>タスク</th><th>期限</th></tr>
+      <tr><td>S0-1</td><td>WazaAI プロトタイプ構築（RPi5 + AI HAT+ 2）</td><td>4月末</td></tr>
+      <tr><td>S0-2</td><td>技術ブログ第1弾「RPi5で工場の骨格分析を作った話」</td><td>3月末</td></tr>
+      <tr><td>S0-3</td><td>技術ブログ第2弾「Privacy by Designで介護のカメラ問題を解決する」</td><td>4月末</td></tr>
+      <tr><td>S0-4</td><td>にからすHP刷新（「AIで現実を変える」に書き換え）</td><td>4月末</td></tr>
+      <tr><td>S0-5</td><td>WazaAI デモ動画（30秒）撮影</td><td>5月末</td></tr>
+      <tr><td>S0-6</td><td>ものづくり補助金 申請準備</td><td>4月中旬</td></tr>
+      <tr style="background:#fef9c3;"><td>S0-6b</td><td><strong>持続化補助金 申請（展示会出展費2/3補助）★締切4/30</strong></td><td><strong>4/30</strong></td></tr>
+      <tr style="background:#dcfce7;"><td>S0-6c</td><td><strong>ものづくりワールド2026 フィジカルAI展 出展申込★最重要</strong></td><td>5月末</td></tr>
+      <tr><td>S0-7</td><td>KataribeAI プロトタイプ開発（余暇）</td><td>5月末</td></tr>
+      <tr><td>S0-8</td><td>AI広報キャラクター 初期設計</td><td>5月末</td></tr>
+      <tr><td>S0-9</td><td>杉江商会 Claude Code経営パッケージ提案準備</td><td>4月末</td></tr>
+    </table>
+
+    <h4>営業タスク</h4>
+    <table>
+      <tr><th>#</th><th>タスク</th><th>期限</th></tr>
+      <tr><td>S0-10</td><td>にからす会社紹介（1枚もの）作成</td><td>3月末</td></tr>
+      <tr><td>S0-11</td><td>WazaAI サービス紹介資料作成</td><td>3月中旬</td></tr>
+      <tr><td>S0-12</td><td>中小DX パッケージ商品設計</td><td>3月末</td></tr>
+      <tr><td>S0-13</td><td>既存ネットワークへのアプローチ開始</td><td>4月</td></tr>
+      <tr><td>S0-14</td><td>補助金 共同申請パートナー候補特定</td><td>4月中旬</td></tr>
+      <tr><td>S0-15</td><td>ROI試算シート作成</td><td>4月末</td></tr>
+    </table>
+
+    <h3>3月の即時アクション</h3>
+    <p><strong>今日（3/2）から何をするか:</strong></p>
+
+    <h4>今週（3/2&ndash;3/7）</h4>
+    <table>
+      <tr><th>#</th><th>アクション</th><th>担当</th></tr>
+      <tr><td>1</td><td>事業計画の完成・承認</td><td>小竹</td></tr>
+      <tr><td>2</td><td>Sharp報告書ドラフト最終確認</td><td>小竹</td></tr>
+      <tr><td>3</td><td>にからすHP（Vercel）のリポジトリ確認・クローン</td><td>小竹</td></tr>
+      <tr><td>4</td><td>月次P/L管理のスプレッドシート作成</td><td>小竹</td></tr>
+      <tr style="background:#fef9c3;"><td>5</td><td><strong>★H.C.R. 2026 出展判断（申込期限3/31）</strong></td><td>小竹</td></tr>
+    </table>
+
+    <h4>3月中旬（3/8&ndash;3/15）</h4>
+    <table>
+      <tr><th>#</th><th>アクション</th><th>担当</th></tr>
+      <tr><td>6</td><td>技術ブログ第1弾の執筆開始</td><td>小竹</td></tr>
+      <tr><td>7</td><td>RPi5プロトタイプ開発開始</td><td>小竹</td></tr>
+      <tr><td>8</td><td>SNS発信の方針決定（X/LinkedIn主軸選定）</td><td>小竹</td></tr>
+    </table>
+
+    <h4>3月下旬（3/16&ndash;3/31）</h4>
+    <table>
+      <tr><th>#</th><th>アクション</th><th>担当</th></tr>
+      <tr><td>9</td><td>技術ブログ第1弾公開</td><td>小竹</td></tr>
+      <tr><td>10</td><td>にからすHP刷新開始</td><td>小竹</td></tr>
+      <tr><td>11</td><td>Sharp報告書提出</td><td>小竹</td></tr>
+      <tr><td>12</td><td>会社紹介資料完成</td><td>営業</td></tr>
+      <tr><td>13</td><td>杉江商会Claude Codeパッケージ提案の準備開始</td><td>営業 + 小竹</td></tr>
+    </table>
+
+    <h3>Sprint 1-3（6月以降）</h3>
+    <table>
+      <tr><th>Sprint</th><th>期間</th><th>テーマ</th><th>主要成果</th></tr>
+      <tr>
+        <td><strong>Sprint 1</strong></td><td>6-8月</td>
+        <td>最初のPoC + 資金エンジン始動</td>
+        <td>WazaAI PoC 2件 / <strong>★ものづくりワールド出展(7月)</strong> / CEATEC申込 / 杉江商会提案</td>
+      </tr>
+      <tr>
+        <td><strong>Sprint 2</strong></td><td>9-10月</td>
+        <td>CEATEC + H.C.R. + 技能記録</td>
+        <td>CEATEC出展 / H.C.R.出展 / トレーニングツール月額化 / 論文テーマ確定</td>
+      </tr>
+      <tr>
+        <td><strong>Sprint 3</strong></td><td>11-2月</td>
+        <td>商談&rarr;受注 + Year 1締め</td>
+        <td>CEATECリード刈り取り / Physical AIコンサル初案件 / 論文ドラフト / Year 2計画</td>
+      </tr>
+    </table>
+
+    <h3>Year 1 マイルストーン判定（2月末）</h3>
+    <p>Year 1終了時に以下を振り返り、Year 2の投資配分とピボット判断を行う。</p>
+    <table>
+      <tr><th>カテゴリ</th><th>判定項目</th><th>目標基準</th><th>最低ライン</th></tr>
+      <tr><td rowspan="3"><strong>プロダクト</strong></td><td>WazaAI PoC完了数</td><td>2件</td><td>1件</td></tr>
+      <tr><td>トレーニングツール月額契約</td><td>1ライン以上</td><td>PoC段階でも可</td></tr>
+      <tr><td>技能記録プロジェクト</td><td>1件完了</td><td>受注済み</td></tr>
+      <tr><td rowspan="2"><strong>中小DX</strong></td><td>パッケージ販売数</td><td>7-10件</td><td>3件</td></tr>
+      <tr><td>杉江商会からの紹介展開</td><td>紹介3件+</td><td>紹介1件</td></tr>
+      <tr><td><strong>AI駆動開発</strong></td><td>新規受注</td><td>3-4件</td><td>問い合わせ発生</td></tr>
+      <tr><td><strong>Physical AI</strong></td><td>コンサル/開発受注</td><td>2-3件</td><td>1件</td></tr>
+      <tr><td rowspan="2"><strong>ブランド</strong></td><td>技術ブログ/SNSからの問い合わせ</td><td>月3件+</td><td>月1件</td></tr>
+      <tr><td>展示会リード（ものづくりW+CEATEC）</td><td>80件+</td><td>30件</td></tr>
+      <tr style="font-weight:700; background:#f0f9ff;"><td><strong>売上</strong></td><td>FY2026合計</td><td>&yen;1.25億</td><td>&yen;8,500万（既存+新規30%）</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 8: 残論点 -->
+<!-- ================================================================== -->
+<div class="section open">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">8</div>
+    <div class="section-title">残論点 &mdash; MTGで決めること</div>
+    <span class="section-badge badge-discuss">要議論</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>A. 事業構造に関する論点</h3>
+    <table>
+      <tr><th>#</th><th>論点</th><th>現状の仮説</th></tr>
+      <tr>
+        <td>1</td>
+        <td><strong>As-Is/To-Beの事業構造</strong></td>
+        <td>&sect;1の因果ループ。この構造で進めてよいか</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>&yen;1.25億目標の達成可能性</strong></td>
+        <td>4カテゴリの内訳（4:3:2:1）</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>辻井の時間配分</strong></td>
+        <td>中小DX vs WazaAI vs AI駆動開発</td>
+      </tr>
+    </table>
+
+    <h3>B. 商品・営業に関する論点</h3>
+    <table>
+      <tr><th>#</th><th>論点</th><th>現状の仮説</th></tr>
+      <tr>
+        <td>4</td>
+        <td><strong>中小DXパッケージの商品設計</strong></td>
+        <td>概念のみ。名前・価格・内容は未定</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>AI駆動開発の見せ方</strong></td>
+        <td>「開発環境を見せる」は概念</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>WazaAI PoC &yen;50万は適正か</strong></td>
+        <td>海外比較では安い（入口として機能）</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>パイプライン転換率</strong></td>
+        <td>25%&rarr;50%&rarr;40%</td>
+      </tr>
+    </table>
+
+    <h3>C. 体制・運営に関する論点</h3>
+    <table>
+      <tr><th>#</th><th>論点</th><th>現状の仮説</th></tr>
+      <tr>
+        <td>8</td>
+        <td><strong>辻井の報酬形態</strong></td>
+        <td>&yen;30万/月（業務委託）。取締役 vs 業務委託</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>3月の時間の使い方</strong></td>
+        <td>何に時間を使うか、どう動くか</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>定例ミーティングの頻度</strong></td>
+        <td>週次 or 隔週</td>
+      </tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- Section 9: 管理フレームワーク -->
+<!-- ================================================================== -->
+<div class="section">
+  <div class="section-header" onclick="toggle(this)">
+    <div class="section-num">9</div>
+    <div class="section-title">管理フレームワーク &mdash; どう回すか</div>
+    <span class="section-badge badge-done">確定</span>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+
+    <h3>意思決定の分担</h3>
+    <table>
+      <tr><th>領域</th><th>小竹が決める</th><th>辻井が決める</th><th>一緒に決める</th></tr>
+      <tr>
+        <td><strong>プロダクト</strong></td>
+        <td>技術選定、開発優先度、HW設計</td>
+        <td>&mdash;</td>
+        <td>価格設定、PoC対象企業</td>
+      </tr>
+      <tr>
+        <td><strong>中小DX</strong></td>
+        <td>Claude Code技術提供</td>
+        <td><strong>パッケージ設計、価格、売り方</strong></td>
+        <td>ターゲット企業</td>
+      </tr>
+      <tr>
+        <td><strong>営業</strong></td>
+        <td>&mdash;</td>
+        <td>営業スクリプト、アプローチ先、商談プロセス</td>
+        <td>価格交渉の下限、パートナー選定</td>
+      </tr>
+      <tr>
+        <td><strong>ブランド</strong></td>
+        <td>技術ブログ、HP、AI広報キャラクター</td>
+        <td>営業資料のトーン</td>
+        <td>ポジショニング、メッセージング</td>
+      </tr>
+      <tr>
+        <td><strong>財務</strong></td>
+        <td>投資配分、コスト管理</td>
+        <td>&mdash;</td>
+        <td>辻井の報酬形態、エンジニア採用</td>
+      </tr>
+      <tr>
+        <td><strong>戦略</strong></td>
+        <td>プロダクト方向性、撤退判断</td>
+        <td>&mdash;</td>
+        <td>バーティカル選択、成長戦略</td>
+      </tr>
+    </table>
+
+    <h3>KPIダッシュボード</h3>
+    <table>
+      <tr><th>KPI</th><th>Year 1目標</th><th>計測方法</th></tr>
+      <tr><td>月次売上合計</td><td>&yen;1,040万+/月</td><td>請求書ベース</td></tr>
+      <tr><td>新規売上比率</td><td>年末56%</td><td>新規/全売上</td></tr>
+      <tr><td>AI駆動開発 新規受注</td><td>3-4件/年</td><td>契約ベース</td></tr>
+      <tr><td>中小DX パッケージ販売</td><td>7-10件/年</td><td>契約ベース</td></tr>
+      <tr><td>Physical AI 案件受注</td><td>2-3件/年</td><td>契約ベース</td></tr>
+      <tr><td>技術ブログ</td><td>24本/年（月2本）</td><td>Qiita/Zenn投稿数</td></tr>
+      <tr><td>ブログ月間PV</td><td>5,000+</td><td>各プラットフォーム</td></tr>
+      <tr><td>展示会リード</td><td>50件/CEATEC</td><td>名刺交換</td></tr>
+      <tr><td>既存離脱率</td><td>0%</td><td>契約更新</td></tr>
+    </table>
+
+    <h3>レビューサイクル</h3>
+    <table>
+      <tr><th>頻度</th><th>内容</th><th>担当</th></tr>
+      <tr><td>週次</td><td>パイプライン更新、問い合わせ対応状況</td><td>営業</td></tr>
+      <tr><td>月次</td><td>全KPIレビュー、P&amp;L確認、カテゴリ別売上分析</td><td>小竹 + 営業</td></tr>
+      <tr><td>四半期</td><td>戦略見直し、目標修正、投資判断</td><td>小竹 + 営業</td></tr>
+    </table>
+
+    <h3>撤退・ピボット判断</h3>
+    <table>
+      <tr><th>時期</th><th>判断内容</th><th>基準</th></tr>
+      <tr><td>6ヶ月（8月末）</td><td>WazaAIの継続判断</td><td>PoC 0件 &rarr; 撤退検討</td></tr>
+      <tr><td>6ヶ月（8月末）</td><td>中小DXの継続判断</td><td>杉江不成立 + 紹介ゼロ &rarr; 見直し</td></tr>
+      <tr><td>12ヶ月（2月末）</td><td>Year 2の投資配分</td><td>「続けたい」顧客0社 &rarr; ピボット</td></tr>
+      <tr><td>24ヶ月</td><td>KataribeAI商用判断</td><td>施設テスト結果次第</td></tr>
+      <tr><td>36ヶ月</td><td>HWスケール判断</td><td>Sharp DFM + プロダクト売上30%+ &rarr; GO</td></tr>
+    </table>
+
+    <h3>この後のアクション</h3>
+    <table>
+      <tr><th>#</th><th>アクション</th><th>担当</th><th>期限</th></tr>
+      <tr><td>1</td><td>このブリーフィングを読み込む</td><td>辻井</td><td>MTG前日まで</td></tr>
+      <tr><td>2</td><td>MTGで「残論点」（&sect;8）を議論</td><td>辻井 + 小竹</td><td>次回MTG</td></tr>
+      <tr><td>3</td><td>MTG結果を反映してD1-D7を更新</td><td>小竹</td><td>MTG後3日以内</td></tr>
+      <tr><td>4</td><td>定例ミーティングの曜日・時間を決める</td><td>辻井 + 小竹</td><td>MTGで</td></tr>
+      <tr><td>5</td><td>会社紹介資料（1枚もの）のドラフト</td><td>辻井</td><td>3月末</td></tr>
+      <tr><td>6</td><td>中小DXパッケージ商品設計の初版</td><td>辻井</td><td>3月末</td></tr>
+    </table>
+
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  にからす事業戦略ブリーフィング v3<br>
+  詳細は各ドキュメントを参照: D1(事業定義), D2(スタートアップ定義), D3(市場分析), D4(サービス設計), D5(GTM), D6(財務), D7(ロードマップ), D8(Sharp報告)
+</div>
+
+<script>
+function toggle(header) {
+  header.closest('.section').classList.toggle('open');
+}
+</script>
+</body>
+</html>

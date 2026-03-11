@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nikarasu strategy — I7/I8/I9 Review</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #14141f;
+    --surface2: #1c1c2e;
+    --border: #2a2a40;
+    --text: #e0e0e8;
+    --text-dim: #8888a0;
+    --accent: #7c5cfc;
+    --accent-glow: #7c5cfc44;
+    --must: #ff4d6a;
+    --should: #ffb020;
+    --could: #40c8ff;
+    --wont: #666680;
+    --green: #40e870;
+    --orange: #ff8c40;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    background: linear-gradient(180deg, #12102a 0%, var(--bg) 100%);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff 0%, #b8a0ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+  .hero .product-name {
+    display: inline-block;
+    padding: 6px 20px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Nav */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav a {
+    padding: 10px 24px;
+    border-radius: 8px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav a:hover, .nav a.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+  .nav a .badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .nav a .badge.red { background: var(--must); color: #fff; }
+  .nav a .badge.yellow { background: var(--should); color: #000; }
+  .nav a .badge.blue { background: var(--could); color: #fff; }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Section */
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .section-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-bottom: 40px;
+    max-width: 700px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .card p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  /* MoSCoW Feature Cards */
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: start;
+    transition: all 0.3s;
+  }
+  .feature-card.selected-must { border-color: var(--must); background: #ff4d6a08; }
+  .feature-card.selected-should { border-color: var(--should); background: #ffb02008; }
+  .feature-card.selected-could { border-color: var(--could); background: #40c8ff08; }
+  .feature-card.selected-wont { border-color: var(--wont); background: #66668008; }
+
+  .feature-id {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .feature-id.must { background: var(--must); color: #fff; }
+  .feature-id.should { background: var(--should); color: #000; }
+  .feature-id.could { background: var(--could); color: #fff; }
+
+  .feature-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .feature-desc {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    margin-bottom: 8px;
+  }
+  .feature-tech {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+  .feature-tech.high { border-color: var(--must); color: var(--must); }
+  .feature-tech.mid { border-color: var(--should); color: var(--should); }
+  .feature-tech.low { border-color: var(--green); color: var(--green); }
+
+  /* Moscow Buttons */
+  .moscow-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 100px;
+  }
+  .moscow-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .moscow-btn:hover { border-color: var(--text); color: var(--text); }
+  .moscow-btn.active-must { background: var(--must); color: #fff; border-color: var(--must); }
+  .moscow-btn.active-should { background: var(--should); color: #000; border-color: var(--should); }
+  .moscow-btn.active-could { background: var(--could); color: #fff; border-color: var(--could); }
+  .moscow-btn.active-wont { background: var(--wont); color: #fff; border-color: var(--wont); }
+
+  /* Proposed label */
+  .proposed {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 4px;
+    font-style: italic;
+  }
+
+  /* Summary strip */
+  .moscow-summary {
+    display: flex;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+  }
+  .moscow-summary .stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .moscow-summary .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+  .moscow-summary .dot.must { background: var(--must); }
+  .moscow-summary .dot.should { background: var(--should); }
+  .moscow-summary .dot.could { background: var(--could); }
+  .moscow-summary .dot.wont { background: var(--wont); }
+  .moscow-summary .count {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  .moscow-summary .label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  /* Questions */
+  .question-box {
+    background: linear-gradient(135deg, #1a1535, #1c1c2e);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .question-box h4 {
+    color: var(--accent);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .question-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .question-box li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+  .question-box li:last-child { border-bottom: none; }
+  .question-box li::before {
+    content: '?';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -40px;
+    top: 6px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    z-index: 1;
+  }
+  .timeline-dot.s1 { background: #6c5ce7; }
+  .timeline-dot.s2 { background: #0984e3; }
+  .timeline-dot.s3 { background: #00b894; }
+  .timeline-dot.s4 { background: #e17055; }
+  .timeline-dot.gonogo { background: var(--must); width: 36px; height: 36px; left: -42px; top: 4px; }
+
+  .timeline-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .timeline-content h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .timeline-content .period {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .timeline-content .goal {
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* Tasks table in timeline */
+  .task-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  .task-table th {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+  .task-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #1a1a2e;
+  }
+  .task-table tr:last-child td { border-bottom: none; }
+
+  .badge-small {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .badge-small.eng { background: #6c5ce720; color: #a78bfa; }
+  .badge-small.owner { background: #ffb02020; color: #ffb020; }
+  .badge-small.both { background: #40e87020; color: #40e870; }
+
+  /* Effort */
+  .effort-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+  }
+  .effort-bar .bar {
+    flex: 1;
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .effort-bar .fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s;
+  }
+  .effort-bar .label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    min-width: 80px;
+    text-align: right;
+  }
+  .effort-bar .value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 50px;
+  }
+
+  /* Go/No-Go */
+  .gonogo-card {
+    background: linear-gradient(135deg, #2a1020, #1c1c2e);
+    border: 2px solid var(--must);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .gonogo-card h3 {
+    color: var(--must);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .gonogo-criteria {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .gonogo-item {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+  }
+  .gonogo-item .gn-id {
+    color: var(--must);
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .gonogo-item .gn-text {
+    font-size: 0.88rem;
+  }
+
+  /* Sharp report */
+  .report-structure {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .chapter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chapter-card::before {
+    content: attr(data-chapter);
+    position: absolute;
+    top: -10px;
+    right: -5px;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(124,92,252,0.08);
+    pointer-events: none;
+  }
+  .chapter-card .ch-num {
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .chapter-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .chapter-card .pages {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .chapter-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .chapter-card li {
+    padding: 4px 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .chapter-card li::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* Tone */
+  .tone-card {
+    background: linear-gradient(135deg, #15102a, #1a1528);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    text-align: center;
+  }
+  .tone-card .quote {
+    font-size: 1.3rem;
+    font-weight: 600;
+    font-style: italic;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff, #b8a0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tone-card .meaning {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  /* Collab options */
+  .collab-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .collab-option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .collab-option:hover { border-color: var(--accent); }
+  .collab-option.recommended { border-color: var(--green); }
+  .collab-option .opt-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .collab-option h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .collab-option p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .collab-option .rec-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--green);
+    color: #000;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  /* KPI Dashboard */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .kpi-card .kpi-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .kpi-card .kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .kpi-card .kpi-target {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .kpi-card .kpi-value.money { color: var(--green); }
+  .kpi-card .kpi-value.percent { color: var(--accent); }
+  .kpi-card .kpi-value.time { color: var(--should); }
+  .kpi-card .kpi-value.count { color: var(--could); }
+
+  /* Revenue layers */
+  .revenue-layers {
+    display: flex;
+    gap: 0;
+    margin: 24px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 60px;
+  }
+  .rev-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: flex 0.3s;
+  }
+  .rev-layer.jutaku { background: #6c5ce7; flex: 4; }
+  .rev-layer.product { background: #00b894; flex: 4; }
+  .rev-layer.inbound { background: #fdcb6e; color: #000; flex: 2; }
+
+  .rev-labels {
+    display: flex;
+    gap: 0;
+    margin-top: 4px;
+  }
+  .rev-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-align: center;
+  }
+  .rev-label.jutaku { flex: 4; }
+  .rev-label.product { flex: 4; }
+  .rev-label.inbound { flex: 2; }
+
+  /* MF options */
+  .mf-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .mf-option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .mf-option .feasibility {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .mf-option .feasibility.high { color: var(--green); }
+  .mf-option .feasibility.mid { color: var(--should); }
+  .mf-option .feasibility.ok { color: var(--could); }
+  .mf-option h5 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .mf-option p {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+
+  /* Schedule */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 16px 0;
+  }
+  .schedule-table th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+  .schedule-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #1a1a2e;
+  }
+  .schedule-table tr:last-child td { border-bottom: none; }
+
+  /* Lifestyle KPIs */
+  .lifestyle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .lifestyle-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .lifestyle-card .current {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--must);
+  }
+  .lifestyle-card .arrow {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    margin: 4px 0;
+  }
+  .lifestyle-card .target {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .lifestyle-card .ll-label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* Export section */
+  .export-section {
+    text-align: center;
+    padding: 60px 0;
+  }
+  .export-btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .export-btn:hover {
+    background: #6a48e8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-glow);
+  }
+  .export-result {
+    margin-top: 24px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-align: left;
+    font-family: 'SF Mono', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    display: none;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Risk */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .risk-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .risk-item .risk-level {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .risk-item .risk-level.high { color: var(--must); }
+  .risk-item .risk-level.mid { color: var(--should); }
+  .risk-item .risk-level.low { color: var(--green); }
+  .risk-item h5 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .risk-item p {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+
+  /* Prereqs */
+  .prereq-list {
+    list-style: none;
+    padding: 0;
+  }
+  .prereq-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  .prereq-list .prereq-id {
+    background: var(--surface2);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .nav { flex-wrap: wrap; }
+    .feature-card { grid-template-columns: 1fr; }
+    .moscow-btns { flex-direction: row; }
+    .gonogo-criteria { grid-template-columns: 1fr; }
+    .collab-options { grid-template-columns: 1fr; }
+    .lifestyle-grid { grid-template-columns: 1fr; }
+    .report-structure { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="product-name">Spatial AI Orchestration</div>
+  <h1 style="margin-top: 20px;">Strategy Review</h1>
+  <p class="subtitle">
+    I7 / I8 / I9 — MVP機能の仕分け、開発計画の確認、経営管理フレームワーク。<br>
+    全てのセクションを確認して、フィードバックを返してください。
+  </p>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+  <a href="#i7" class="active">I7: MoSCoW仕分け <span class="badge red">判断</span></a>
+  <a href="#i8">I8: WBS + Sharp <span class="badge yellow">確認</span></a>
+  <a href="#i9">I9: 経営管理 <span class="badge blue">情報</span></a>
+  <a href="#export">結果エクスポート</a>
+</div>
+
+<div class="container">
+
+<!-- ============================================ -->
+<!-- I7: MoSCoW -->
+<!-- ============================================ -->
+<section id="i7">
+  <div class="section-header">
+    <div class="section-number">I7</div>
+    <div class="section-title">MVP機能のMoSCoW仕分け</div>
+  </div>
+  <p class="section-desc">
+    各機能に <strong>Must / Should / Could / Won't</strong> を割り当てる。
+    右側のボタンで選択。Claude提案の分類が初期値として入っているので、変更したいものだけ変えればOK。
+  </p>
+
+  <!-- Summary -->
+  <div class="moscow-summary" id="moscowSummary">
+    <div class="stat"><div class="dot must"></div><span class="count" id="mustCount">6</span><span class="label">Must</span></div>
+    <div class="stat"><div class="dot should"></div><span class="count" id="shouldCount">7</span><span class="label">Should</span></div>
+    <div class="stat"><div class="dot could"></div><span class="count" id="couldCount">4</span><span class="label">Could</span></div>
+    <div class="stat"><div class="dot wont"></div><span class="count" id="wontCount">5</span><span class="label">Won't</span></div>
+  </div>
+
+  <div class="divider">Must 提案（なければMVPと呼べない）</div>
+
+  <div id="mustFeatures">
+    <div class="feature-card selected-must" data-id="M1" data-current="must">
+      <div>
+        <div><span class="feature-id must">M1</span><span class="feature-name">音声指示 → エージェント制御</span></div>
+        <div class="feature-desc">「chibicのIssue確認して」「このファイル修正して」等の音声でClaude Codeセッションに指示を送る</div>
+        <div><span class="feature-tech mid">技術難度: 中</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Must</div>
+        <button class="moscow-btn active-must" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-must" data-id="M2" data-current="must">
+      <div>
+        <div><span class="feature-id must">M2</span><span class="feature-name">視線ベースのフォーカス切替</span></div>
+        <div class="feature-desc">見ている画面のエージェントがアクティブになる。声で指示 → 見ている画面のエージェントに届く</div>
+        <div><span class="feature-tech high">技術難度: 高</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Must</div>
+        <button class="moscow-btn active-must" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-must" data-id="M3" data-current="must">
+      <div>
+        <div><span class="feature-id must">M3</span><span class="feature-name">マルチエージェント同時稼働</span></div>
+        <div class="feature-desc">最低3つのClaude Codeセッションが異なる画面で同時並行</div>
+        <div><span class="feature-tech mid">技術難度: 中</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Must</div>
+        <button class="moscow-btn active-must" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-must" data-id="M4" data-current="must">
+      <div>
+        <div><span class="feature-id must">M4</span><span class="feature-name">全体ダッシュボード</span></div>
+        <div class="feature-desc">全エージェントの状態（idle/working/waiting/error）を1画面に表示</div>
+        <div><span class="feature-tech low">技術難度: 低</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Must</div>
+        <button class="moscow-btn active-must" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-must" data-id="M5" data-current="must">
+      <div>
+        <div><span class="feature-id must">M5</span><span class="feature-name">文脈統合（カレンダー+タスク）</span></div>
+        <div class="feature-desc">Google Calendar + TASKS.mdの情報をエージェント群が共有。MCPは既に動作済み</div>
+        <div><span class="feature-tech low">技術難度: 低（MCP既存）</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Must</div>
+        <button class="moscow-btn active-must" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-must" data-id="M6" data-current="must">
+      <div>
+        <div><span class="feature-id must">M6</span><span class="feature-name">指差し + 直示表現（「これ」「あれ」）</span></div>
+        <div class="feature-desc">指差しでスクリーン/要素を指定し、「これ直して」「あれと比較して」等の直示表現と組み合わせる</div>
+        <div><span class="feature-tech high">技術難度: 高</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Must</div>
+        <button class="moscow-btn active-must" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">Should 提案（あると体験が大きく変わる）</div>
+
+  <div id="shouldFeatures">
+    <div class="feature-card selected-should" data-id="S1" data-current="should">
+      <div>
+        <div><span class="feature-id should">S1</span><span class="feature-name">頷き・表情認識</span></div>
+        <div class="feature-desc">頷き→承認、首振り→拒否、表情（困惑等）→エージェントが説明を補足。非言語的フィードバック</div>
+        <div><span class="feature-tech high">技術難度: 高</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-should" data-id="S2" data-current="should">
+      <div>
+        <div><span class="feature-id should">S2</span><span class="feature-name">エージェント音声応答</span></div>
+        <div class="feature-desc">エージェントが音声で報告・質問。「chibicの修正完了しました」「この方針でいいですか？」。双方向音声会話</div>
+        <div><span class="feature-tech mid">技術難度: 中</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-should" data-id="S3" data-current="should">
+      <div>
+        <div><span class="feature-id should">S3</span><span class="feature-name">リッチ出力レンダリング</span></div>
+        <div class="feature-desc">エージェントがHTML/JSX/パワポを生成 → 画面にリアルタイムレンダリング。Artifact的な視覚説明</div>
+        <div><span class="feature-tech mid">技術難度: 中</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-should" data-id="S4" data-current="should">
+      <div>
+        <div><span class="feature-id should">S4</span><span class="feature-name">エージェント間パイプ</span></div>
+        <div class="feature-desc">Agent Aの出力をAgent Bの入力に自動接続。「これ終わったら3に渡して」</div>
+        <div><span class="feature-tech mid">技術難度: 中</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-should" data-id="S5" data-current="should">
+      <div>
+        <div><span class="feature-id should">S5</span><span class="feature-name">ジェスチャー操作（拡張）</span></div>
+        <div class="feature-desc">手を挙げる→承認、手を振る→キャンセル、動作パターンによるモード切替</div>
+        <div><span class="feature-tech high">技術難度: 高</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-should" data-id="S6" data-current="should">
+      <div>
+        <div><span class="feature-id should">S6</span><span class="feature-name">エージェントキャラクター</span></div>
+        <div class="feature-desc">各エージェントにアバター/アイコンを表示。識別性+親しみ</div>
+        <div><span class="feature-tech low">技術難度: 低</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-should" data-id="S7" data-current="should">
+      <div>
+        <div><span class="feature-id should">S7</span><span class="feature-name">プロジェクト状態統合</span></div>
+        <div class="feature-desc">各プロジェクトの.context/STATUS.mdを自動読み込み・ダッシュボードに反映</div>
+        <div><span class="feature-tech low">技術難度: 低（既存仕組み）</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Should</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn active-should" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">Could 提案（あれば嬉しい）</div>
+
+  <div id="couldFeatures">
+    <div class="feature-card selected-could" data-id="C1" data-current="could">
+      <div>
+        <div><span class="feature-id could">C1</span><span class="feature-name">適応的画面配置</span></div>
+        <div class="feature-desc">コンテンツ種別に応じて最適な画面に自動配置</div>
+        <div><span class="feature-tech mid">技術難度: 中</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Could</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn active-could" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-could" data-id="C2" data-current="could">
+      <div>
+        <div><span class="feature-id could">C2</span><span class="feature-name">動画生成表示</span></div>
+        <div class="feature-desc">エージェントが説明動画を生成→画面で再生</div>
+        <div><span class="feature-tech high">技術難度: 高</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Could</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn active-could" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-could" data-id="C3" data-current="could">
+      <div>
+        <div><span class="feature-id could">C3</span><span class="feature-name">セッション記録</span></div>
+        <div class="feature-desc">1日の作業ログを自動生成（STATUS.md/CHANGES.md自動更新）</div>
+        <div><span class="feature-tech low">技術難度: 低</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Could</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn active-could" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+
+    <div class="feature-card selected-could" data-id="C4" data-current="could">
+      <div>
+        <div><span class="feature-id could">C4</span><span class="feature-name">姿勢ベースのモード切替</span></div>
+        <div class="feature-desc">立つ=俯瞰モード、座る=集中モード、歩く=レビューモード</div>
+        <div><span class="feature-tech high">技術難度: 高</span></div>
+      </div>
+      <div class="moscow-btns">
+        <div class="proposed">Claude提案: Could</div>
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn active-could" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">Won't（MVPでは明確にやらない）</div>
+
+  <div id="wontFeatures">
+    <div class="feature-card selected-wont" data-id="W1" data-current="wont">
+      <div>
+        <div class="feature-name" style="color: var(--text-dim);">W1: 家全体の展開</div>
+        <div class="feature-desc">1部屋で完結がスコープ</div>
+      </div>
+      <div class="moscow-btns">
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn active-wont" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+    <div class="feature-card selected-wont" data-id="W2" data-current="wont">
+      <div>
+        <div class="feature-name" style="color: var(--text-dim);">W2: Cursor/Devin統合</div>
+        <div class="feature-desc">Phase 1はClaude Codeのみ</div>
+      </div>
+      <div class="moscow-btns">
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn active-wont" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+    <div class="feature-card selected-wont" data-id="W3" data-current="wont">
+      <div>
+        <div class="feature-name" style="color: var(--text-dim);">W3: 高齢者向けUI</div>
+        <div class="feature-desc">Phase 4+の派生</div>
+      </div>
+      <div class="moscow-btns">
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn active-wont" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+    <div class="feature-card selected-wont" data-id="W4" data-current="wont">
+      <div>
+        <div class="feature-name" style="color: var(--text-dim);">W4: ハードウェア筐体設計</div>
+        <div class="feature-desc">開発ボード+既存ディスプレイで十分</div>
+      </div>
+      <div class="moscow-btns">
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn active-wont" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+    <div class="feature-card selected-wont" data-id="W5" data-current="wont">
+      <div>
+        <div class="feature-name" style="color: var(--text-dim);">W5: モバイルアプリ</div>
+        <div class="feature-desc">部屋にいる時だけ使う</div>
+      </div>
+      <div class="moscow-btns">
+        <button class="moscow-btn" onclick="setMoscow(this, 'must')">Must</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'should')">Should</button>
+        <button class="moscow-btn" onclick="setMoscow(this, 'could')">Could</button>
+        <button class="moscow-btn active-wont" onclick="setMoscow(this, 'wont')">Won't</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-box">
+    <h4>I7 で判断してほしいこと</h4>
+    <ul>
+      <li>Must提案の中で「これはShouldでいい」ものはあるか？（特にM6: 指差しは技術難度高）</li>
+      <li>Should/Couldの中で「これはMust」に上げたいものはあるか？（S2音声応答、S3リッチ出力、S7プロジェクト状態統合あたりが候補）</li>
+      <li>Won'tに入れたいもので漏れているものはあるか？</li>
+      <li>そもそもリストに入っていない「欲しい機能」はあるか？</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- I8: WBS + Sharp -->
+<!-- ============================================ -->
+<section id="i8">
+  <div class="section-header">
+    <div class="section-number">I8</div>
+    <div class="section-title">WBS + Sharp報告書</div>
+  </div>
+  <p class="section-desc">
+    8週間4Sprint計画のスケジュール現実性と、Sharp報告書のトーン・方向性を確認。
+  </p>
+
+  <!-- Effort overview -->
+  <div class="card" style="margin-bottom: 32px;">
+    <h3>全体工数サマリー</h3>
+    <div style="margin-top: 16px;">
+      <div class="effort-bar">
+        <span class="label">エンジニア</span>
+        <div class="bar"><div class="fill" style="width: 100%; background: var(--accent);"></div></div>
+        <span class="value">38日</span>
+      </div>
+      <div class="effort-bar">
+        <span class="label">泉里（PM）</span>
+        <div class="bar"><div class="fill" style="width: 26%; background: var(--should);"></div></div>
+        <span class="value">20h</span>
+      </div>
+      <div class="effort-bar">
+        <span class="label">カレンダー</span>
+        <div class="bar"><div class="fill" style="width: 100%; background: var(--green);"></div></div>
+        <span class="value">8週間</span>
+      </div>
+    </div>
+    <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-dim);">泉里の負荷: 平均2.5h/週（週10h枠内で余裕あり）</p>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot s1">S1</div>
+      <div class="timeline-content">
+        <h3>Sprint 1 — Claude Code マルチセッション基盤</h3>
+        <div class="period">Week 1-2 / エンジニア8日 / 泉里3h</div>
+        <div class="goal">Claude Codeの3セッションをPythonスクリプトからプログラマティックに制御できる状態</div>
+        <table class="task-table">
+          <tr><th>タスク</th><th>担当</th><th>工数</th></tr>
+          <tr><td>tmux セッション管理モジュール</td><td><span class="badge-small eng">エンジニア</span></td><td>3日</td></tr>
+          <tr><td>Claude Code stream-json I/Oラッパー</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>FastAPI オーケストレーションサーバー骨格</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>WebSocket イベントバス</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>MCP設定テンプレート</td><td><span class="badge-small owner">泉里</span></td><td>0.5日</td></tr>
+          <tr><td>プロジェクト別エージェント定義</td><td><span class="badge-small owner">泉里</span></td><td>0.5日</td></tr>
+          <tr><td>基本テスト（3セッション1時間安定稼働）</td><td><span class="badge-small both">共同</span></td><td>1日</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot s2">S2</div>
+      <div class="timeline-content">
+        <h3>Sprint 2 — 音声入力 + ダッシュボード</h3>
+        <div class="period">Week 3-4 / エンジニア10日 / 泉里5h</div>
+        <div class="goal">声だけで3つのプロジェクトのエージェントに指示が出せる。全体状態が1画面で見える</div>
+        <table class="task-table">
+          <tr><th>タスク</th><th>担当</th><th>工数</th></tr>
+          <tr><td>Whisper-base音声入力パイプライン</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>Silero VAD統合（連続リスニング）</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>音声→意図解析→ルーティング</td><td><span class="badge-small eng">エンジニア</span></td><td>3日</td></tr>
+          <tr><td>直示表現解決（「これ」→フォーカス）</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>Reactダッシュボード（状態表示）</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>エージェント状態リアルタイム更新</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>泉里ワークフローでE2Eテスト</td><td><span class="badge-small both">共同</span></td><td>1日</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Go/No-Go -->
+    <div class="timeline-item">
+      <div class="timeline-dot gonogo">!</div>
+      <div class="gonogo-card" style="margin: 0;">
+        <h3>Go/No-Go 判定（Sprint 2終了 = Week 4末）</h3>
+        <div class="gonogo-criteria">
+          <div class="gonogo-item"><span class="gn-id">G1</span><span class="gn-text">Claude Code 3セッション安定稼働（1時間フリーズなし）</span></div>
+          <div class="gonogo-item"><span class="gn-id">G2</span><span class="gn-text">音声→エージェント指示が日本語の70%+正しく到達</span></div>
+          <div class="gonogo-item"><span class="gn-id">G3</span><span class="gn-text">Proプランで3セッション同時が実用的</span></div>
+          <div class="gonogo-item"><span class="gn-id">G4</span><span class="gn-text">泉里が「声で指示が出せる」と実感できる</span></div>
+        </div>
+        <p style="margin-top: 16px; font-size: 0.85rem; color: var(--text-dim);">
+          <strong>Go</strong>: Sprint 3-4に進む（RPi5導入）&nbsp;&nbsp;/&nbsp;&nbsp;
+          <strong>No-Go</strong>: 問題を特定し、Sprint 2を1-2週延長 or アーキテクチャ変更
+        </p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot s3">S3</div>
+      <div class="timeline-content">
+        <h3>Sprint 3 — エッジAI入力 + 視線切替</h3>
+        <div class="period">Week 5-6 / エンジニア12日 / 泉里4h</div>
+        <div class="goal">RPi5で視線推定が動き、見ている画面のエージェントに声が届く</div>
+        <table class="task-table">
+          <tr><th>タスク</th><th>担当</th><th>工数</th></tr>
+          <tr><td>RPi5 + AI HAT+セットアップ</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>顔検出 + 視線推定パイプライン（Hailo）</td><td><span class="badge-small eng">エンジニア</span></td><td>3日</td></tr>
+          <tr><td>スクリーンIDマッピング + キャリブレーション</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>指差し方向検出（MediaPipe Hands）</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>RPi5→Mac WebSocket接続</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>Gaze Router + マルチモーダル結合</td><td><span class="badge-small eng">エンジニア</span></td><td>3日</td></tr>
+          <tr><td>4面ディスプレイ配置 + キャリブレーション</td><td><span class="badge-small both">共同</span></td><td>1.5日</td></tr>
+        </table>
+        <div style="margin-top: 12px; padding: 12px; background: var(--surface2); border-radius: 8px; font-size: 0.85rem;">
+          <strong>HW調達</strong>（Sprint 3開始前に完了）: RPi5 8GB ¥12,000 + AI HAT+ ¥12,000 + Camera ¥5,000 + Cooler ¥3,000 + 電源 ¥2,000 + SD ¥1,500 = <strong>約¥35,500〜38,500</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot s4">S4</div>
+      <div class="timeline-content">
+        <h3>Sprint 4 — リッチ出力 + ポリッシュ + Sharp報告</h3>
+        <div class="period">Week 7-8 / エンジニア8日 / 泉里8h</div>
+        <div class="goal">「泉里が毎日使っている」状態 + Sharp報告可能なデモ</div>
+        <table class="task-table">
+          <tr><th>タスク</th><th>担当</th><th>工数</th></tr>
+          <tr><td>Artifact的レンダリング（sandboxed iframe）</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>エージェント音声応答（TTS統合）</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>頷き/首振り検出</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>マルチディスプレイUIポリッシュ</td><td><span class="badge-small eng">エンジニア</span></td><td>2日</td></tr>
+          <tr><td>ワンコマンド起動スクリプト</td><td><span class="badge-small eng">エンジニア</span></td><td>1日</td></tr>
+          <tr><td>8時間連続稼働テスト + デモ</td><td><span class="badge-small both">共同</span></td><td>1.5日</td></tr>
+          <tr><td>Sharp報告書作成</td><td><span class="badge-small owner">泉里</span></td><td>3h</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risks -->
+  <div class="divider">リスク</div>
+  <div class="risk-grid">
+    <div class="risk-item">
+      <div class="risk-level mid">確率: 中</div>
+      <h5>Claude Code APIレート制限</h5>
+      <p>Proプランで3セッション同時が実用的か未検証。対策: --max-budget-usd + フォーカスエージェントのみフル稼働</p>
+    </div>
+    <div class="risk-item">
+      <div class="risk-level mid">確率: 中</div>
+      <h5>RPi5のHailo環境構築に時間</h5>
+      <p>Sprint 3にバッファ2日。最悪Mac上でOpenCVフォールバック</p>
+    </div>
+    <div class="risk-item">
+      <div class="risk-level mid">確率: 中</div>
+      <h5>視線精度が4画面で不十分</h5>
+      <p>頭部姿勢推定メイン + 視線補助。指差しで補完</p>
+    </div>
+    <div class="risk-item">
+      <div class="risk-level low">確率: 低</div>
+      <h5>エンジニア確保が遅れる</h5>
+      <p>Claude Code + Cursorで泉里自身が初期開発を代行可能</p>
+    </div>
+  </div>
+
+  <!-- Prereqs -->
+  <div class="divider">Sprint 1開始前にやること</div>
+  <ul class="prereq-list">
+    <li><span class="prereq-id">P1</span>エンジニアの確保（面談→契約）</li>
+    <li><span class="prereq-id">P2</span>Claude Code Proプランの制限確認（同時セッション数）</li>
+    <li><span class="prereq-id">P3</span>RPi5 + AI HAT+の発注（Sprint 2中、Sprint 3到着に間に合うよう）</li>
+    <li><span class="prereq-id">P4</span>追加ディスプレイの手配（必要な場合）</li>
+    <li><span class="prereq-id">P5</span>MVP仕様書のMoSCoW仕分け確定（= I7）</li>
+  </ul>
+
+  <div class="question-box">
+    <h4>I8 で確認してほしいこと — WBS</h4>
+    <ul>
+      <li>このスケジュール（8週間）は現実的？受託案件と並行できそう？</li>
+      <li>泉里の負荷（平均2.5h/週、最大4h/週）は許容範囲？</li>
+      <li>エンジニアの単価（月40-50万）・スキルセット・確保の見通しは？</li>
+      <li>Go/No-Go判定の基準（G1-G4）はこれでいい？</li>
+      <li>HW調達（¥35,500〜38,500）のタイミングはSprint 2中でOK？</li>
+    </ul>
+  </div>
+
+  <!-- Sharp Report -->
+  <div class="divider">Sharp 事業化報告書（D7）</div>
+
+  <div class="tone-card">
+    <div class="quote">「義を尽くす + 独立性を保つ」</div>
+    <div class="meaning">
+      ハッカソン受賞への感謝と成果報告は誠実に。<br>
+      「独立でもやれるが、Sharpと組めればさらに加速する」という対等な提案。
+    </div>
+  </div>
+
+  <div class="report-structure">
+    <div class="chapter-card" data-chapter="1">
+      <div class="ch-num">Chapter 1</div>
+      <h4>ハッカソン成果</h4>
+      <div class="pages">2ページ</div>
+      <ul>
+        <li>入選の概要・チーム紹介</li>
+        <li>PoC v2のデモ結果</li>
+        <li>エッジAI推論パイプラインの確立</li>
+      </ul>
+    </div>
+    <div class="chapter-card" data-chapter="2">
+      <div class="ch-num">Chapter 2</div>
+      <h4>事業化の方向性</h4>
+      <div class="pages">3-4ページ</div>
+      <ul>
+        <li>セマンティックカメラの進化ストーリー</li>
+        <li>Spatial AI Orchestrationコンセプト</li>
+        <li>Agentic AI市場 $7B→$50B</li>
+        <li>高齢者向け派生（Phase 4+）</li>
+      </ul>
+    </div>
+    <div class="chapter-card" data-chapter="3">
+      <div class="ch-num">Chapter 3</div>
+      <h4>MVP開発計画</h4>
+      <div class="pages">2ページ</div>
+      <ul>
+        <li>RPi5 + AI HAT+アーキテクチャ</li>
+        <li>Sprint 1-4ロードマップ</li>
+        <li>ドッグフーディングによる検証</li>
+      </ul>
+    </div>
+    <div class="chapter-card" data-chapter="4">
+      <div class="ch-num">Chapter 4</div>
+      <h4>協業提案</h4>
+      <div class="pages">2ページ</div>
+      <ul>
+        <li>IP切り分け（SW:にからす/HW:Sharp）</li>
+        <li>Sharpに期待する役割</li>
+        <li>協業形態3案</li>
+      </ul>
+    </div>
+    <div class="chapter-card" data-chapter="5">
+      <div class="ch-num">Chapter 5</div>
+      <h4>ロードマップ</h4>
+      <div class="pages">1ページ</div>
+      <ul>
+        <li>Phase 1-4の展開計画</li>
+        <li>収益見通し（2027年 ¥500万-1,500万）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Collab options -->
+  <div class="divider">Sharp協業形態</div>
+  <div class="collab-options">
+    <div class="collab-option">
+      <div class="opt-label">形態 A</div>
+      <h4>技術ライセンス</h4>
+      <p>SWをSharp HWにバンドル。ロイヤリティ収入。SW独立性を保持</p>
+    </div>
+    <div class="collab-option recommended">
+      <div class="opt-label">形態 B</div>
+      <h4>共同開発</h4>
+      <p>エッジAI部分を共同で最適化。技術的シナジー最大化</p>
+      <div class="rec-badge">Claude推奨</div>
+    </div>
+    <div class="collab-option">
+      <div class="opt-label">形態 C</div>
+      <h4>Sharp投資</h4>
+      <p>Sharpがにからすに出資。資金確保+長期コミットメント</p>
+    </div>
+  </div>
+
+  <div class="schedule-table" style="margin-top: 24px;">
+    <table class="schedule-table">
+      <tr><th>日程</th><th>アクション</th></tr>
+      <tr><td style="white-space: nowrap;">3月上旬</td><td>骨子確定（今ここ）</td></tr>
+      <tr><td style="white-space: nowrap;">3月中旬</td><td>Sprint 2成果を反映してドラフト執筆</td></tr>
+      <tr><td style="white-space: nowrap;">3月下旬</td><td>泉里最終レビュー → 提出</td></tr>
+    </table>
+  </div>
+
+  <div class="question-box">
+    <h4>I8 で確認してほしいこと — Sharp報告書</h4>
+    <ul>
+      <li>「義を尽くす + 独立性を保つ」のトーンは適切？もっと攻めるor控えめに？</li>
+      <li>章構成（5章）はこれでいい？追加・削除したい内容は？</li>
+      <li>IP切り分け（SW:にからす / HW:Sharp）の線引きに違和感はない？</li>
+      <li>協業形態はB（共同開発）推奨だが、AやCの方が良い？</li>
+      <li>収益見通し（2027年 ¥500万-1,500万）は保守的すぎる？攻めすぎ？</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- I9: Management Framework -->
+<!-- ============================================ -->
+<section id="i9">
+  <div class="section-header">
+    <div class="section-number">I9</div>
+    <div class="section-title">経営管理フレームワーク</div>
+  </div>
+  <p class="section-desc">
+    にからすの事業をデータドリブンで追える基盤。KPI定義、PL/BS、MoneyForward連携。
+  </p>
+
+  <!-- Revenue layers -->
+  <div class="card">
+    <h3>3層収益モデル — 5年後目標</h3>
+    <div class="revenue-layers">
+      <div class="rev-layer jutaku">受託 ¥400万/月</div>
+      <div class="rev-layer product">プロダクト ¥400万/月</div>
+      <div class="rev-layer inbound">インバウンド ¥200万/月</div>
+    </div>
+    <div class="rev-labels">
+      <div class="rev-label jutaku">40% — 安定基盤</div>
+      <div class="rev-label product">40% — 成長ドライバー</div>
+      <div class="rev-label inbound">20% — 信頼報酬</div>
+    </div>
+    <p style="margin-top: 16px; text-align: center; font-size: 1.3rem; font-weight: 700;">
+      年間 <span style="color: var(--green);">¥1.2億</span> / 月 <span style="color: var(--green);">¥1,000万</span>
+    </p>
+    <p style="text-align: center; font-size: 0.85rem; color: var(--text-dim);">現状: 受託 ¥390万/月（プロダクト・インバウンドは開発中）</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="divider">月次追跡KPI</div>
+
+  <h4 style="margin-bottom: 12px; color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">収益KPI</h4>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">月次売上合計</div>
+      <div class="kpi-value money">¥390万</div>
+      <div class="kpi-target">目標: ¥390万+/月</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">粗利率</div>
+      <div class="kpi-value percent">~70%</div>
+      <div class="kpi-target">目標: 70%+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">インバウンド案件数</div>
+      <div class="kpi-value count">?</div>
+      <div class="kpi-target">目標: 2件/月</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">プロダクト売上</div>
+      <div class="kpi-value" style="color: var(--text-dim);">¥0</div>
+      <div class="kpi-target">2026は開発投資期</div>
+    </div>
+  </div>
+
+  <h4 style="margin: 24px 0 12px; color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">プロダクトKPI</h4>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Sprint完了率</div>
+      <div class="kpi-value percent">—</div>
+      <div class="kpi-target">目標: 80%+</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">技術リスク消化率</div>
+      <div class="kpi-value percent">0/7</div>
+      <div class="kpi-target">S2末: 4/7, S4末: 7/7</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">エンジニア稼働率</div>
+      <div class="kpi-value percent">—</div>
+      <div class="kpi-target">目標: 90%+</div>
+    </div>
+  </div>
+
+  <h4 style="margin: 24px 0 12px; color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">ライフスタイルKPI — 数寄者ビジョン</h4>
+  <div class="lifestyle-grid">
+    <div class="lifestyle-card">
+      <div class="current">40-50h</div>
+      <div class="arrow">&#8595;</div>
+      <div class="target">20h</div>
+      <div class="ll-label">週稼働時間</div>
+    </div>
+    <div class="lifestyle-card">
+      <div class="current">40-50%</div>
+      <div class="arrow">&#8595;</div>
+      <div class="target">80%+</div>
+      <div class="ll-label">PM直接作業率</div>
+    </div>
+    <div class="lifestyle-card">
+      <div class="current">5-10h</div>
+      <div class="arrow">&#8595;</div>
+      <div class="target">15h+</div>
+      <div class="ll-label">茶道/DJ/文化活動</div>
+    </div>
+  </div>
+
+  <!-- MoneyForward -->
+  <div class="divider">MoneyForward連携</div>
+  <div class="mf-options">
+    <div class="mf-option">
+      <div class="feasibility high">実現性: 最高</div>
+      <h5>CSV手動エクスポート</h5>
+      <p>月1回、5分の作業で確実。今すぐ開始可能</p>
+    </div>
+    <div class="mf-option">
+      <div class="feasibility ok">実現性: 高</div>
+      <h5>MoneyForward API</h5>
+      <p>OAuth2認証。月次データ自動取得。APIキーが必要</p>
+    </div>
+    <div class="mf-option">
+      <div class="feasibility mid">実現性: 中</div>
+      <h5>MCP サーバー</h5>
+      <p>Claude Codeから直接参照。公式MCPは未確認。将来候補</p>
+    </div>
+    <div class="mf-option">
+      <div class="feasibility ok">実現性: 高</div>
+      <h5>Zapier/Make連携</h5>
+      <p>MoneyForward → Spreadsheet → ダッシュボード。ノーコード</p>
+    </div>
+  </div>
+
+  <!-- Monthly review process -->
+  <div class="card" style="margin-top: 24px;">
+    <h3>月次レビュープロセス</h3>
+    <p style="margin-top: 8px;">毎月末 / 所要30分</p>
+    <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+      <div style="padding: 12px; background: var(--surface2); border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px;">Step 1</div>
+        <div style="font-size: 0.9rem;">MoneyForward<br>PLデータ取得</div>
+      </div>
+      <div style="padding: 12px; background: var(--surface2); border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px;">Step 2</div>
+        <div style="font-size: 0.9rem;">Sprint進捗<br>+技術リスク確認</div>
+      </div>
+      <div style="padding: 12px; background: var(--surface2); border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px;">Step 3</div>
+        <div style="font-size: 0.9rem;">来月の<br>重点3つ決定</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-box">
+    <h4>I9 で泉里に聞きたいこと</h4>
+    <ul>
+      <li>MoneyForwardのプランは？（API利用可能なプランか確認）</li>
+      <li>税理士（だんちゃん）との共有状況は？データの二重管理になっていないか？</li>
+      <li>KPIの優先度: 収益 / プロダクト / ライフスタイルの3つで、今最も気にするべきはどれ？</li>
+      <li>インバウンド案件の現在の月次件数は把握できている？</li>
+      <li>CSV手動でまず始めるのでいい？それともAPI連携を先にやりたい？</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- Export -->
+<!-- ============================================ -->
+<section id="export" class="export-section">
+  <h2 style="margin-bottom: 12px;">レビュー結果をエクスポート</h2>
+  <p style="color: var(--text-dim); margin-bottom: 24px;">MoSCoW仕分けの変更を含む全結果をテキストで出力。Claude Codeにコピペして反映させる</p>
+  <button class="export-btn" onclick="exportResults()">結果をエクスポート</button>
+  <div class="export-result" id="exportResult"></div>
+</section>
+
+</div>
+
+<script>
+function setMoscow(btn, category) {
+  const card = btn.closest('.feature-card');
+  const btns = card.querySelectorAll('.moscow-btn');
+
+  // Remove all active classes
+  btns.forEach(b => {
+    b.className = 'moscow-btn';
+  });
+
+  // Set active
+  btn.classList.add('active-' + category);
+
+  // Update card border
+  card.className = 'feature-card selected-' + category;
+  card.dataset.current = category;
+
+  updateCounts();
+}
+
+function updateCounts() {
+  const cards = document.querySelectorAll('.feature-card');
+  let counts = { must: 0, should: 0, could: 0, wont: 0 };
+  cards.forEach(c => {
+    const cat = c.dataset.current;
+    if (counts.hasOwnProperty(cat)) counts[cat]++;
+  });
+  document.getElementById('mustCount').textContent = counts.must;
+  document.getElementById('shouldCount').textContent = counts.should;
+  document.getElementById('couldCount').textContent = counts.could;
+  document.getElementById('wontCount').textContent = counts.wont;
+}
+
+function exportResults() {
+  const cards = document.querySelectorAll('.feature-card');
+  let lines = [];
+  lines.push('# I7 MoSCoW仕分け結果\n');
+
+  const categories = { must: [], should: [], could: [], wont: [] };
+
+  cards.forEach(c => {
+    const id = c.dataset.id;
+    const cat = c.dataset.current;
+    const name = c.querySelector('.feature-name')?.textContent || '';
+    categories[cat].push(`${id}: ${name}`);
+  });
+
+  lines.push('## Must');
+  categories.must.forEach(f => lines.push(`- ${f}`));
+  lines.push('\n## Should');
+  categories.should.forEach(f => lines.push(`- ${f}`));
+  lines.push('\n## Could');
+  categories.could.forEach(f => lines.push(`- ${f}`));
+  lines.push("\n## Won't");
+  categories.wont.forEach(f => lines.push(`- ${f}`));
+
+  // Changes from proposal
+  lines.push('\n---\n# 提案からの変更点\n');
+  let hasChanges = false;
+  cards.forEach(c => {
+    const id = c.dataset.id;
+    const current = c.dataset.current;
+    const proposed = c.querySelector('.proposed');
+    if (proposed) {
+      const original = proposed.textContent.replace('Claude提案: ', '').toLowerCase();
+      if (original !== current) {
+        const name = c.querySelector('.feature-name')?.textContent || '';
+        lines.push(`- ${id} (${name}): ${original} → ${current}`);
+        hasChanges = true;
+      }
+    }
+  });
+  if (!hasChanges) lines.push('(変更なし — 全てClaude提案のまま)');
+
+  const el = document.getElementById('exportResult');
+  el.textContent = lines.join('\n');
+  el.style.display = 'block';
+
+  // Select all text for easy copy
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+// Smooth scroll for nav
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.nav a').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Update nav on scroll
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    const top = s.offsetTop - 100;
+    if (window.scrollY >= top) current = s.getAttribute('id');
+  });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

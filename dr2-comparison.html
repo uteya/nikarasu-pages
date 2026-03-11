@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DR② 比較ダッシュボード — B2Bで何をやるか</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #14141f;
+    --surface2: #1e1e2e;
+    --border: #2a2a3e;
+    --text: #e0e0e8;
+    --text-dim: #8888a0;
+    --accent: #6366f1;
+    --accent2: #818cf8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --orange: #f97316;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .metric {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .metric .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .metric .label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:hover { background: rgba(99, 102, 241, 0.05); }
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .tag-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .tag-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); }
+  .tag-pink { background: rgba(236,72,153,0.15); color: var(--pink); }
+  .tag-accent { background: rgba(99,102,241,0.15); color: var(--accent2); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  .source-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .source-claude { color: var(--cyan); }
+  .source-gemini { color: var(--pink); }
+
+  .ranking-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .ranking-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .rank-1::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+  .rank-2::before { background: linear-gradient(90deg, #94a3b8, #64748b); }
+  .rank-3::before { background: linear-gradient(90deg, #b45309, #92400e); }
+  .ranking-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .ranking-card p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .rank-num {
+    font-size: 2rem;
+    font-weight: 800;
+    opacity: 0.15;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+  }
+
+  .bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0;
+  }
+  .bar-label {
+    width: 80px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-align: right;
+  }
+  .bar-track {
+    flex: 1;
+    height: 16px;
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  .bar-value {
+    width: 24px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .decision-box {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(6,182,212,0.1));
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .decision-box h2 {
+    color: var(--accent2);
+  }
+
+  .agree { color: var(--green); }
+  .differ { color: var(--amber); }
+
+  .package-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    flex: 1;
+  }
+  .package-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .package-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .package-card li {
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+    color: var(--text-dim);
+  }
+  .package-card li::before {
+    content: '>';
+    margin-right: 0.5rem;
+    color: var(--accent2);
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 1100px) { .three-col { grid-template-columns: 1fr; } }
+
+  .user-reaction {
+    background: rgba(245,158,11,0.08);
+    border-left: 3px solid var(--amber);
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>DR② 比較ダッシュボード</h1>
+<p class="subtitle">B2Bで何をやるか — Claude vs Gemini + ヒューマノイドリサーチ / 分析日: 2026-02-28</p>
+
+<!-- Key Metrics -->
+<div class="metric-grid">
+  <div class="metric">
+    <div class="value">98%</div>
+    <div class="label">介護施設 センサー未導入率</div>
+  </div>
+  <div class="metric">
+    <div class="value">59.5%</div>
+    <div class="label">製造業 技術継承に課題あり</div>
+  </div>
+  <div class="metric">
+    <div class="value">¥200億</div>
+    <div class="label">介護テック補助金（2024補正）</div>
+  </div>
+  <div class="metric">
+    <div class="value">75-80%</div>
+    <div class="label">補助率（施設負担は20-25%）</div>
+  </div>
+  <div class="metric">
+    <div class="value">18-24</div>
+    <div class="label">競合優位ウィンドウ（月）</div>
+  </div>
+  <div class="metric">
+    <div class="value">空</div>
+    <div class="label">Privacy by Design × バーティカルのポジション</div>
+  </div>
+</div>
+
+<!-- Complete Agreement -->
+<div class="section">
+  <h2>完全一致点（8項目）</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>結論</th><th>含意</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><span class="agree">B2Bファースト必須</span></td><td>B2C直販は全滅パターン。施設・企業・自治体が支払者</td></tr>
+      <tr><td>2</td><td><span class="agree">Privacy by Designが堀</span></td><td>骨格化+映像即時破棄が唯一の突破口（居室・工場組合）</td></tr>
+      <tr><td>3</td><td><span class="agree">介護施設は巨大かつ未開拓</span></td><td>200万床×2%導入。補助金75-80%。LIFE加算追い風</td></tr>
+      <tr><td>4</td><td><span class="agree">製造業の技術継承は緊急</span></td><td>59.5%が課題認識。団塊世代完全退職で待ったなし</td></tr>
+      <tr><td>5</td><td><span class="agree">コンサル=資金エンジン</span></td><td>ぐるぐるモデルの2名版。既存事業の延長で自然</td></tr>
+      <tr><td>6</td><td><span class="agree">HaaS+コンサルのバンドル</span></td><td>デバイスは物理的トロイの木馬。継続接点の口実</td></tr>
+      <tr><td>7</td><td><span class="agree">自分史はワクワク最大</span></td><td>CEO関心と完全合致。ただしB2B支払者確保が課題</td></tr>
+      <tr><td>8</td><td><span class="agree">技術ブログ+展示会が営業</span></td><td>Qiita/Zennで実装知を発信。CEATEC等で接点獲得</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TOP 3 Comparison -->
+<div class="section">
+  <h2>TOP 3 ランキング比較</h2>
+  <div class="two-col">
+    <div>
+      <div class="source-label source-claude">CLAUDE DR②</div>
+      <div class="ranking-card rank-1">
+        <span class="rank-num">#1</span>
+        <h3>MimamoAI + Physical AIコンサル</h3>
+        <p>介護見守り（LIFE連携）をコンサルとバンドル。スコア: 18+17</p>
+        <div style="margin-top:0.75rem">
+          <div class="bar-container"><span class="bar-label">ワクワク</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--amber)"></div></div><span class="bar-value">4/5</span></div>
+          <div class="bar-container"><span class="bar-label">市場性</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-value">5/5</span></div>
+          <div class="bar-container"><span class="bar-label">実現可能性</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--cyan)"></div></div><span class="bar-value">4/5</span></div>
+          <div class="bar-container"><span class="bar-label">ぐるぐる</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent2)"></div></div><span class="bar-value">5/5</span></div>
+        </div>
+      </div>
+      <div class="ranking-card rank-2">
+        <span class="rank-num">#2</span>
+        <h3>WazaAI（技術継承モーション記録）</h3>
+        <p>骨格キャプチャ+AIインタビューで暗黙知を形式知化。スコア: 16</p>
+        <div style="margin-top:0.75rem">
+          <div class="bar-container"><span class="bar-label">ワクワク</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--amber)"></div></div><span class="bar-value">5/5</span></div>
+          <div class="bar-container"><span class="bar-label">市場性</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--green)"></div></div><span class="bar-value">3/5</span></div>
+          <div class="bar-container"><span class="bar-label">実現可能性</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--cyan)"></div></div><span class="bar-value">4/5</span></div>
+          <div class="bar-container"><span class="bar-label">ぐるぐる</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--accent2)"></div></div><span class="bar-value">4/5</span></div>
+        </div>
+      </div>
+      <div class="ranking-card rank-3">
+        <span class="rank-num">#3</span>
+        <h3>KataribeAI（自分史自動編纂）</h3>
+        <p>AIコンパニオンが高齢者の人生を聞き出し書籍化。スコア: 15</p>
+        <div style="margin-top:0.75rem">
+          <div class="bar-container"><span class="bar-label">ワクワク</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--amber)"></div></div><span class="bar-value">5/5</span></div>
+          <div class="bar-container"><span class="bar-label">市場性</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--green)"></div></div><span class="bar-value">3/5</span></div>
+          <div class="bar-container"><span class="bar-label">実現可能性</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--cyan)"></div></div><span class="bar-value">3/5</span></div>
+          <div class="bar-container"><span class="bar-label">ぐるぐる</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--accent2)"></div></div><span class="bar-value">4/5</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="source-label source-gemini">GEMINI DR②</div>
+      <div class="ranking-card rank-1">
+        <span class="rank-num">#1</span>
+        <h3>匠の眼と身体（製造業技術継承）</h3>
+        <p>骨格モーション+AIインタビューの統合記録。安全管理もカバー</p>
+        <div style="margin-top:0.75rem">
+          <div class="bar-container"><span class="bar-label">ワクワク</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--amber)"></div></div><span class="bar-value">高</span></div>
+          <div class="bar-container"><span class="bar-label">金が回る</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-value">高</span></div>
+          <div class="bar-container"><span class="bar-label">2名OK</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--cyan)"></div></div><span class="bar-value">中高</span></div>
+          <div class="bar-container"><span class="bar-label">ぐるぐる</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent2)"></div></div><span class="bar-value">特大</span></div>
+        </div>
+      </div>
+      <div class="ranking-card rank-2">
+        <span class="rank-num">#2</span>
+        <h3>自分史自動編纂AIインタビュアー</h3>
+        <p>表情・視線を察知して能動的に思い出を聞き出し書籍化</p>
+        <div style="margin-top:0.75rem">
+          <div class="bar-container"><span class="bar-label">ワクワク</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--amber)"></div></div><span class="bar-value">特大</span></div>
+          <div class="bar-container"><span class="bar-label">金が回る</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--green)"></div></div><span class="bar-value">中</span></div>
+          <div class="bar-container"><span class="bar-label">2名OK</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--cyan)"></div></div><span class="bar-value">高</span></div>
+          <div class="bar-container"><span class="bar-label">ぐるぐる</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--accent2)"></div></div><span class="bar-value">中</span></div>
+        </div>
+      </div>
+      <div class="ranking-card rank-3">
+        <span class="rank-num">#3</span>
+        <h3>LIFE自動生成 Privacy見守り</h3>
+        <p>骨格化でLIFE提出データ（BI等）を自動生成。売上増で稟議</p>
+        <div style="margin-top:0.75rem">
+          <div class="bar-container"><span class="bar-label">ワクワク</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--amber)"></div></div><span class="bar-value">中高</span></div>
+          <div class="bar-container"><span class="bar-label">金が回る</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-value">特大</span></div>
+          <div class="bar-container"><span class="bar-label">2名OK</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--cyan)"></div></div><span class="bar-value">高</span></div>
+          <div class="bar-container"><span class="bar-label">ぐるぐる</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--accent2)"></div></div><span class="bar-value">高</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key Disagreements -->
+<div class="section">
+  <h2>主要な相違点</h2>
+  <table>
+    <thead>
+      <tr><th>論点</th><th class="source-claude">Claude</th><th class="source-gemini">Gemini</th><th>分析の判定</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>最優先バーティカル</strong></td>
+        <td>介護施設（市場規模・補助金最大）</td>
+        <td>製造業（ワクワク度+ぐるぐる接続が最強）</td>
+        <td><span class="tag tag-amber">泉里が決定</span></td>
+      </tr>
+      <tr>
+        <td><strong>安全管理と技術継承</strong></td>
+        <td>AnzenAI / WazaAIを別アイデアとして分離</td>
+        <td>「匠の眼と身体」として統合</td>
+        <td><span class="tag tag-green">Gemini採用</span> 同一カメラ・同一工場</td>
+      </tr>
+      <tr>
+        <td><strong>自分史の時間軸</strong></td>
+        <td>KataribeAI = Year 2-3の長期ビジョン</td>
+        <td>自分史 = TOP 2（すぐ始めるべき）</td>
+        <td><span class="tag tag-cyan">Claudeが堅実</span> 自治体調達サイクル長い</td>
+      </tr>
+      <tr>
+        <td><strong>初年度売上目標</strong></td>
+        <td>全事業合計 ¥70-100M</td>
+        <td>各アイデア個別に ¥800-1,500万</td>
+        <td><span class="tag tag-accent">Claude寄り</span> 既存事業込みが現実的</td>
+      </tr>
+      <tr>
+        <td><strong>OSSフレームワーク</strong></td>
+        <td>GenAdapt を8つ目のアイデアとして提案</td>
+        <td>言及なし</td>
+        <td><span class="tag tag-red">優先度低</span> ブランディングには有効だが収益化困難</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Humanoid Research -->
+<div class="section">
+  <h2>ヒューマノイド二毛作リサーチ（追加ソース）</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="font-size:0.95rem; margin-bottom:0.75rem">現在の状況</h3>
+      <table>
+        <tbody>
+          <tr><td>データ需要構造</td><td>テレオペ / 映像ベース推定 / シミュレーション合成の3種</td></tr>
+          <tr><td>NVIDIA GR00T-Mimic</td><td>人間動作映像 → ロボット学習データの変換パイプラインを実証（2025/1）</td></tr>
+          <tr><td>現在のマーケット</td><td><span class="tag tag-red">市場未成立</span> 「データを売る市場」ではなく「囲い込む競争」</td></tr>
+          <tr><td>将来（3-5年後）</td><td><span class="tag tag-green">市場化する</span> スケーリング則が効くデータに高い価値</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3 style="font-size:0.95rem; margin-bottom:0.75rem">二毛作モデル</h3>
+      <table>
+        <tbody>
+          <tr><td style="color:var(--green)">表の顔（今日）</td><td>技能継承コンサル / 工程アセスメント / 安全管理</td></tr>
+          <tr><td style="color:var(--cyan)">裏の顔（明日）</td><td>標準化されたモーションデータセット蓄積（Open X-Embodiment互換）</td></tr>
+          <tr><td>追加コスト</td><td><strong>ほぼゼロ</strong>（フォーマット設計を最初からロボット互換にするだけ）</td></tr>
+          <tr><td>RPi5骨格 vs ヒューマノイド</td><td>25関節 ≒ Fourier GR-1の25DoFにかなり近い</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <table style="margin-top:1rem">
+    <thead><tr><th>タイミング</th><th>売り方</th><th>買い手</th><th>価格感</th></tr></thead>
+    <tbody>
+      <tr><td>今〜1年</td><td>熟練技の動作記録+教材化</td><td>中小製造業</td><td>¥50-100万/工程</td></tr>
+      <tr><td>今〜1年</td><td>ヒューマノイド導入アセスメント</td><td>自動車部品メーカー</td><td>¥100-300万/案件</td></tr>
+      <tr><td>1〜3年</td><td>伝統技術デジタルアーカイブ</td><td>自治体/文化庁</td><td>¥200-500万/年</td></tr>
+      <tr><td>3〜5年</td><td>モーションデータライセンス</td><td>ヒューマノイド開発企業</td><td>未知数（スケーリング則）</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- User Reaction -->
+<div class="section">
+  <h2>泉里の反応</h2>
+  <div class="user-reaction">
+    「製造業でAIエージェントがいて、カメラもあってそれで働いてるだけで情報が取れて、それを若手への教育に変換してくれるサービス、まじでありがたい気がする」
+  </div>
+  <div class="user-reaction">
+    「いくつか同時に走らせてうまくいったスタートアップをやるっていうモデルも、どうなんだろうか、冷静に評価したいと思いつつも、まあありなきも少ししてる」
+  </div>
+  <div class="user-reaction">
+    「まずは受け入れて、意思決定して、先に一歩一歩いこう」
+  </div>
+</div>
+
+<!-- Strategic Packages -->
+<div class="section">
+  <h2>戦略パッケージ（3つの選択肢）</h2>
+  <div class="three-col">
+    <div class="package-card" style="border-top: 3px solid var(--cyan)">
+      <h3 style="color:var(--cyan)">A: 介護ファースト</h3>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:0.75rem">Claude推奨 / 市場性最大</p>
+      <ul>
+        <li>MimamoAI（見守り+LIFE連携）から開始</li>
+        <li>補助金75-80%で顧客負担軽減</li>
+        <li>KataribeAI（自分史）は同施設で後追い</li>
+        <li>コンサル: Physical AI全般</li>
+      </ul>
+      <div style="margin-top:1rem; font-size:0.8rem">
+        <span class="tag tag-green">市場 ★★★★★</span>
+        <span class="tag tag-amber">ワクワク ★★★★</span>
+      </div>
+    </div>
+    <div class="package-card" style="border-top: 3px solid var(--pink)">
+      <h3 style="color:var(--pink)">B: 製造業ファースト</h3>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:0.75rem">Gemini推奨 / ワクワク+即金性</p>
+      <ul>
+        <li>WazaAI+AnzenAI統合で開始</li>
+        <li>既存クライアントがテストベッド</li>
+        <li>二毛作: ヒューマノイドデータが副産物</li>
+        <li>コンサル: 製造DX特化</li>
+      </ul>
+      <div style="margin-top:1rem; font-size:0.8rem">
+        <span class="tag tag-amber">市場 ★★★</span>
+        <span class="tag tag-green">ワクワク ★★★★★</span>
+      </div>
+    </div>
+    <div class="package-card" style="border-top: 3px solid var(--accent)">
+      <h3 style="color:var(--accent2)">C: デュアルトラック</h3>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:0.75rem">統合戦略 / リスク分散</p>
+      <ul>
+        <li>Year 1前半: 製造業（即金+テストベッド）</li>
+        <li>Year 1後半: 介護（補助金Window 9-12月）</li>
+        <li>Year 2: KataribeAI追加</li>
+        <li>コンサル: Physical AI特化ブランド</li>
+      </ul>
+      <div style="margin-top:1rem; font-size:0.8rem">
+        <span class="tag tag-green">市場 ★★★★</span>
+        <span class="tag tag-green">ワクワク ★★★★★</span>
+        <span class="tag tag-red">リソース分散リスク</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Competitive Landscape -->
+<div class="section">
+  <h2>競合ポジショニング — にからすの空白地帯</h2>
+  <table>
+    <thead>
+      <tr><th>企業</th><th>アプローチ</th><th>にからすとの差異</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>HitomeQ（コニカミノルタ）</td><td>天井AIカメラ</td><td>居室プライバシー問題未解決。¥50万/室で高額</td></tr>
+      <tr><td>眠りSCAN（パラマウント）</td><td>マットレスセンサー</td><td>ベッド上のみ。室内転倒・徘徊は検知不可</td></tr>
+      <tr><td>Idein/Actcast</td><td>RPiプラットフォーム</td><td>水平展開型。バーティカルソリューションなし</td></tr>
+      <tr><td>Neural Pocket</td><td>AIカメラSaaS</td><td>スマートシティ向け。SoftBank依存（売上60%）</td></tr>
+      <tr><td>Butlr</td><td>熱センサー（Privacy）</td><td>東京オフィスあり。ただし熱のみでAI能力限定</td></tr>
+      <tr><td>HACARUS</td><td>KY（危険予知）AI</td><td>画像記録ベース。エッジ骨格化なし</td></tr>
+      <tr><td>Sony IMX500</td><td>AI処理チップ</td><td>チップ提供のみ。ソリューションなし。互換性あり</td></tr>
+      <tr><td style="color:var(--accent2); font-weight:700">にからす</td><td style="color:var(--accent2)">Privacy by Design × バーティカル特化</td><td style="color:var(--green); font-weight:600">このポジションに先客なし</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Unique Discoveries -->
+<div class="section">
+  <h2>想定外の発見（6件）</h2>
+  <table>
+    <thead><tr><th>#</th><th>発見</th><th>含意</th><th>ソース</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>LIFE加算によるROI転換</td><td>「コスト削減」→「売上増」で稟議を通す最強ピッチ</td><td class="source-gemini">Gemini独自</td></tr>
+      <tr><td>2</td><td>二毛作の追加コストほぼゼロ</td><td>フォーマット設計だけでヒューマノイド市場への扉が開く</td><td>Humanoid研究</td></tr>
+      <tr><td>3</td><td>既存競合の空白地帯の確認</td><td>Privacy × バーティカルに先客なし</td><td>両DR一致</td></tr>
+      <tr><td>4</td><td>Sharp ポケとものシナジー</td><td>CE-LLM活用 or 差別化。インキュベ関係で要確認</td><td class="source-claude">Claude</td></tr>
+      <tr><td>5</td><td>ElliQモデル（B2G無料配布）</td><td>NY州900台 → 孤独感95%減。日本の介護予防予算で再現可能</td><td class="source-claude">Claude</td></tr>
+      <tr><td>6</td><td>プロジェクト型 vs ストック型</td><td>WazaAI（即金） + MimamoAI（ARR）の両方が健全なCF設計</td><td>統合分析</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Decision Box -->
+<div class="decision-box">
+  <h2>意思決定を待つ項目（Step A.5）</h2>
+  <table>
+    <thead><tr><th>Decision #</th><th>論点</th><th>選択肢</th><th>推奨</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>D9</strong></td>
+        <td>メイン・バーティカル</td>
+        <td>A) 介護 / B) 製造業 / C) 両方</td>
+        <td><span class="tag tag-amber">泉里が決定</span></td>
+      </tr>
+      <tr>
+        <td><strong>D10</strong></td>
+        <td>初手プロダクト</td>
+        <td>A) 見守り / B) 技術継承 / C) 自分史 / D) 安全+継承統合</td>
+        <td><span class="tag tag-amber">泉里が決定</span></td>
+      </tr>
+      <tr>
+        <td>D11</td>
+        <td>コンサル事業の再定義</td>
+        <td>Physical AI特化ブランドとして</td>
+        <td><span class="tag tag-green">B推奨（両DR一致）</span></td>
+      </tr>
+      <tr>
+        <td>D12</td>
+        <td>自分史/KataribeAIの時間軸</td>
+        <td>Year 1 or Year 2</td>
+        <td><span class="tag tag-cyan">Year 2推奨</span></td>
+      </tr>
+      <tr>
+        <td>D13</td>
+        <td>二毛作（ヒューマノイドデータ）</td>
+        <td>採用 / 不採用</td>
+        <td><span class="tag tag-green">採用推奨（コストゼロ）</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p style="text-align:center; color:var(--text-dim); margin-top:2rem; font-size:0.8rem">
+  DR② 比較ダッシュボード v1 — 2026-02-28 — にからす事業設計図プロジェクト
+</p>
+
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす事業設計図 — 全体像と現在地</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #14141f;
+    --surface2: #1e1e2e;
+    --border: #2a2a3e;
+    --text: #e0e0e8;
+    --text-dim: #8888a0;
+    --accent: #6366f1;
+    --accent2: #818cf8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+  }
+  .subtitle { color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .section h2 {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+    color: var(--accent2);
+  }
+  .section h3 {
+    font-size: 0.95rem;
+    margin: 1rem 0 0.5rem;
+    color: var(--cyan);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    text-align: left; padding: 0.6rem; border-bottom: 2px solid var(--border);
+    color: var(--text-dim); font-weight: 600; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  td { padding: 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover { background: rgba(99,102,241,0.04); }
+  .tag {
+    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 600;
+  }
+  .done { background: rgba(34,197,94,0.15); color: var(--green); }
+  .now { background: rgba(245,158,11,0.2); color: var(--amber); border: 1px solid var(--amber); }
+  .todo { background: rgba(136,136,160,0.1); color: var(--text-dim); }
+  .blocked { background: rgba(239,68,68,0.1); color: var(--red); }
+
+  .mountain {
+    position: relative;
+    padding: 1rem 0 1rem 3rem;
+  }
+  .mountain::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .mountain-step {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .mountain-step::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+  }
+  .mountain-step.step-done::before { background: var(--green); border-color: var(--green); }
+  .mountain-step.step-now::before { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 8px var(--amber); }
+  .mountain-step.step-todo::before { background: var(--surface); }
+
+  .mountain-step h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+  .mountain-step p {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .mountain-step .deliverables {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 24px;
+    background: var(--surface2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1rem 0;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.5s;
+  }
+  .progress-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+  .decided {
+    padding: 0.5rem 0.75rem;
+    background: rgba(34,197,94,0.08);
+    border-left: 3px solid var(--green);
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+    border-radius: 0 6px 6px 0;
+  }
+  .missing {
+    padding: 0.5rem 0.75rem;
+    background: rgba(245,158,11,0.08);
+    border-left: 3px solid var(--amber);
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .biz-model {
+    font-family: 'Menlo', 'Monaco', monospace;
+    font-size: 0.8rem;
+    background: var(--surface2);
+    padding: 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+
+<h1>にからす事業設計図 — 全体像と現在地</h1>
+<p class="subtitle">2026-02-28 時点 / タスク定義 v4 / Phase A 完了 → Phase B へ</p>
+
+<!-- ============ 1. ゴール ============ -->
+<div class="section">
+  <h2>1. 何を作り上げようとしているか</h2>
+  <p style="font-size:0.95rem; margin-bottom:1rem">
+    <strong>にからすが「何の会社で、何を作り、どう稼ぎ、どう成長するか」を決め切り、
+    3月末のSharp報告書と、辻井+泉里が「これで行く」と言える事業設計図を完成させる。</strong>
+  </p>
+  <table>
+    <thead><tr><th>#</th><th>成果物</th><th>内容</th><th>状態</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>D1</strong></td>
+        <td>事業定義書</td>
+        <td>にからすのミッション、ビジョン、ビジネスモデル（ぐるぐる）、ポジショニング</td>
+        <td><span class="tag now">A.6で作成</span></td>
+      </tr>
+      <tr>
+        <td><strong>D2</strong></td>
+        <td>スタートアップ定義書</td>
+        <td>製造業（匠の眼と身体）+ 高齢者（KataribeAI）の具体像。ICP、価格、技術仕様</td>
+        <td><span class="tag now">A.7で作成</span></td>
+      </tr>
+      <tr>
+        <td><strong>D3</strong></td>
+        <td>市場分析</td>
+        <td>TAM/SAM/SOM、競合、ICP、PEST（製造業+介護の二軸）</td>
+        <td><span class="tag todo">Phase B</span></td>
+      </tr>
+      <tr>
+        <td><strong>D4</strong></td>
+        <td>サービス設計書</td>
+        <td>サービスラインナップ、価格、エントリー→アップセル導線</td>
+        <td><span class="tag todo">Phase B</span></td>
+      </tr>
+      <tr>
+        <td><strong>D5</strong></td>
+        <td>営業・GTM戦略</td>
+        <td>チャネル、パイプライン、パートナー（Sharp、テストベッド企業）</td>
+        <td><span class="tag todo">Phase B</span></td>
+      </tr>
+      <tr>
+        <td><strong>D6</strong></td>
+        <td>財務計画</td>
+        <td>P&L、CF、KPI（3シナリオ）。スタートアップ=R&D投資枠で管理</td>
+        <td><span class="tag todo">Phase C</span></td>
+      </tr>
+      <tr>
+        <td><strong>D7</strong></td>
+        <td>ロードマップ</td>
+        <td>3M/6M/1Y/3Yマイルストーン。各スタートアップの投資上限・撤退基準</td>
+        <td><span class="tag todo">Phase C</span></td>
+      </tr>
+      <tr>
+        <td><strong>D8</strong></td>
+        <td>Sharp報告書</td>
+        <td>Physical AI方向転換の報告。協力打診。3月末提出</td>
+        <td><span class="tag todo">Phase D</span></td>
+      </tr>
+      <tr>
+        <td><strong>D9</strong></td>
+        <td>意思決定ログ</td>
+        <td>D1-D15記録済み。全過程で随時追記</td>
+        <td><span class="tag done">継続更新中</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 2. ビジネスモデル ============ -->
+<div class="section">
+  <h2>2. 確定したビジネスモデル</h2>
+  <div class="biz-model">
+株式会社にからす — Physical AI版エクサウィザーズ
+
+[スタートアップ群] ← 本丸。単体黒字は必須ではない
+  ├ 匠の眼と身体（製造業 技術継承×安全管理）← Year 1 ファースト
+  ├ KataribeAI（高齢者 自分史/伝記）         ← Year 1 R&D → Year 2 商用
+  ├ （将来）MimamoAI（介護見守り+LIFE連携）  ← KataribeAIから自然展開
+  └ （将来）追加スタートアップ               ← うまくいくものを伸ばす
+
+         ↓ 知見・実績・データ ↓
+
+[Physical AIコンサル/開発] ← 資金エンジン
+  ├ 既存クライアント継続（クロステック、Lisse、ビズリンク等）
+  ├ Physical AI特化ブランドで新規獲得
+  └ スタートアップの知見が案件獲得力に直結（ぐるぐる）
+
+         ↓ ブランド ↓
+
+[権威構築]
+  ├ 技術ブログ（Qiita/Zenn）— 実装知の発信
+  ├ 論文（高齢者×AI、製造業×エッジAI）
+  ├ 展示会（CEATEC、介護テクノロジー展、Smart Factory Expo）
+  └ OSS / コミュニティ
+
+[二毛作（戦略オプション）]
+  └ 骨格データをヒューマノイド学習互換で蓄積 → 3-5年後に開花
+  </div>
+</div>
+
+<!-- ============ 3. 確定 vs 未決定 ============ -->
+<div class="section">
+  <h2>3. 何がどこまで決まっていて、何が足りないか</h2>
+  <div class="two-col">
+    <div>
+      <h3>確定済み（D1-D15）</h3>
+      <div class="decided">D9: デュアルトラック（製造業ファースト + 高齢者は長い目）</div>
+      <div class="decided">D10: 初手 = 匠の眼と身体（技術継承×安全管理統合）</div>
+      <div class="decided">D11: コンサル = Physical AI特化ブランドに再定義</div>
+      <div class="decided">D12: KataribeAI = Year 1 R&D、商用 Year 2+</div>
+      <div class="decided">D13: 二毛作 = 採用（データフォーマット互換）</div>
+      <div class="decided">D14: スタートアップ = ビジネスモデルの一部（単体黒字不要）</div>
+      <div class="decided">D15: Sharp報告 = Physical AI方向転換、協力打診</div>
+      <div class="decided">D6: 全社構造 = 三層（コンサル+プロダクト+HWスケール）</div>
+      <div class="decided">D8: HW筐体 = 自作設計→Sharp量産、フォールバック</div>
+    </div>
+    <div>
+      <h3>まだ足りないもの</h3>
+      <div class="missing"><strong>D1（事業定義書）</strong>: にからすのミッション・ビジョンを1文で。ぐるぐるモデル図。ExaWizards/ABEJAとの差異</div>
+      <div class="missing"><strong>D2（スタートアップ定義書）</strong>: 匠の眼と身体の技術仕様、ICP詳細、価格モデル、最初の3顧客、Privacy by Design仕様</div>
+      <div class="missing"><strong>D3（市場分析）</strong>: 製造業+介護のTAM/SAM/SOM、競合マップ、ICP定義</div>
+      <div class="missing"><strong>D4（サービス設計）</strong>: エントリー→アップセル導線、既存案件の型化、ROI試算</div>
+      <div class="missing"><strong>D5（GTM戦略）</strong>: チャネル、パイプライン、パートナー、営業ツール</div>
+      <div class="missing"><strong>D6（財務計画）</strong>: 3シナリオP&L/CF、スタートアップ別の投資上限・撤退基準、KPI</div>
+      <div class="missing"><strong>D7（ロードマップ）</strong>: マイルストーン、タスクリスト、泉里のアクション日付</div>
+      <div class="missing"><strong>D8（Sharp報告書）</strong>: 上記を統合した3月末提出版</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. 進捗 ============ -->
+<div class="section">
+  <h2>4. 全体進捗</h2>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width:35%; background: linear-gradient(90deg, var(--green), var(--cyan))"></div>
+    <span class="progress-label">Phase A 完了 — 35%</span>
+  </div>
+  <p style="font-size:0.85rem; color:var(--text-dim)">
+    「何をやるか」が決まった。次は「どう作り、どう売り、どう成長するか」を具体化する。
+  </p>
+</div>
+
+<!-- ============ 5. 登山マップ ============ -->
+<div class="section">
+  <h2>5. これから登る山（フェーズ別ステップ）</h2>
+
+  <div class="mountain">
+
+    <!-- Phase A: DONE -->
+    <div class="mountain-step step-done">
+      <h4><span class="tag done">完了</span> Phase A: スタートアップを決める</h4>
+      <p>DR②受入・分析・比較HTML → 泉里が決定（D9-D15）</p>
+      <div class="deliverables">
+        <span class="tag done">A.1</span> DR②プロンプト
+        <span class="tag done">A.2</span> DR②投入
+        <span class="tag done">A.3</span> 結果受入・分析
+        <span class="tag done">A.4</span> 比較HTML
+        <span class="tag done">A.5</span> 泉里が決定
+      </div>
+    </div>
+
+    <!-- Phase A.6-A.8: NOW -->
+    <div class="mountain-step step-now">
+      <h4><span class="tag now">今ここ</span> Phase A後半: D1 + D2 ドラフト作成</h4>
+      <p>確定した意思決定（D9-D15）を具体的な成果物に落とし込む</p>
+      <div class="deliverables">
+        <span class="tag now">A.6</span> D1（事業定義書）ドラフト → <code>docs/business-definition.md</code><br>
+        <span class="tag now">A.7</span> D2（スタートアップ定義書）ドラフト → <code>docs/startup-definition.md</code><br>
+        <span class="tag todo">A.8</span> 泉里レビュー → CP-A（にからすは何の会社で何を作るか確定）
+      </div>
+    </div>
+
+    <!-- Phase B -->
+    <div class="mountain-step step-todo">
+      <h4><span class="tag todo">次</span> Phase B: 市場と戦略を固める</h4>
+      <p>D2をもとに市場データ・競合・サービス設計・GTMを具体化。必要ならDR③</p>
+      <div class="deliverables">
+        <span class="tag todo">B.1</span> D3（市場分析）→ <code>docs/market-analysis.md</code><br>
+        <span class="tag todo">B.2</span> D4（サービス設計）→ <code>docs/service-design.md</code><br>
+        <span class="tag todo">B.3</span> D5（GTM戦略）→ <code>docs/gtm-strategy.md</code><br>
+        <span class="tag todo">B.4-B.6</span> DR③（必要なら）<br>
+        <span class="tag todo">B.7</span> 泉里+辻井レビュー → CP-B
+      </div>
+    </div>
+
+    <!-- Phase C -->
+    <div class="mountain-step step-todo">
+      <h4><span class="tag todo">後</span> Phase C: 数字を固める</h4>
+      <p>3シナリオの財務計画と具体的ロードマップ。スタートアップ別の投資枠・撤退基準</p>
+      <div class="deliverables">
+        <span class="tag todo">C.1</span> D6（財務計画）→ <code>docs/financial-plan.md</code><br>
+        <span class="tag todo">C.2</span> D7（ロードマップ）→ <code>docs/roadmap.md</code><br>
+        <span class="tag todo">C.3-C.4</span> 泉里+辻井レビュー → CP-C
+      </div>
+    </div>
+
+    <!-- Phase D -->
+    <div class="mountain-step step-todo">
+      <h4><span class="tag todo">3月末</span> Phase D: Sharp報告書</h4>
+      <p>Physical AI方向転換の報告。2つのスタートアップ。協力打診</p>
+      <div class="deliverables">
+        <span class="tag todo">D.1</span> D8（Sharp報告書）→ <code>docs/sharp-report.md</code><br>
+        <span class="tag todo">D.2</span> 泉里レビュー → CP-D → <strong>3月末提出</strong>
+      </div>
+    </div>
+
+    <!-- Phase E -->
+    <div class="mountain-step step-todo">
+      <h4><span class="tag todo">仕上げ</span> Phase E: レビュー＋ループ</h4>
+      <p>全成果物の整合性チェック。ギャップ発見→追加DR→修正。90%チェックリスト</p>
+    </div>
+
+    <!-- Phase F -->
+    <div class="mountain-step step-todo">
+      <h4><span class="tag todo">山頂</span> Phase F: 最終承認</h4>
+      <p>泉里＋辻井「これで行く」→ 実行開始</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ 6. 次のステップ ============ -->
+<div class="section" style="border: 2px solid var(--accent); background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.08))">
+  <h2>6. 今日ここからやること</h2>
+  <table>
+    <thead><tr><th>順番</th><th>ステップ</th><th>担当</th><th>成果物</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>D1（事業定義書）ドラフト作成</td>
+        <td>Agent</td>
+        <td><code>docs/business-definition.md</code></td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>D2（スタートアップ定義書）ドラフト作成</td>
+        <td>Agent</td>
+        <td><code>docs/startup-definition.md</code></td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>泉里レビュー + 修正指示</td>
+        <td><strong>泉里</strong></td>
+        <td>CP-A判定</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Phase B開始（D3市場分析から）</td>
+        <td>Agent</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:1rem; font-size:0.9rem">
+    <strong>D1とD2のドラフトを今から作る。</strong>
+    確定済みD9-D15 + DR①②の全データを使って、一気にドラフトを生成する。
+    泉里は出来上がったドラフトに赤を入れる。
+  </p>
+</div>
+
+<!-- ============ 7. 90%チェックリスト（現在の到達度） ============ -->
+<div class="section">
+  <h2>7. 90%チェックリスト — 現在の到達度</h2>
+  <table>
+    <thead><tr><th>カテゴリ</th><th>項目</th><th>状態</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="3">事業定義</td><td>にからすが何の会社か、1文で言える</td><td><span class="tag now">D1で作成</span></td></tr>
+      <tr><td>ビジネスモデル（ぐるぐる）が図示されている</td><td><span class="tag now">D1で作成</span></td></tr>
+      <tr><td>泉里が燃えている</td><td><span class="tag done">D9-D14で確認済み</span></td></tr>
+      <tr><td rowspan="5">スタートアップ</td><td>何を作るか明確</td><td><span class="tag done">D10確定</span></td></tr>
+      <tr><td>誰に売るか明確（ICP）</td><td><span class="tag now">D2で詳細化</span></td></tr>
+      <tr><td>なぜ勝てるか明確（堀）</td><td><span class="tag done">Privacy by Design（DR①②で確認）</span></td></tr>
+      <tr><td>Privacy by Design仕様がある</td><td><span class="tag now">D2で作成</span></td></tr>
+      <tr><td>フォールバック階層がある</td><td><span class="tag done">D8確定</span></td></tr>
+      <tr><td rowspan="3">市場・戦略</td><td>TAM/SAM/SOMが根拠付き</td><td><span class="tag todo">Phase B</span></td></tr>
+      <tr><td>競合ポジショニングマップがある</td><td><span class="tag todo">Phase B</span></td></tr>
+      <tr><td>差別化が言語化されている</td><td><span class="tag done">DR②で確認済み</span></td></tr>
+      <tr><td rowspan="3">サービス・GTM</td><td>サービスラインナップが価格付きで定義</td><td><span class="tag todo">Phase B</span></td></tr>
+      <tr><td>エントリー→アップセル導線がある</td><td><span class="tag todo">Phase B</span></td></tr>
+      <tr><td>辻井が「売れる」と言う</td><td><span class="tag todo">Phase B レビュー</span></td></tr>
+      <tr><td rowspan="3">財務</td><td>3シナリオP&Lがある</td><td><span class="tag todo">Phase C</span></td></tr>
+      <tr><td>悲観シナリオで12ヶ月生存</td><td><span class="tag todo">Phase C</span></td></tr>
+      <tr><td>KPIダッシュボード設計がある</td><td><span class="tag todo">Phase C</span></td></tr>
+      <tr><td rowspan="3">実行</td><td>今日から何をするか明確</td><td><span class="tag now">D7で作成</span></td></tr>
+      <tr><td>Sharp報告書が完成</td><td><span class="tag todo">Phase D</span></td></tr>
+      <tr><td>泉里＋辻井が「これで行く」</td><td><span class="tag todo">Phase F</span></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:1rem; font-size:0.85rem; color:var(--text-dim)">
+    現在 7/18 項目がdone/進行中。Phase A完了で最大のブロッカー（何を作るか）が突破された。
+    Phase B-Dは全てAgentがドラフトを先に出し、泉里がレビューする形で進む。
+  </p>
+</div>
+
+<p style="text-align:center; color:var(--text-dim); margin-top:2rem; font-size:0.8rem">
+  にからす事業設計図 進捗ダッシュボード v1 — 2026-02-28
+</p>
+
+</body>
+</html>
