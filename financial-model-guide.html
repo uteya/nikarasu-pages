@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす財務モデル 使い方ガイド</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;--blue-input:#58a6ff;--black-formula:#c9d1d9;--green-ref:#3fb950;--yellow-bg:rgba(210,153,34,.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+
+/* Login */
+.login{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px}
+.login input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:8px;font-size:16px;width:260px;text-align:center}
+.login input::placeholder{color:var(--text-dim)}
+.login button{background:var(--accent);color:#fff;border:none;padding:10px 32px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+.login button:hover{opacity:.9}
+.login h1{color:var(--text);font-size:20px}
+.login .sub{color:var(--text-dim);font-size:13px}
+.login .error{color:var(--red);font-size:13px;display:none}
+.hidden{display:none}
+
+/* Layout */
+.container{max-width:800px;margin:0 auto;padding:24px}
+header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+header h1{font-size:24px;color:var(--text);margin-bottom:4px}
+header .meta{color:var(--text-dim);font-size:13px;margin-top:8px}
+
+/* Sections */
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.section h2{font-size:16px;color:var(--accent);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section h3{font-size:14px;color:var(--text);margin:20px 0 10px;font-weight:600}
+.section p{font-size:14px;margin-bottom:12px}
+.section ul,.section ol{font-size:14px;margin:8px 0 12px 20px}
+.section li{margin-bottom:6px}
+
+/* Summary box */
+.summary{background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.3);border-radius:8px;padding:16px;margin-bottom:16px;font-size:14px}
+.summary strong{color:var(--accent)}
+
+/* Warning box */
+.warning{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--red);margin:12px 0}
+
+/* Important box */
+.important{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.3);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--yellow);margin:12px 0}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+th{text-align:left;padding:10px 8px;border-bottom:2px solid var(--border);color:var(--text-dim);font-weight:600;font-size:11px;text-transform:uppercase}
+td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+
+/* Color legend */
+.color-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
+.color-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px}
+.color-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+
+/* Flow diagram */
+.flow{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;font-family:'Courier New',monospace;font-size:13px;line-height:1.8;color:var(--text-dim);white-space:pre}
+.flow strong{color:var(--accent);font-weight:600}
+
+/* Step cards */
+.step{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+.step-num{display:inline-block;background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;margin-right:8px}
+.step-title{font-weight:600;font-size:14px}
+.step p{margin-top:8px;font-size:13px;color:var(--text-dim)}
+.step .example{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);border-radius:6px;padding:8px 12px;margin-top:8px;font-size:12px;color:var(--green)}
+
+/* FAQ */
+.faq-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0}
+.faq-q{font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px}
+.faq-a{font-size:13px;color:var(--text-dim)}
+.faq-a strong{color:var(--accent)}
+
+/* Nav */
+.section-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.section-nav a{color:var(--accent);font-size:13px;text-decoration:none;padding:4px 12px;border:1px solid var(--border);border-radius:16px;transition:all .2s}
+.section-nav a:hover{background:rgba(88,166,255,.1);border-color:var(--accent)}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:12px}
+  header h1{font-size:20px}
+  table{font-size:12px}
+  th,td{padding:8px 6px}
+  .color-legend{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login" id="loginScreen">
+  <h1>にからす財務モデル 使い方ガイド</h1>
+  <p class="sub">パスワードを入力してください</p>
+  <input type="password" id="pw" placeholder="パスワード" autocomplete="off">
+  <button onclick="doLogin()">ログイン</button>
+  <p class="error" id="loginError">パスワードが違います</p>
+</div>
+
+<!-- Main Content -->
+<div class="container hidden" id="main">
+
+<header>
+  <h1>にからす財務モデル 使い方ガイド</h1>
+  <div class="meta">対象: 小竹さん向け ｜ 作成: 辻井 ｜ 作成日: 2026/03</div>
+</header>
+
+<div class="section-nav">
+  <a href="#overview">概要</a>
+  <a href="#sheets">シート構成</a>
+  <a href="#colors">セルの色</a>
+  <a href="#initial">初回設定</a>
+  <a href="#monthly">毎月やること</a>
+  <a href="#change">前提を変えたいとき</a>
+  <a href="#faq">よくある操作</a>
+  <a href="#donttouch">触らなくていいもの</a>
+  <a href="#assumptions">仮定値一覧</a>
+</div>
+
+<!-- 概要 -->
+<div class="section" id="overview">
+  <h2>このExcelでできること</h2>
+  <p>月次の売上・費用・利益・キャッシュの計画を<strong>3年分（FY2026〜FY2028）</strong>管理できます。</p>
+  <div class="summary">
+    <strong>小竹さんに毎月やってもらうことは、実績数字を2〜3箇所入力するだけです。</strong>
+  </div>
+</div>
+
+<!-- シート構成 -->
+<div class="section" id="sheets">
+  <h2>シート構成と役割</h2>
+  <table>
+    <tr><th>シート</th><th>役割</th><th>小竹さんの操作</th></tr>
+    <tr><td><strong>人員計画</strong></td><td>役員報酬・外注費の管理</td><td>初回のみ設定。変化があれば更新</td></tr>
+    <tr><td><strong>P&L</strong></td><td>損益計算書。全数字の計算元</td><td>売上計画の前提を変えるとき</td></tr>
+    <tr><td><strong>予実管理</strong></td><td>計画 vs 実績の比較</td><td>月次で実績を入力（メイン作業）</td></tr>
+    <tr><td><strong>KPIツリー</strong></td><td>件数・単価などの非財務指標の計画vs実績</td><td>月次で実績を入力</td></tr>
+    <tr><td><strong>CF計画</strong></td><td>キャッシュフローの計画</td><td>期首残高の設定・売掛金変動の入力</td></tr>
+  </table>
+
+  <h3>シートのつながり</h3>
+  <div class="flow"><strong>人員計画</strong>
+  └── 役員報酬・業務委託費・社保費を自動計算
+        ↓（緑字で参照）
+<strong>P&L（損益計算書）</strong>  ← 全体の計算エンジン
+  └── 売上（件数×単価）とコストから利益を計算
+        ↓（緑字で参照）
+<strong>予実管理</strong>          <strong>KPIツリー</strong>         <strong>CF計画</strong>
+（財務の計画vs実績）  （件数等の計画vs実績）  （現金の計画）</div>
+
+  <div class="important">
+    <strong>重要:</strong> P&Lが全体の計算エンジンです。P&Lを変えると他の3シートに自動反映されます。
+  </div>
+</div>
+
+<!-- セルの色 -->
+<div class="section" id="colors">
+  <h2>セルの色の意味</h2>
+  <div class="color-legend">
+    <div class="color-item">
+      <span class="color-swatch" style="background:var(--blue-input)"></span>
+      <span><strong>青字</strong> — 入力セル（変えてOK）</span>
+    </div>
+    <div class="color-item">
+      <span class="color-swatch" style="background:var(--black-formula);opacity:.5"></span>
+      <span><strong>黒字</strong> — 計算式（触らない）</span>
+    </div>
+    <div class="color-item">
+      <span class="color-swatch" style="background:var(--green-ref)"></span>
+      <span><strong>緑字</strong> — 他シート参照（触らない）</span>
+    </div>
+    <div class="color-item">
+      <span class="color-swatch" style="background:var(--yellow);opacity:.4"></span>
+      <span><strong>黄背景</strong> — 要確認・要入力</span>
+    </div>
+  </div>
+</div>
+
+<!-- 初回設定 -->
+<div class="section" id="initial">
+  <h2>初回設定（一度だけやること）</h2>
+
+  <div class="step">
+    <span class="step-num">1</span>
+    <span class="step-title">人員計画シート → 小竹さんの役員報酬を入力</span>
+    <p>「小竹（代表取締役）」の行の <strong style="color:var(--blue-input)">青字セル（月額単価）</strong> に月額報酬を入力してください。</p>
+    <div class="example">例: 月60万円の場合 → "60" と入力</div>
+    <p>外注・業務委託メンバーがいる場合は、黄色セルの氏名・単価・稼働率も入力してください。<br>稼働率は「フル稼働なら1.0、半分なら0.5」で入力します。</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">2</span>
+    <span class="step-title">CF計画シート → 期首現預金残高を入力</span>
+    <p>「期首現預金残高」の <strong>Apr-26の黄色セル</strong> に、2026年4月1日時点の会社の現預金残高を入力してください。</p>
+    <div class="example">例: 500万円ある場合 → "500" と入力</div>
+    <p>これだけで、3年分のキャッシュフロー予測が自動計算されます。</p>
+  </div>
+</div>
+
+<!-- 毎月やること -->
+<div class="section" id="monthly">
+  <h2>毎月やること（月次ルーティン）</h2>
+
+  <div class="summary">
+    <strong>所要時間: 約15分</strong>
+  </div>
+
+  <div class="step">
+    <span class="step-num">1</span>
+    <span class="step-title">予実管理シート → 実績の財務数字を入力</span>
+    <p>「<strong>実績（Actual）</strong>」セクションの、その月の列に以下を入力してください。</p>
+    <ul>
+      <li>売上合計（各事業別も入力できますが、最低限合計だけでもOK）</li>
+      <li>費用合計</li>
+      <li>当期純利益（わからなければ「売上−費用」でOK）</li>
+    </ul>
+    <p>入力すると、<strong>差異（計画との乖離）と達成率が自動計算</strong>されます。</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">2</span>
+    <span class="step-title">KPIツリーシート → 実績の件数・単価を入力</span>
+    <p>「<strong style="color:var(--blue-input)">実績★入力</strong>」と書かれた青字セルに、その月の実績を入力してください。</p>
+    <ul>
+      <li>各事業の稼働件数・受注件数</li>
+      <li>実際の単価（計画と変わった場合）</li>
+    </ul>
+    <p>入力すると、<strong>計画との達成率が自動計算</strong>されます。</p>
+  </div>
+</div>
+
+<!-- P&Lの前提を変えたいとき -->
+<div class="section" id="change">
+  <h2>P&Lの前提を変えたいとき</h2>
+  <p>売上計画の件数や単価を変えたい場合は、P&Lシートの上半分（<strong>ASSUMPTIONS</strong>）の青字セルを変更してください。</p>
+
+  <h3>変更していい場所</h3>
+  <table>
+    <tr><th>変更したい内容</th><th>場所</th></tr>
+    <tr><td>各事業の月次受注件数・稼働件数</td><td>P&L → ASSUMPTIONS → 各事業の「件数」行</td></tr>
+    <tr><td>各事業の単価</td><td>P&L → ASSUMPTIONS → 各事業の「単価」行（年度単位で入力）</td></tr>
+    <tr><td>FY27・FY28の成長率</td><td>P&L → 「成長率・税率パラメータ」セクション</td></tr>
+    <tr><td>特別支出（展示会・HW購入等）</td><td>P&L → ASSUMPTIONS → 「特別支出」行（黄背景）</td></tr>
+  </table>
+
+  <div class="warning">
+    <strong>変更してはいけない場所:</strong> 黒字・緑字のセルはすべて計算式です。変更すると連動が壊れます。
+  </div>
+</div>
+
+<!-- よくある操作 -->
+<div class="section" id="faq">
+  <h2>よくある操作</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">「来月の計画を修正したい」</div>
+    <div class="faq-a">→ <strong>P&Lシート</strong>の該当月の件数セル（青字）を変更する</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">「外注メンバーが増えた」</div>
+    <div class="faq-a">→ <strong>人員計画シート</strong>の業務委託セクションの空白行に入力する</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">「資金が心配」</div>
+    <div class="faq-a">→ <strong>CF計画シート</strong>の「期末現預金残高」の行を確認する。赤字で「⚠ 要注意」が出ていたら要相談</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">「投資家に見せたい」</div>
+    <div class="faq-a">→ シナリオ分析シート（後日追加予定）を使う。現状は<strong>P&LのFY28列</strong>が3年目の見通し</div>
+  </div>
+</div>
+
+<!-- 触らなくていいもの -->
+<div class="section" id="donttouch">
+  <h2>触らなくていいもの一覧</h2>
+  <p>以下は辻井がフォーマットを作っており、基本的に変更不要です。</p>
+  <ul>
+    <li>P&Lシートの下半分（損益計算書の本体）→ 全部自動計算</li>
+    <li>予実管理シートの「計画」セクション → P&Lから自動参照</li>
+    <li>予実管理シートの「差異」「達成率」セクション → 自動計算</li>
+    <li>CF計画の「当期純CF」「期末現預金残高」→ 自動計算</li>
+  </ul>
+</div>
+
+<!-- 仮定値一覧 -->
+<div class="section" id="assumptions">
+  <h2>現在の仮定値（要確認・要更新）</h2>
+  <p>以下は辻井が仮で入れた数字です。実態に合わせて更新が必要です。</p>
+  <table>
+    <tr><th>項目</th><th>現在の仮定値</th><th>確認先</th></tr>
+    <tr><td>小竹の月額役員報酬</td><td style="color:var(--yellow)">未入力（黄色）</td><td>小竹さんが入力</td></tr>
+    <tr><td>辻井の月額単価・稼働月</td><td style="color:var(--yellow)">未入力（黄色）</td><td>両名で合意後に入力</td></tr>
+    <tr><td>外注メンバー情報</td><td style="color:var(--yellow)">未入力（黄色）</td><td>現状の外注先を確認して入力</td></tr>
+    <tr><td>社保率</td><td>20%（概算）</td><td>実態に応じて修正</td></tr>
+    <tr><td>特別支出（展示会等）</td><td>仮の月次計上</td><td>実際の出展予定に合わせて修正</td></tr>
+    <tr><td>期首現預金残高</td><td style="color:var(--yellow)">未入力（黄色）</td><td>小竹さんが入力</td></tr>
+    <tr><td>FY27 件数成長率</td><td>50%</td><td>戦略議論後に修正</td></tr>
+    <tr><td>FY28 件数成長率</td><td>40%</td><td>戦略議論後に修正</td></tr>
+  </table>
+</div>
+
+<!-- フッター -->
+<div class="section" style="background:transparent;border:none;text-align:center;padding:12px">
+  <p style="font-size:12px;color:var(--text-dim)">質問・修正依頼は辻井まで。フォーマット自体は触らず、数字（青字セル）の範囲で操作してください。</p>
+</div>
+
+</div>
+
+<script>
+function doLogin(){
+  var p=document.getElementById('pw').value;
+  if(p==='nikarasu'){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('main').classList.remove('hidden');
+  }else{
+    document.getElementById('loginError').style.display='block';
+  }
+}
+document.getElementById('pw').addEventListener('keydown',function(e){
+  if(e.key==='Enter')doLogin();
+});
+</script>
+</body>
+</html>
