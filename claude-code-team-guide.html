@@ -3,44 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>にからす Claude Code チームガイド</title>
+<title>にからす Claude Code チームガイド v2.0</title>
 <style>
   :root {
-    --bg: #0a0a0f;
-    --card: #12121a;
-    --card-border: #1e1e2e;
-    --accent: #4361ee;
-    --accent-light: #5a7bff;
-    --accent-dim: #2a3a8a;
-    --text: #e0e0e8;
-    --text-muted: #8888a0;
-    --text-dim: #5a5a72;
+    --bg: #0f1729;
+    --bg-alt: #131b30;
+    --card: #171f36;
+    --card-hover: #1c2540;
+    --card-border: #243054;
+    --accent: #4f6df5;
+    --accent-light: #7b93ff;
+    --accent-dim: #2a3a7a;
+    --accent-glow: rgba(79, 109, 245, 0.15);
+    --text: #e4e8f1;
+    --text-muted: #8d95ab;
+    --text-dim: #5a6380;
     --success: #22c55e;
+    --success-dim: rgba(34, 197, 94, 0.15);
     --warning: #f59e0b;
-    --code-bg: #1a1a28;
-    --nav-bg: #0e0e16;
+    --warning-dim: rgba(245, 158, 11, 0.15);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167, 139, 250, 0.15);
+    --code-bg: #111827;
+    --nav-bg: rgba(15, 23, 41, 0.92);
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
   }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 72px;
+    scroll-padding-top: 68px;
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    font-family: var(--sans);
     background: var(--bg);
     color: var(--text);
-    line-height: 1.7;
+    line-height: 1.75;
     font-size: 15px;
+    min-height: 100vh;
   }
 
-  /* --- Navigation --- */
+  /* ========== NAVIGATION ========== */
   nav {
     position: fixed;
     top: 0;
@@ -49,34 +55,38 @@
     z-index: 100;
     background: var(--nav-bg);
     border-bottom: 1px solid var(--card-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: box-shadow 0.3s;
+  }
+
+  nav.scrolled {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
   }
 
   .nav-inner {
-    max-width: 900px;
+    max-width: 1020px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     height: 56px;
-    gap: 8px;
+    gap: 4px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
-  .nav-inner::-webkit-scrollbar {
-    display: none;
-  }
+  .nav-inner::-webkit-scrollbar { display: none; }
 
   .nav-logo {
-    font-weight: 700;
+    font-weight: 800;
     font-size: 14px;
     color: var(--accent);
     white-space: nowrap;
     flex-shrink: 0;
-    margin-right: 12px;
+    margin-right: 16px;
+    letter-spacing: 0.5px;
   }
 
   .nav-link {
@@ -88,6 +98,7 @@
     border-radius: 6px;
     transition: all 0.2s;
     flex-shrink: 0;
+    font-weight: 500;
   }
 
   .nav-link:hover {
@@ -95,53 +106,82 @@
     background: var(--card);
   }
 
-  /* --- Main layout --- */
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 80px 20px 60px;
+  .nav-link.active {
+    color: var(--accent-light);
+    background: var(--accent-glow);
   }
 
-  /* --- Header --- */
+  /* ========== MAIN ========== */
+  main {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 80px 24px 60px;
+  }
+
+  /* ========== HEADER ========== */
   .header {
     text-align: center;
-    padding: 48px 0 40px;
+    padding: 56px 0 48px;
+    position: relative;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(79, 109, 245, 0.08) 0%, transparent 70%);
+    pointer-events: none;
   }
 
   .header h1 {
-    font-size: clamp(24px, 5vw, 36px);
-    font-weight: 800;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 900;
     margin-bottom: 16px;
-    background: linear-gradient(135deg, var(--accent), #818cf8);
+    background: linear-gradient(135deg, var(--accent) 0%, #818cf8 50%, var(--purple) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1.3;
   }
 
-  .header p {
+  .header .subtitle {
     color: var(--text-muted);
-    font-size: 15px;
-    max-width: 540px;
-    margin: 0 auto 28px;
+    font-size: 16px;
+    max-width: 580px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
   }
 
   .team-badges {
     display: flex;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
     flex-wrap: wrap;
+    margin-bottom: 20px;
   }
 
   .team-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     background: var(--card);
     border: 1px solid var(--card-border);
     border-radius: 100px;
-    padding: 8px 18px;
+    padding: 10px 20px;
     font-size: 14px;
+    transition: border-color 0.2s, transform 0.2s;
   }
+
+  .team-badge:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .team-badge .name { font-weight: 700; color: var(--text); }
 
   .team-badge .role {
     color: var(--accent-light);
@@ -149,9 +189,21 @@
     font-weight: 600;
   }
 
-  /* --- Section --- */
+  .version-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    margin-top: 8px;
+  }
+
+  /* ========== SECTIONS ========== */
   section {
-    margin-bottom: 56px;
+    margin-bottom: 64px;
   }
 
   .section-label {
@@ -159,16 +211,17 @@
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     color: var(--accent);
     margin-bottom: 8px;
   }
 
   h2 {
-    font-size: clamp(20px, 4vw, 26px);
-    font-weight: 700;
-    margin-bottom: 20px;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 800;
+    margin-bottom: 16px;
     line-height: 1.3;
+    color: var(--text);
   }
 
   h3 {
@@ -178,25 +231,409 @@
     color: var(--text);
   }
 
+  h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
   p {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     color: var(--text-muted);
   }
 
-  /* --- Cards --- */
+  /* ========== CARDS ========== */
   .card {
     background: var(--card);
     border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 16px;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  }
+
+  .card:hover {
+    border-color: rgba(79, 109, 245, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+
+  .card h3 { margin-bottom: 10px; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .card-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  /* ========== TAGS ========== */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+  }
+
+  .tag-green { background: var(--success-dim); color: var(--success); }
+  .tag-amber { background: var(--warning-dim); color: var(--warning); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); }
+
+  /* ========== TABLES ========== */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 16px;
     border-radius: 12px;
-    padding: 24px;
+    border: 1px solid var(--card-border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 400px;
+  }
+
+  th {
+    background: var(--bg-alt);
+    text-align: left;
+    padding: 12px 18px;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  td {
+    padding: 12px 18px;
+    border-bottom: 1px solid rgba(36, 48, 84, 0.5);
+    color: var(--text-muted);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: rgba(79, 109, 245, 0.03); }
+
+  /* ========== CODE ========== */
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: var(--accent-light);
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  /* ========== LISTS ========== */
+  .pain-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 16px;
   }
 
-  .card h3 {
-    margin-bottom: 8px;
+  .pain-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+    padding: 10px 14px;
+    background: rgba(245, 158, 11, 0.04);
+    border-left: 3px solid var(--warning);
+    border-radius: 0 8px 8px 0;
   }
 
-  /* --- Steps --- */
+  .pain-list li .icon { flex-shrink: 0; color: var(--warning); font-size: 16px; }
+
+  .solution-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .solution-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+    padding: 10px 14px;
+    background: rgba(34, 197, 94, 0.04);
+    border-left: 3px solid var(--success);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .check-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .check-list li {
+    font-size: 14px;
+    color: var(--text);
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .check-list li::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--card-border);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ========== FLOW DIAGRAMS ========== */
+  .flow {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .flow-box {
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+
+  .flow-box:hover { border-color: var(--accent); }
+
+  .flow-arrow {
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  /* ========== LAYER DIAGRAM ========== */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+
+  .layer-box {
+    border: 2px solid;
+    border-radius: 12px;
+    padding: 18px 22px;
+    position: relative;
+    margin-bottom: -1px;
+  }
+
+  .layer-box:first-child { border-radius: 12px 12px 4px 4px; }
+  .layer-box:last-child { border-radius: 4px 4px 12px 12px; }
+  .layer-box:not(:first-child):not(:last-child) { border-radius: 4px; }
+
+  .layer-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+
+  .layer-title {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .layer-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .layer-git {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+
+  /* ========== ACTIVITY PATTERNS ========== */
+  .pattern-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .pattern-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .pattern-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .pattern-card h4 { margin-bottom: 6px; }
+  .pattern-card p { font-size: 13px; margin-bottom: 0; }
+
+  /* ========== TAB SWITCHER ========== */
+  .tab-container { margin-bottom: 16px; }
+
+  .tab-buttons {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    background: var(--bg-alt);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 4px;
+    width: fit-content;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--sans);
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(79, 109, 245, 0.3);
+  }
+
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== RULES ========== */
+  .rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rules-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .rules-list li:hover { border-color: var(--accent); }
+
+  .rule-num {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+  }
+
+  .rule-text { flex: 1; padding-top: 3px; color: var(--text); }
+  .rule-text span { display: block; font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ========== STEPS ========== */
   .steps {
     display: flex;
     flex-direction: column;
@@ -211,8 +648,8 @@
 
   .step-num {
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 10px;
     background: var(--accent-dim);
     color: var(--accent-light);
@@ -223,23 +660,11 @@
     font-size: 15px;
   }
 
-  .step-content {
-    flex: 1;
-    padding-top: 4px;
-  }
+  .step-content { flex: 1; padding-top: 4px; }
+  .step-content strong { display: block; margin-bottom: 4px; color: var(--text); }
+  .step-content p { margin-bottom: 0; font-size: 14px; }
 
-  .step-content strong {
-    display: block;
-    margin-bottom: 4px;
-    color: var(--text);
-  }
-
-  .step-content p {
-    margin-bottom: 0;
-    font-size: 14px;
-  }
-
-  /* --- Example cards --- */
+  /* ========== EXAMPLES ========== */
   .examples {
     display: grid;
     gap: 12px;
@@ -249,158 +674,37 @@
     background: var(--code-bg);
     border: 1px solid var(--card-border);
     border-radius: 10px;
-    padding: 16px 20px;
+    padding: 18px 22px;
+    transition: border-color 0.2s;
   }
+
+  .example:hover { border-color: var(--accent); }
 
   .example-label {
     font-size: 11px;
     color: var(--text-dim);
     margin-bottom: 6px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .example code {
-    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
     font-size: 14px;
     color: var(--accent-light);
     word-break: break-all;
+    background: none;
+    padding: 0;
   }
 
   .example .desc {
     font-size: 13px;
     color: var(--text-muted);
-    margin-top: 6px;
+    margin-top: 8px;
+    margin-bottom: 0;
   }
 
-  /* --- Table --- */
-  .table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: 16px;
-    border-radius: 10px;
-    border: 1px solid var(--card-border);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    min-width: 400px;
-  }
-
-  th {
-    background: var(--card);
-    text-align: left;
-    padding: 12px 16px;
-    font-weight: 700;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--card-border);
-  }
-
-  td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--card-border);
-    color: var(--text-muted);
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  td code, p code, li code, strong code {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 13px;
-    background: var(--code-bg);
-    padding: 2px 7px;
-    border-radius: 5px;
-    color: var(--accent-light);
-  }
-
-  /* --- Rules list --- */
-  .rules-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .rules-list li {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 16px 20px;
-    font-size: 14px;
-  }
-
-  .rule-num {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--accent-dim);
-    color: var(--accent-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 12px;
-  }
-
-  .rule-text {
-    flex: 1;
-    padding-top: 2px;
-    color: var(--text);
-  }
-
-  .rule-text span {
-    display: block;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
-
-  /* --- Flow diagram --- */
-  .flow {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-  }
-
-  .flow-steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .flow-box {
-    background: var(--code-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .flow-arrow {
-    color: var(--accent);
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  /* --- Accordion FAQ --- */
+  /* ========== FAQ ACCORDION ========== */
   .faq-list {
     display: flex;
     flex-direction: column;
@@ -410,9 +714,12 @@
   .faq-item {
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
+    transition: border-color 0.2s;
   }
+
+  .faq-item:hover { border-color: rgba(79, 109, 245, 0.3); }
 
   .faq-question {
     width: 100%;
@@ -420,19 +727,20 @@
     border: none;
     color: var(--text);
     text-align: left;
-    padding: 16px 20px;
+    padding: 18px 22px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: inherit;
+    font-family: var(--sans);
     line-height: 1.5;
+    transition: background 0.2s;
   }
 
   .faq-question:hover {
-    background: rgba(67, 97, 238, 0.05);
+    background: rgba(79, 109, 245, 0.04);
   }
 
   .faq-chevron {
@@ -440,73 +748,242 @@
     width: 20px;
     height: 20px;
     margin-left: 12px;
-    transition: transform 0.25s;
+    transition: transform 0.3s;
     color: var(--text-dim);
   }
 
   .faq-item.open .faq-chevron {
     transform: rotate(180deg);
+    color: var(--accent);
   }
 
   .faq-answer {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.35s ease;
   }
 
   .faq-answer-inner {
-    padding: 0 20px 16px;
+    padding: 0 22px 20px;
     font-size: 14px;
     color: var(--text-muted);
-    line-height: 1.7;
+    line-height: 1.8;
   }
 
   .faq-item.open .faq-answer {
-    max-height: 300px;
+    max-height: 500px;
   }
 
-  /* --- Phase 2 box --- */
-  .phase2-box {
+  /* ========== ROADMAP ========== */
+  .roadmap-card {
     background: var(--card);
-    border: 1px solid var(--accent-dim);
-    border-radius: 12px;
-    padding: 24px;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 12px;
+    border-left: 4px solid;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  .phase2-trigger {
+  .roadmap-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  .roadmap-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .roadmap-version {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .roadmap-period {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .roadmap-desc {
     font-size: 14px;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 0;
   }
 
-  .os-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  /* ========== CC FOUNDATION ARCHITECTURE ========== */
+  .arch-container {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  .arch-row {
+    display: flex;
+    justify-content: center;
     gap: 12px;
-    margin-top: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
   }
 
-  .os-card {
+  .arch-box {
     background: var(--code-bg);
     border: 1px solid var(--card-border);
-    border-radius: 8px;
-    padding: 14px 16px;
+    border-radius: 10px;
+    padding: 14px 20px;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+    min-width: 140px;
   }
 
-  .os-card .os-name {
-    font-weight: 700;
+  .arch-box:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .arch-box.full-width {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .arch-box .box-title {
     font-size: 14px;
+    font-weight: 700;
     color: var(--text);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
-  .os-card code {
-    font-family: "SF Mono", "Fira Code", monospace;
-    font-size: 13px;
+  .arch-box .box-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0;
+  }
+
+  .arch-connector {
+    text-align: center;
+    color: var(--accent);
+    font-size: 16px;
+    padding: 4px 0;
+    font-weight: 600;
+  }
+
+  .arch-foundation {
+    background: linear-gradient(135deg, rgba(79, 109, 245, 0.08), rgba(167, 139, 250, 0.08));
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    padding: 28px;
+    margin-top: 16px;
+  }
+
+  .arch-foundation-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
     color: var(--accent-light);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
   }
 
-  /* --- Context file cards --- */
+  .arch-foundation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .found-item {
+    background: rgba(15, 23, 41, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .found-item .found-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .found-item .found-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .auto-flow-bar {
+    margin-top: 16px;
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+  }
+
+  .auto-flow-bar .flow-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--success);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .auto-flow-bar .flow-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .auto-flow-bar .flow-chain .arrow {
+    color: var(--success);
+    font-weight: 700;
+  }
+
+  /* ========== VISION QUOTE ========== */
+  .vision-quote {
+    background: linear-gradient(135deg, rgba(79, 109, 245, 0.08), rgba(167, 139, 250, 0.06));
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .vision-quote::before {
+    content: '\201C';
+    font-size: 60px;
+    color: var(--accent);
+    opacity: 0.3;
+    position: absolute;
+    top: 8px;
+    left: 24px;
+    line-height: 1;
+  }
+
+  .vision-quote blockquote {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ========== CONTEXT CARDS ========== */
   .context-grid {
     display: grid;
     gap: 12px;
@@ -515,36 +992,52 @@
   .context-card {
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 18px 20px;
+    border-radius: 12px;
+    padding: 20px 22px;
+    transition: border-color 0.2s;
   }
 
+  .context-card:hover { border-color: var(--accent); }
+
   .context-card .filepath {
-    font-family: "SF Mono", "Fira Code", monospace;
+    font-family: var(--mono);
     font-size: 13px;
     color: var(--accent-light);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .context-card .ctx-desc {
     font-size: 14px;
     color: var(--text-muted);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .context-card .ctx-how {
     font-size: 13px;
     color: var(--text-dim);
     border-top: 1px solid var(--card-border);
-    padding-top: 8px;
-    margin-top: 8px;
+    padding-top: 10px;
+    margin-top: 10px;
+    margin-bottom: 0;
   }
 
-  /* --- Footer --- */
+  /* ========== DIVIDER ========== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    margin: 56px 0;
+  }
+
+  /* ========== HIGHLIGHT ========== */
+  .highlight { color: var(--accent-light); font-weight: 600; }
+  .highlight-green { color: var(--success); font-weight: 600; }
+  .highlight-purple { color: var(--purple); font-weight: 600; }
+
+  /* ========== FOOTER ========== */
   footer {
-    max-width: 900px;
+    max-width: 1020px;
     margin: 0 auto;
-    padding: 32px 20px;
+    padding: 40px 24px;
     border-top: 1px solid var(--card-border);
     text-align: center;
     font-size: 13px;
@@ -556,632 +1049,1114 @@
     text-decoration: none;
   }
 
-  /* --- Misc --- */
-  .divider {
-    height: 1px;
-    background: var(--card-border);
-    margin: 48px 0;
+  footer a:hover { text-decoration: underline; }
+
+  /* ========== WORKFLOW DIAGRAM ========== */
+  .workflow-visual {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 20px;
   }
 
-  .highlight {
-    color: var(--accent-light);
-    font-weight: 600;
+  .wf-phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
   }
 
-  .tag {
-    display: inline-block;
-    font-size: 11px;
+  .wf-phase {
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .wf-phase-title {
+    font-size: 14px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: var(--accent-dim);
-    color: var(--accent-light);
+    color: var(--text);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--card-border);
   }
 
-  .tag-green {
-    background: rgba(34, 197, 94, 0.15);
-    color: var(--success);
+  .wf-phase-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
   }
 
-  .tag-yellow {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--warning);
+  .wf-connectors {
+    display: flex;
+    justify-content: space-around;
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 700;
+    margin: -8px 0 -4px;
   }
 
-  /* --- Responsive --- */
-  @media (max-width: 640px) {
-    main {
-      padding: 68px 16px 48px;
-    }
+  /* ========== BRANCH DIAGRAM ========== */
+  .branch-diagram {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 28px;
+  }
 
-    .header {
-      padding: 32px 0 28px;
-    }
+  .branch-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 14px;
+  }
 
-    .card {
-      padding: 18px;
-    }
+  .branch-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
 
-    .os-grid {
-      grid-template-columns: 1fr;
-    }
+  .branch-connector {
+    width: 14px;
+    border-left: 2px solid var(--card-border);
+    height: 24px;
+    margin-left: 6px;
+  }
 
-    .flow-steps {
-      flex-direction: column;
-    }
+  .branch-sub {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0 8px 28px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
 
-    .flow-arrow {
-      transform: rotate(90deg);
-    }
-
-    .team-badges {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .nav-link {
-      font-size: 11px;
-      padding: 6px 8px;
-    }
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    main { padding: 68px 16px 48px; }
+    .header { padding: 36px 0 32px; }
+    .card { padding: 20px; }
+    .arch-container { padding: 20px; }
+    .arch-foundation { padding: 18px; }
+    .wf-phases { grid-template-columns: 1fr; }
+    .wf-connectors { display: none; }
+    .card-grid { grid-template-columns: 1fr; }
+    .card-grid-3 { grid-template-columns: 1fr; }
+    .flow-steps { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+    .team-badges { flex-direction: column; align-items: center; }
+    .tab-buttons { flex-direction: column; width: 100%; }
+    .tab-btn { text-align: center; }
+    .arch-foundation-grid { grid-template-columns: 1fr; }
+    .auto-flow-bar .flow-chain { flex-direction: column; gap: 2px; }
+    .auto-flow-bar .flow-chain .arrow { transform: rotate(90deg); }
   }
 </style>
 </head>
 <body>
 
-<!-- Navigation -->
-<nav>
+<!-- ===================== NAVIGATION ===================== -->
+<nav id="navbar">
   <div class="nav-inner">
-    <span class="nav-logo">nikarasu</span>
-    <a href="#architecture" class="nav-link">3層構造</a>
+    <span class="nav-logo">nikarasu CC Guide</span>
+    <a href="#why" class="nav-link">WHY</a>
+    <a href="#what" class="nav-link">WHAT</a>
+    <a href="#how" class="nav-link">HOW</a>
     <a href="#quickstart" class="nav-link">Quick Start</a>
+    <a href="#workflow" class="nav-link">Workflow</a>
+    <a href="#rules" class="nav-link">Rules</a>
     <a href="#claude-action" class="nav-link">@claude</a>
-    <a href="#project-files" class="nav-link">PJ構造</a>
-    <a href="#rules" class="nav-link">ルール</a>
-    <a href="#roadmap" class="nav-link">進化計画</a>
-    <a href="#add-member" class="nav-link">メンバー追加</a>
+    <a href="#cc-foundation" class="nav-link">CC基盤構想</a>
+    <a href="#onboarding" class="nav-link">Onboarding</a>
     <a href="#faq" class="nav-link">FAQ</a>
   </div>
 </nav>
 
 <main>
 
-  <!-- Header -->
-  <header class="header" id="top">
-    <h1>にからす Claude Code チームガイド</h1>
-    <p>GitHub + @claude でプロジェクトを非同期に回すためのチーム向けマニュアル。ブラウザだけで今日から使える。</p>
-    <div class="team-badges">
-      <div class="team-badge">
-        <strong>小竹</strong>
-        <span class="role">PM / 戦略</span>
+<!-- ===================== HEADER ===================== -->
+<header class="header" id="top">
+  <h1>にからす Claude Code<br>チームガイド</h1>
+  <p class="subtitle">AI駆動事業経営の実践ガイド &mdash; WHY / WHAT / HOW / FUTURE</p>
+  <div class="team-badges">
+    <div class="team-badge">
+      <span class="name">小竹</span>
+      <span class="role">PM / 戦略</span>
+    </div>
+    <div class="team-badge">
+      <span class="name">辻井</span>
+      <span class="role">CSO / 営業</span>
+    </div>
+    <div class="team-badge">
+      <span class="name">ペりん</span>
+      <span class="role">CTO / エンジニアリング</span>
+    </div>
+  </div>
+  <div class="version-badge">v2.0 | 2026-03-12</div>
+</header>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 1: WHY ===================== -->
+<section id="why">
+  <span class="section-label">Section 1 &mdash; WHY</span>
+  <h2>なぜClaude Codeを使うのか</h2>
+
+  <!-- Problem Card -->
+  <div class="card" style="border-left: 4px solid var(--warning);">
+    <h3>問題: 「優秀なAIがいるのに、仕事が進まない」</h3>
+    <p>Gemini や ChatGPT は強力なAIだが、「成果物への変換が手動」という根本的な限界がある。</p>
+    <ul class="pain-list">
+      <li><span class="icon">&#x26A0;</span>会話が消える &mdash; 毎回「前回の続きだけど...」から始まる。文脈を繰り返し説明</li>
+      <li><span class="icon">&#x26A0;</span>ファイルを触れない &mdash; テキスト生成だけ。実際のファイル作成・編集は手動コピペ</li>
+      <li><span class="icon">&#x26A0;</span>Gitと連携しない &mdash; コミット・ブランチ・PRは全部自分で操作</li>
+      <li><span class="icon">&#x26A0;</span>プロジェクト構造を知らない &mdash; 毎回「このプロジェクトは...」と説明が必要</li>
+      <li><span class="icon">&#x26A0;</span>チームで共有できない &mdash; 会話は個人のもの。他メンバーが参照できない</li>
+    </ul>
+    <p style="margin-bottom:0; font-size:14px; font-weight:600; color:var(--warning);">結果: AIとの会話に時間をかけたのに、成果物への変換が手動。</p>
+  </div>
+
+  <!-- Solution Card -->
+  <div class="card" style="border-left: 4px solid var(--success);">
+    <h3>解決: Claude Code = 永続記憶 + ファイル操作 + Git + 外部ツール連携</h3>
+    <div class="flow" style="background: var(--code-bg); margin-bottom: 16px;">
+      <p style="font-size: 13px; margin-bottom: 12px; text-align: left;"><span class="tag-amber tag" style="margin-right:8px;">Before</span>従来のAIチャット</p>
+      <div class="flow-steps" style="margin-bottom: 16px;">
+        <div class="flow-box">あなた</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box">チャット</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box">テキスト回答</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box" style="border-color: var(--warning);">手動コピペ</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box">ファイル</div>
       </div>
-      <div class="team-badge">
-        <strong>辻井</strong>
-        <span class="role">CSO / 営業</span>
-      </div>
-      <div class="team-badge">
-        <strong>ペりん</strong>
-        <span class="role">CTO / エンジニアリング</span>
+      <p style="font-size: 13px; margin-bottom: 12px; text-align: left;"><span class="tag-green tag" style="margin-right:8px;">After</span>Claude Code</p>
+      <div class="flow-steps">
+        <div class="flow-box">あなた</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box" style="border-color: var(--accent);">ターミナル / Issue</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box" style="border-color: var(--success);">直接ファイル操作 + Git + MCP</div>
       </div>
     </div>
-  </header>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 0;">CLAUDE.md + STATUS.md でプロジェクト文脈を永続保持。毎回説明する必要がない。</p>
+  </div>
 
-  <!-- Section 0: Architecture -->
-  <section id="architecture">
-    <span class="section-label">Architecture</span>
-    <h2>CC環境の3層構造</h2>
-    <p>にからすのCC駆動環境は3つの層で構成されている。各層が連携して「AIと人間が協業する事業管理基盤」を実現する。</p>
+  <!-- 5 Reasons -->
+  <div class="card">
+    <h3>にからすが選んだ5つの理由</h3>
+    <ul class="solution-list">
+      <li><strong>3事業・3リポジトリの横断管理</strong> &mdash; 各PJの状態がSTATUS.mdに書かれ、CCが起動時に自動で読む</li>
+      <li><strong>チームコラボレーション</strong> &mdash; CLAUDE.md（共有ルール）+ CLAUDE.local.md（個人設定）の階層で同じ品質</li>
+      <li><strong>非同期ワークフロー</strong> &mdash; Issue &rarr; @claude &rarr; PR &rarr; マージ。時間も場所も問わない</li>
+      <li><strong>「仕様→実装」の一気通貫</strong> &mdash; ドキュメント→コード→テスト→コミットが1セッションで完結</li>
+      <li><strong>MCP連携</strong> &mdash; Googleカレンダー、Slack、freee等と直接連携可能</li>
+    </ul>
+  </div>
+</section>
 
-    <div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:28px;margin-bottom:20px">
-      <!-- Layer 3: Agent -->
-      <div style="border:2px solid var(--accent);border-radius:10px;padding:16px;margin-bottom:12px;position:relative">
-        <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px">Layer 3: Agent層</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:4px">
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">Claude Code</div>
-            <div style="font-size:11px;color:var(--text-dim)">ローカル実行</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">claude-code-action</div>
-            <div style="font-size:11px;color:var(--text-dim)">GitHub Issue → PR</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">SessionEnd Hook</div>
-            <div style="font-size:11px;color:var(--text-dim)">自動commit</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">GitHub Actions</div>
-            <div style="font-size:11px;color:var(--text-dim)">CI/CD・自動化</div>
-          </div>
-        </div>
-      </div>
-      <!-- Arrow -->
-      <div style="text-align:center;color:var(--accent);font-size:18px;margin:4px 0">&#8595; 読み書き &#8595;</div>
-      <!-- Layer 2: UI -->
-      <div style="border:2px solid var(--success);border-radius:10px;padding:16px;margin-bottom:12px;position:relative">
-        <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:1px">Layer 2: UI層</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:4px">
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">ダッシュボード</div>
-            <div style="font-size:11px;color:var(--text-dim)">KPI・タスク一覧</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">辻井タスクビュー</div>
-            <div style="font-size:11px;color:var(--text-dim)">個人タスク表示</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">このガイド</div>
-            <div style="font-size:11px;color:var(--text-dim)">チーム運用説明</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">GitHub Pages</div>
-            <div style="font-size:11px;color:var(--text-dim)">静的ホスティング</div>
-          </div>
-        </div>
-      </div>
-      <!-- Arrow -->
-      <div style="text-align:center;color:var(--success);font-size:18px;margin:4px 0">&#8595; 参照 &#8595;</div>
-      <!-- Layer 1: Data -->
-      <div style="border:2px solid var(--warning);border-radius:10px;padding:16px;position:relative">
-        <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--warning);text-transform:uppercase;letter-spacing:1px">Layer 1: Data層</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:4px">
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">STATUS.md</div>
-            <div style="font-size:11px;color:var(--text-dim)">現在の状態</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">CHANGES.md</div>
-            <div style="font-size:11px;color:var(--text-dim)">変更履歴</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">wbs-complete.md</div>
-            <div style="font-size:11px;color:var(--text-dim)">WBS全体</div>
-          </div>
-          <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:6px;padding:10px;text-align:center">
-            <div style="font-size:13px;font-weight:600;color:var(--text)">decisions.md</div>
-            <div style="font-size:11px;color:var(--text-dim)">意思決定ログ</div>
-          </div>
-        </div>
-      </div>
+<div class="divider"></div>
+
+<!-- ===================== SECTION 2: WHAT ===================== -->
+<section id="what">
+  <span class="section-label">Section 2 &mdash; WHAT</span>
+  <h2>何ができるのか</h2>
+
+  <!-- Capability Table -->
+  <h3>基本能力</h3>
+  <div class="table-wrap" style="margin-bottom: 28px;">
+    <table>
+      <thead><tr><th>能力</th><th>説明</th><th>例</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--text);font-weight:600;">ファイル操作</td><td>読み取り・作成・編集・削除</td><td><code>「shift-agent-plan.mdを読んで要約して」</code></td></tr>
+        <tr><td style="color:var(--text);font-weight:600;">Git操作</td><td>ブランチ作成・コミット・diff確認</td><td><code>「この変更をコミットして」</code></td></tr>
+        <tr><td style="color:var(--text);font-weight:600;">シェル実行</td><td>npm, python, curl等を実行</td><td><code>「テストを実行して」</code></td></tr>
+        <tr><td style="color:var(--text);font-weight:600;">コード生成</td><td>新規作成・リファクタリング・テスト</td><td><code>「この関数のユニットテストを書いて」</code></td></tr>
+        <tr><td style="color:var(--text);font-weight:600;">MCP連携</td><td>外部サービスとの接続</td><td><code>「今週のGoogleカレンダーを確認して」</code></td></tr>
+        <tr><td style="color:var(--text);font-weight:600;">Web検索</td><td>最新情報の取得</td><td><code>「Inngestの最新ドキュメントを調べて」</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Activity Patterns -->
+  <h3>にからすでの5つの活用パターン</h3>
+  <div class="card-grid" style="margin-bottom: 28px;">
+    <div class="pattern-card">
+      <div class="pattern-letter">A</div>
+      <h4>プロジェクト状況把握</h4>
+      <p>毎セッション開始時にSTATUS.mdを読み、タスク一覧を整理し、期限が近いものをハイライト。</p>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">B</div>
+      <h4>設計→ドキュメント→実装の一気通貫</h4>
+      <p>実装計画を書いて、コードを生成して、テストして、コミットまで1セッションで完結。</p>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">C</div>
+      <h4>既存コードの調査・リファクタリング</h4>
+      <p>コードベース全体を探索し、依存関係を分析し、移行計画を提案。</p>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">D</div>
+      <h4>レポート・プレゼン資料の作成</h4>
+      <p>進捗を集約し、HTML/Markdownで資料作成し、GitHub Pagesにデプロイ。</p>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">E</div>
+      <h4>チーム非同期コラボ</h4>
+      <p>featureブランチで実装 &rarr; PR作成 &rarr; レビュー &rarr; マージ。非同期で全てが回る。</p>
+    </div>
+  </div>
+
+  <!-- Gemini vs CC Comparison (Tabs) -->
+  <h3>Gemini vs Claude Code 使い分け</h3>
+  <div class="tab-container" id="gemini-tabs">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('gemini-tabs', 'table-view')">比較表</button>
+      <button class="tab-btn" onclick="switchTab('gemini-tabs', 'detail-view')">詳細ガイド</button>
     </div>
 
-    <div class="card">
-      <h3>各層の役割</h3>
+    <div class="tab-panel active" id="table-view">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>層</th><th>役割</th><th>更新者</th><th>参照者</th></tr></thead>
+          <thead><tr><th>シーン</th><th>Gemini</th><th>Claude Code</th><th>推奨</th></tr></thead>
           <tbody>
-            <tr><td style="color:var(--warning);font-weight:600">Data層</td><td>事業の真実（Single Source of Truth）</td><td>小竹(PM) + CC</td><td>全員</td></tr>
-            <tr><td style="color:var(--success);font-weight:600">UI層</td><td>データを人間が見やすい形で表示</td><td>CC（自動生成）</td><td>全員（ブラウザ）</td></tr>
-            <tr><td style="color:var(--accent);font-weight:600">Agent層</td><td>データの読み書き・タスク実行を自動化</td><td>小竹（設定）</td><td>全員（利用）</td></tr>
+            <tr><td style="color:var(--text);font-weight:600;">アイデア出し・ブレスト</td><td style="color:var(--success);">&#10004; OK</td><td style="color:var(--text-muted);">&#10004; OK</td><td><span class="tag-green tag">どちらでも</span></td></tr>
+            <tr><td style="color:var(--text);font-weight:600;">コード実装・ファイル作成</td><td style="color:var(--text-dim);">&mdash;</td><td style="color:var(--success);">&#10004; ファイル直接操作</td><td><span class="tag">CC</span></td></tr>
+            <tr><td style="color:var(--text);font-weight:600;">プロジェクト管理</td><td style="color:var(--text-dim);">&mdash;</td><td style="color:var(--success);">&#10004; 永続記憶</td><td><span class="tag">CC</span></td></tr>
+            <tr><td style="color:var(--text);font-weight:600;">リサーチ・情報収集</td><td style="color:var(--success);">&#10004; 無料枠あり</td><td style="color:var(--success);">&#10004; Web検索</td><td><span class="tag-green tag">どちらでも</span></td></tr>
+            <tr><td style="color:var(--text);font-weight:600;">チームで共有する成果物</td><td style="color:var(--text-dim);">&mdash;</td><td style="color:var(--success);">&#10004; Git + PR</td><td><span class="tag">CC</span></td></tr>
           </tbody>
         </table>
       </div>
-      <p style="font-size:13px;margin-bottom:0">Data層が全ての源。UI層はData層を見やすく表示するだけ。Agent層がData層を自動更新する。この分離により、どの層に問題があっても他の層には影響しない。</p>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- Section 1: Quick Start -->
-  <section id="quickstart">
-    <span class="section-label">Quick Start</span>
-    <h2>今日から使える 3 ステップ</h2>
-    <p>ソフトウェアのインストールは不要。ブラウザだけで完結する。</p>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <strong>GitHub にログイン</strong>
-          <p><a href="https://github.com" style="color: var(--accent-light);">github.com</a> にアクセスしてログイン。アカウントがなければ無料で作成する。nikarasu-inc Org への招待メールが届いていれば「Accept invitation」をクリック。</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <strong>nikarasu-strategy リポジトリを開く</strong>
-          <p><code>github.com/nikarasu-inc/nikarasu-strategy</code> にアクセス。ファイル一覧と <code>.context/STATUS.md</code> が見えればOK。</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <strong>Issue で @claude に依頼 &rarr; PR &rarr; マージ</strong>
-          <p>「Issues」タブ &rarr; 「New issue」 &rarr; タイトルと依頼内容を書き、本文に <code>@claude</code> を含める &rarr; Submit。数分後に Claude が PR を作成するので、確認して「Merge」。</p>
-        </div>
-      </div>
     </div>
 
-    <div class="flow" style="margin-top: 24px;">
-      <div class="flow-steps">
-        <div class="flow-box">Issue 作成</div>
-        <span class="flow-arrow">&rarr;</span>
-        <div class="flow-box">@claude メンション</div>
-        <span class="flow-arrow">&rarr;</span>
-        <div class="flow-box">自動で PR 作成</div>
-        <span class="flow-arrow">&rarr;</span>
-        <div class="flow-box">レビュー &amp; マージ</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- Section 2: claude-code-action -->
-  <section id="claude-action">
-    <span class="section-label">claude-code-action</span>
-    <h2>@claude の使い方</h2>
-
-    <div class="card">
-      <h3>基本</h3>
-      <p><code>@claude</code> は GitHub の Issue コメントや PR コメントに書くことで Claude Code を呼び出す仕組み。リポジトリに設定された GitHub Actions ワークフロー（<code>claude-code-action</code>）が自動で起動し、ブランチ作成・ファイル編集・PR 作成まで行う。</p>
-      <p>Issue の本文に書いても、コメント欄に書いてもOK。PR のレビューコメントでも使える。</p>
-    </div>
-
-    <div class="card">
-      <h3>依頼の書き方のコツ</h3>
-      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;">
-        <li style="color: var(--text);">
-          <span class="highlight">具体的に書く</span>
-          <span style="color: var(--text-muted);"> &#8212; 「資料を作って」より「Q1の売上データを表形式でまとめて」</span>
-        </li>
-        <li style="color: var(--text);">
-          <span class="highlight">ファイル名を指定する</span>
-          <span style="color: var(--text-muted);"> &#8212; 「docs/report.md に書いて」と出力先を明示</span>
-        </li>
-        <li style="color: var(--text);">
-          <span class="highlight">1つの依頼に1つのタスク</span>
-          <span style="color: var(--text-muted);"> &#8212; 複数タスクは別 Issue に分ける方が精度が上がる</span>
-        </li>
-        <li style="color: var(--text);">
-          <span class="highlight">修正は PR コメントで</span>
-          <span style="color: var(--text-muted);"> &#8212; PR のコメント欄に <code>@claude</code> で修正を依頼できる</span>
-        </li>
-      </ul>
-    </div>
-
-    <h3 style="margin-top: 24px; margin-bottom: 12px;">実行例</h3>
-    <div class="examples">
-      <div class="example">
-        <div class="example-label">例 1: レポート作成</div>
-        <code>@claude docs/report.md にQ1の売上データを表形式でまとめて。前年比も入れてください。</code>
-        <div class="desc">指定ファイルにデータを構造化して書き込む</div>
-      </div>
-      <div class="example">
-        <div class="example-label">例 2: 仕様書の修正</div>
-        <code>@claude この仕様書の「対象ユーザー」セクションを中小企業向けに修正して。具体的なペルソナを2つ追加してください。</code>
-        <div class="desc">既存ファイルの特定セクションを編集する</div>
-      </div>
-      <div class="example">
-        <div class="example-label">例 3: ステータス更新</div>
-        <code>@claude .context/CHANGES.md に「2026-03-09: GTM戦略書v4.0レビュー完了」を追記して。</code>
-        <div class="desc">変更履歴への追記（CHANGES.md は全員が追記可能）</div>
-      </div>
-      <div class="example">
-        <div class="example-label">例 4: 調査依頼</div>
-        <code>@claude docs/research/ に中小企業DX市場の調査レポートを作成して。市場規模、主要プレイヤー、トレンドをカバーしてください。</code>
-        <div class="desc">新規ファイルを作成して調査結果をまとめる</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- Section 3: Project files -->
-  <section id="project-files">
-    <span class="section-label">Project Structure</span>
-    <h2>プロジェクトの見方</h2>
-    <p>プロジェクトの状態は 3 つのファイルで把握できる。全て GitHub Web 上で閲覧可能。</p>
-
-    <div class="context-grid">
-      <div class="context-card">
-        <div class="filepath">.context/STATUS.md</div>
-        <div class="ctx-desc">プロジェクトの現在の状態。フェーズ、進捗率、メンバー別タスク、次のマイルストーンが記載されている。</div>
-        <div class="ctx-how"><strong>読み方:</strong> セッション開始時にまず確認。自分の担当タスクと期限を把握する。<br><span class="tag-green tag">PM管理</span> &#8212; 小竹が更新。他メンバーは閲覧のみ。</div>
-      </div>
-      <div class="context-card">
-        <div class="filepath">.context/CHANGES.md</div>
-        <div class="ctx-desc">変更履歴。いつ、誰が、何をしたかが時系列で記録されている。</div>
-        <div class="ctx-how"><strong>読み方:</strong> 前回から何が変わったか確認する。自分の作業完了時にも追記する。<br><span class="tag tag-yellow">全員追記可</span> &#8212; Append-Only。既存エントリは消さない。</div>
-      </div>
-      <div class="context-card">
-        <div class="filepath">docs/decisions.md</div>
-        <div class="ctx-desc">意思決定ログ。なぜその判断をしたか、根拠チェーン付きで記録される。</div>
-        <div class="ctx-how"><strong>読み方:</strong> 過去の判断理由を知りたいときに参照する。「なぜこうなっている？」の答えがここにある。</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- Section 4: Rules -->
-  <section id="rules">
-    <span class="section-label">Rules</span>
-    <h2>守ってほしいルール（5つだけ）</h2>
-
-    <ol class="rules-list">
-      <li>
-        <div class="rule-num">1</div>
-        <div class="rule-text">
-          <code>STATUS.md</code> は PM（小竹）が管理 &#8212; 編集しない
-          <span>プロジェクトの状態は PM が責任を持つ。参照は自由。</span>
-        </div>
-      </li>
-      <li>
-        <div class="rule-num">2</div>
-        <div class="rule-text">
-          <code>CHANGES.md</code> は追記のみ &#8212; 既存エントリを消さない
-          <span>履歴は積み重ね。誰の記録も消さないこと。</span>
-        </div>
-      </li>
-      <li>
-        <div class="rule-num">3</div>
-        <div class="rule-text">
-          PR にはレビュアーを指定する
-          <span>作成したPRには相手をレビュアーに設定。内容確認を経てからマージ。</span>
-        </div>
-      </li>
-      <li>
-        <div class="rule-num">4</div>
-        <div class="rule-text">
-          直接 <code>main</code> に push しない &#8212; PR 経由で
-          <span>main は保護ブランチ。全ての変更は PR を経由する。</span>
-        </div>
-      </li>
-      <li>
-        <div class="rule-num">5</div>
-        <div class="rule-text">
-          困ったら Issue で相談
-          <span>判断に迷うこと、ブロッカー、疑問は全て Issue に書く。記録が残り、後から参照できる。</span>
-        </div>
-      </li>
-    </ol>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- Section 5: Phase 2 -->
-  <section id="phase2">
-    <span class="section-label">Phase 2</span>
-    <h2>Desktop App が必要になったら</h2>
-
-    <div class="phase2-box">
-      <h3>いつ必要になるか</h3>
-      <p class="phase2-trigger">以下のケースに該当する場合、ローカルに Claude Code Desktop App を導入する:</p>
-      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
-        <li style="color: var(--text); font-size: 14px;">&#8226; ローカルファイルの操作が必要（大量のファイル編集、ビルド作業など）</li>
-        <li style="color: var(--text); font-size: 14px;">&#8226; MCP 連携を使いたい（Google Calendar、Slack、Backlog 等）</li>
-        <li style="color: var(--text); font-size: 14px;">&#8226; 複雑な Claude Code セッションを実行したい</li>
-        <li style="color: var(--text); font-size: 14px;">&#8226; Skills や Hooks を活用したい</li>
-      </ul>
-
-      <h3>セットアップ概要</h3>
-      <p style="font-size: 14px;">詳細手順は <code>claude-bootstrap/guides/team-collaboration.md</code> の「Phase 2: Desktop App」を参照。</p>
-
-      <div class="os-grid">
-        <div class="os-card">
-          <div class="os-name">Windows</div>
-          <code>winget install Anthropic.ClaudeCode</code>
-        </div>
-        <div class="os-card">
-          <div class="os-name">Mac</div>
-          <code>brew install claude-code</code>
-        </div>
-      </div>
-
-      <p style="font-size: 13px; color: var(--text-dim); margin-top: 16px; margin-bottom: 0;">インストール後: リポジトリ clone &rarr; <code>CLAUDE.local.md</code> 作成 &rarr; <code>claude</code> 起動。npm（<code>npm install -g @anthropic-ai/claude-code</code>）でもインストール可能。</p>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- Section 6: Roadmap (G3) -->
-  <section id="roadmap">
-    <span class="section-label">Evolution</span>
-    <h2>CC環境 進化計画</h2>
-    <p>CC駆動環境は段階的に進化する。現在は v1。各バージョンで何ができるようになるかの計画。</p>
-
-    <div style="display:flex;flex-direction:column;gap:16px">
-      <!-- v1 -->
-      <div class="card" style="border-left:4px solid var(--success)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span class="tag tag-green">現在</span>
-          <h3 style="margin-bottom:0">v1.0 — 基盤構築（MS-A〜MS-B）</h3>
-        </div>
-        <p style="font-size:14px;margin-bottom:8px">手動運用だが、全ての仕組みが揃っている状態。</p>
-        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:4px">
-          <li style="font-size:13px;color:var(--text)">&#10003; CLAUDE.md + CLAUDE.local.md（チーム設定）</li>
-          <li style="font-size:13px;color:var(--text)">&#10003; .context/ コンベンション（STATUS/CHANGES/SPECS）</li>
-          <li style="font-size:13px;color:var(--text)">&#10003; ダッシュボードHTML（KPI+財務+タスク）</li>
-          <li style="font-size:13px;color:var(--text)">&#10003; GitHub Pages デプロイ</li>
-          <li style="font-size:13px;color:var(--text)">&#10003; 運用ルール定義書</li>
-          <li style="font-size:13px;color:var(--text)">&#10003; WBS v1.0-draft</li>
-          <li style="font-size:13px;color:var(--text-muted)">&#9744; claude-code-action（@claude Issue対応）— MS-B</li>
-          <li style="font-size:13px;color:var(--text-muted)">&#9744; SessionEnd Hook — MS-B</li>
-        </ul>
-      </div>
-      <!-- v2 -->
-      <div class="card" style="border-left:4px solid var(--accent)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span class="tag">MS-C (4月末)</span>
-          <h3 style="margin-bottom:0">v2.0 — 自動化（4-5月）</h3>
-        </div>
-        <p style="font-size:14px;margin-bottom:8px">手動だった作業を自動化。データ更新→表示が自動で回る。</p>
-        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:4px">
-          <li style="font-size:13px;color:var(--text)">&#9633; ダッシュボード自動更新（push→GitHub Actions→HTML再生成）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; 会議→WBS自動更新フロー（議事録→差分→PR）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; 月次レビュー自動起票（GitHub Actions）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; 予実自動照合（財務Excel→計画→差分レポート）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; MSレビューチェックリスト自動生成</li>
-        </ul>
-      </div>
-      <!-- v3 -->
-      <div class="card" style="border-left:4px solid var(--purple);opacity:0.85">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span class="tag" style="background:rgba(188,140,255,.15);color:var(--purple)">Year 2</span>
-          <h3 style="margin-bottom:0">v3.0 — インテリジェント（Year 2）</h3>
-        </div>
-        <p style="font-size:14px;margin-bottom:8px">AI が事業管理に能動的に関与する状態。</p>
-        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:4px">
-          <li style="font-size:13px;color:var(--text)">&#9633; CRM連携（パイプライン自動追跡）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; AI広報パイプライン（自律コンテンツ生成）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; 予測ダッシュボード（CF予測・売上予測）</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; クライアントPJ統合管理</li>
-          <li style="font-size:13px;color:var(--text)">&#9633; A/Bテスト・効果測定自動化</li>
+    <div class="tab-panel" id="detail-view">
+      <div class="card">
+        <h4>ペりん向け: 併用ガイド</h4>
+        <p>Geminiを既に使いこなしているペりんにとって、Claude Codeは「対立するツール」ではなく「補完するツール」。</p>
+        <ul class="solution-list">
+          <li><strong>Geminiが得意なこと</strong> &mdash; 自由なブレインストーミング、広範な知識ベースからの情報検索、マルチモーダル入力</li>
+          <li><strong>Claude Codeが得意なこと</strong> &mdash; プロジェクトコンテキストを維持した上での実装、ファイル操作、Git連携、チーム成果物の管理</li>
+          <li><strong>実践的な使い分け</strong> &mdash; Geminiでアイデアを固める &rarr; Claude Codeで実装・ドキュメント化・コミット。「考える」と「作る」を分離する</li>
         </ul>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- Section 7: Add Member (G4) -->
-  <section id="add-member">
-    <span class="section-label">Onboarding</span>
-    <h2>新メンバー追加手順</h2>
-    <p>新しいメンバーがチームに参加する際の手順。PM（小竹）が実施する。</p>
+<!-- ===================== SECTION 3: HOW ===================== -->
+<section id="how">
+  <span class="section-label">Section 3 &mdash; HOW</span>
+  <h2>アーキテクチャ</h2>
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <strong>GitHubアクセス権付与</strong>
-          <p>GitHub リポジトリ Settings → Collaborators → <code>Add people</code> で新メンバーを招待。Write 権限を付与。</p>
+  <!-- 4-Layer CLAUDE.md Hierarchy -->
+  <h3 style="margin-bottom: 16px;">4層 CLAUDE.md 階層設計</h3>
+  <p>CCを起動すると、これら4層が自動で読み込まれる。毎回説明する必要がない。</p>
+
+  <div class="card" style="padding: 32px;">
+    <div class="layer-stack">
+      <!-- Layer 4 -->
+      <div class="layer-box" style="border-color: var(--purple); background: rgba(167, 139, 250, 0.04); margin-bottom: 8px;">
+        <span class="layer-label" style="background: var(--purple-dim); color: var(--purple);">Layer 4: Global</span>
+        <span class="layer-git" style="background: var(--purple-dim); color: var(--purple);">chezmoi管理</span>
+        <div class="layer-title">~/.claude/CLAUDE.md</div>
+        <p class="layer-desc">グローバル設定 &mdash; セッション開始/終了ルーチン、日本語応答、チーム規約。全PJ共通で適用。</p>
+      </div>
+
+      <!-- Layer 1 -->
+      <div class="layer-box" style="border-color: var(--accent); background: rgba(79, 109, 245, 0.04); margin-bottom: 8px;">
+        <span class="layer-label" style="background: var(--accent-dim); color: var(--accent-light);">Layer 1: Project</span>
+        <span class="layer-git" style="background: var(--success-dim); color: var(--success);">Git管理 (共有)</span>
+        <div class="layer-title">CLAUDE.md (PJルート)</div>
+        <p class="layer-desc">チーム共有ルール &mdash; チーム構成、ブランチ戦略、コミット規約、参照ドキュメント。60行以下。</p>
+      </div>
+
+      <!-- Layer 2 -->
+      <div class="layer-box" style="border-color: var(--warning); background: rgba(245, 158, 11, 0.04); margin-bottom: 8px;">
+        <span class="layer-label" style="background: var(--warning-dim); color: var(--warning);">Layer 2: Personal</span>
+        <span class="layer-git" style="background: var(--warning-dim); color: var(--warning);">.gitignore対象</span>
+        <div class="layer-title">CLAUDE.local.md</div>
+        <p class="layer-desc">個人設定 &mdash; 自分の役割、担当領域、作業スタイル。他メンバーには共有されない。</p>
+      </div>
+
+      <!-- Layer 3 -->
+      <div class="layer-box" style="border-color: var(--text-dim); background: rgba(90, 99, 128, 0.04);">
+        <span class="layer-label" style="background: rgba(90, 99, 128, 0.15); color: var(--text-dim);">Layer 3: Rules (将来用)</span>
+        <span class="layer-git" style="background: var(--success-dim); color: var(--success);">Git管理</span>
+        <div class="layer-title">.claude/rules/*.md</div>
+        <p class="layer-desc">パス限定ルール &mdash; モノレポ時にディレクトリ別のルールを定義。現在は未使用。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- .context/ Diagram -->
+  <h3 style="margin-top: 32px; margin-bottom: 16px;">.context/ &mdash; プロジェクトの記憶</h3>
+  <div class="context-grid" style="margin-bottom: 28px;">
+    <div class="context-card">
+      <div class="filepath">STATUS.md</div>
+      <div class="ctx-desc">プロジェクトの「現在地」。フェーズ、進捗率、メンバー別タスク、次のマイルストーン。CCが毎回起動時に読む。</div>
+      <p class="ctx-how"><span class="tag-green tag" style="margin-right:6px;">PM管理</span>小竹が更新。他メンバーは読み取り専用。</p>
+    </div>
+    <div class="context-card">
+      <div class="filepath">CHANGES.md</div>
+      <div class="ctx-desc">変更履歴。いつ、誰が、何をしたかが時系列で記録される。作業完了時に追記する。</div>
+      <p class="ctx-how"><span class="tag-amber tag" style="margin-right:6px;">全員追記</span>Append-Only。既存エントリは消さない。</p>
+    </div>
+    <div class="context-card">
+      <div class="filepath">SPECS.md</div>
+      <div class="ctx-desc">仕様・要件。プロダクトの仕様書やアーキテクチャ設計を記録。</div>
+      <p class="ctx-how"><span class="tag tag" style="margin-right:6px;">PM管理</span>変更時はPRで通知。</p>
+    </div>
+  </div>
+
+  <!-- 3-Layer Environment Architecture -->
+  <h3 style="margin-top: 32px; margin-bottom: 16px;">3層環境アーキテクチャ</h3>
+  <div class="card" style="padding: 32px;">
+    <!-- Agent Layer -->
+    <div style="border:2px solid var(--accent);border-radius:12px;padding:18px;margin-bottom:12px;position:relative;">
+      <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;">Agent層</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:4px;">
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">Claude Code</div>
+          <div style="font-size:11px;color:var(--text-dim);">ローカル実行</div>
+        </div>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">claude-code-action</div>
+          <div style="font-size:11px;color:var(--text-dim);">GitHub Issue &rarr; PR</div>
+        </div>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">SessionEnd Hook</div>
+          <div style="font-size:11px;color:var(--text-dim);">自動commit</div>
+        </div>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">GitHub Actions</div>
+          <div style="font-size:11px;color:var(--text-dim);">CI/CD・自動化</div>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <strong>リポジトリ clone + CC セットアップ</strong>
-          <p><code>git clone</code> → <code>npm install -g @anthropic-ai/claude-code</code> → <code>claude</code> 起動。詳細は <code>docs/onboarding-guide.md</code> 参照。</p>
+    </div>
+    <!-- Arrow -->
+    <div style="text-align:center;color:var(--accent);font-size:18px;margin:6px 0;font-weight:600;">&#8595; 読み書き &#8595;</div>
+    <!-- UI Layer -->
+    <div style="border:2px solid var(--success);border-radius:12px;padding:18px;margin-bottom:12px;position:relative;">
+      <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:1.5px;">UI層</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:4px;">
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">ダッシュボードHTML</div>
+          <div style="font-size:11px;color:var(--text-dim);">KPI・タスク一覧</div>
+        </div>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">タスクビュー</div>
+          <div style="font-size:11px;color:var(--text-dim);">個人タスク表示</div>
+        </div>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">このガイド</div>
+          <div style="font-size:11px;color:var(--text-dim);">チーム運用説明</div>
+        </div>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">GitHub Pages</div>
+          <div style="font-size:11px;color:var(--text-dim);">静的ホスティング</div>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <strong>CLAUDE.local.md 作成</strong>
-          <p>テンプレートを作成: 名前・役割・担当領域・参照ドキュメント・ブランチ戦略を記載。<code>CLAUDE.local.md.[名前]</code> としてリポジトリに配置（.gitignore 対象）。</p>
+    </div>
+    <!-- Arrow -->
+    <div style="text-align:center;color:var(--success);font-size:18px;margin:6px 0;font-weight:600;">&#8595; 参照 &#8595;</div>
+    <!-- Data Layer -->
+    <div style="border:2px solid var(--warning);border-radius:12px;padding:18px;position:relative;">
+      <div style="position:absolute;top:-10px;left:16px;background:var(--card);padding:0 8px;font-size:11px;font-weight:700;color:var(--warning);text-transform:uppercase;letter-spacing:1.5px;">Data層</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:4px;">
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">STATUS.md</div>
+          <div style="font-size:11px;color:var(--text-dim);">現在の状態</div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-content">
-          <strong>WBS にタスクを追加</strong>
-          <p><code>docs/wbs-complete.md</code> に新メンバーの担当タスクを追加。タスクID・担当・期限・完了基準・依存を記載。</p>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">CHANGES.md</div>
+          <div style="font-size:11px;color:var(--text-dim);">変更履歴</div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">5</div>
-        <div class="step-content">
-          <strong>ダッシュボードに反映</strong>
-          <p><code>docs/dashboard.html</code> の <code>DASHBOARD_DATA.tasks</code> に新タスクを追加。フィルタの担当者リストにも名前を追加。<code>scripts/sync-pages.sh</code> で GitHub Pages に反映。</p>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">wbs-complete.md</div>
+          <div style="font-size:11px;color:var(--text-dim);">WBS全体</div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">6</div>
-        <div class="step-content">
-          <strong>CLAUDE.md のチーム表を更新</strong>
-          <p><code>CLAUDE.md</code> のチーム表に新メンバーを追加（名前・役割・担当領域）。</p>
+        <div style="background:var(--code-bg);border:1px solid var(--card-border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">decisions.md</div>
+          <div style="font-size:11px;color:var(--text-dim);">意思決定ログ</div>
         </div>
       </div>
     </div>
 
-    <div class="card" style="margin-top:20px">
-      <h3>チェックリスト</h3>
-      <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px">
-        <li style="font-size:14px;color:var(--text)">&#9744; GitHub Collaborator 招待 → 承認済み</li>
-        <li style="font-size:14px;color:var(--text)">&#9744; CC インストール → <code>claude --version</code> 成功</li>
-        <li style="font-size:14px;color:var(--text)">&#9744; <code>CLAUDE.local.md.[名前]</code> 作成 → リポジトリに配置</li>
-        <li style="font-size:14px;color:var(--text)">&#9744; WBS にタスク追加 → コミット</li>
-        <li style="font-size:14px;color:var(--text)">&#9744; ダッシュボードに反映 → GitHub Pages 確認</li>
-        <li style="font-size:14px;color:var(--text)">&#9744; CLAUDE.md チーム表更新 → コミット</li>
-        <li style="font-size:14px;color:var(--text)">&#9744; 初回コミットテスト → PR 作成成功</li>
-      </ul>
+    <p style="font-size:13px;margin-top:16px;margin-bottom:0;color:var(--text-dim);">Data層が全ての源。UI層はData層を見やすく表示するだけ。Agent層がData層を自動更新する。この分離により、どの層に問題があっても他の層には影響しない。</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 4: QUICK START ===================== -->
+<section id="quickstart">
+  <span class="section-label">Section 4 &mdash; Quick Start</span>
+  <h2>今日から始める</h2>
+
+  <div class="tab-container" id="quickstart-tabs">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('quickstart-tabs', 'qs-engineer')">エンジニア (ペりん向け)</button>
+      <button class="tab-btn" onclick="switchTab('quickstart-tabs', 'qs-browser')">ブラウザのみ (辻井向け)</button>
     </div>
-  </section>
 
-  <div class="divider"></div>
+    <!-- Engineer Path -->
+    <div class="tab-panel active" id="qs-engineer">
+      <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>CLI + ローカル環境セットアップ</h3>
+        <p>ペりんはエンジニアなので、CLI環境で最大限の機能を使う。</p>
 
-  <!-- Section 8: FAQ -->
-  <section id="faq">
-    <span class="section-label">FAQ</span>
-    <h2>よくある質問</h2>
-
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          @claude が反応しない
-          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-answer">
-          <div class="faq-answer-inner">
-            以下を確認してください:<br>
-            1. リポジトリに <code>.github/workflows/claude-code.yml</code> が存在するか<br>
-            2. GitHub リポジトリの Settings &rarr; Secrets に <code>ANTHROPIC_API_KEY</code> が設定されているか<br>
-            3. Actions タブでワークフローが有効になっているか<br>
-            <br>
-            解決しない場合は Issue で小竹に相談してください。
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Claude Code インストール</strong>
+              <p>ターミナルで以下を実行:</p>
+              <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          PR の内容を修正したい
-          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-answer">
-          <div class="faq-answer-inner">
-            PR のコメント欄に <code>@claude [修正内容]</code> と書けば、Claude が修正を加えてコミットします。具体的に書くほど精度が上がります。<br>
-            例: <code>@claude 表の3列目を「前年比」から「成長率(%)」に変更して</code>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>リポジトリclone + 初期セットアップ</strong>
+              <pre><code>curl -sL https://uteya.github.io/nikarasu-pages/perin-onboarding.sh | bash
+cd ~/projects/nikarasu-strategy && claude</code></pre>
+              <p>onboarding.sh が3リポジトリのclone、CLAUDE.local.md配置、グローバルCLAUDE.md配置を自動で行う。</p>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          自分で直接ファイルを編集したい
-          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-answer">
-          <div class="faq-answer-inner">
-            GitHub Web 上でファイルを開き、右上の鉛筆アイコン（Edit this file）をクリックすれば直接編集できます。編集後は「Commit changes」で保存。<br>
-            <br>
-            ただし <code>main</code> ブランチに直接コミットせず、「Create a new branch for this commit and start a pull request」を選択して PR 経由でマージしてください。
-          </div>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
-          大きな変更をしたい
-          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-answer">
-          <div class="faq-answer-inner">
-            複数ファイルにまたがる大きな変更や、ビルド・テストが必要な作業は Desktop App の導入を検討してください。<br>
-            <br>
-            セットアップ手順は上記「Phase 2: Desktop App が必要になったら」セクションを参照。Windows: <code>winget install Anthropic.ClaudeCode</code> / Mac: <code>brew install claude-code</code> でインストールできます。
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>最初のセッション</strong>
+              <p><code>claude</code> を起動して「セットアップを開始してください」と入力。CCがSTATUS.mdを読み、タスク一覧を表示する。</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+
+    <!-- Browser Path -->
+    <div class="tab-panel" id="qs-browser">
+      <div class="card" style="border-left: 4px solid var(--success);">
+        <h3>ブラウザだけで完結（CLIゼロ）</h3>
+        <p>ソフトウェアのインストールは不要。GitHub Web UIだけで全てが完結する。</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>GitHub にログイン</strong>
+              <p><a href="https://github.com" style="color:var(--accent-light);">github.com</a> にアクセス。nikarasu-inc Org への招待メールが届いていれば「Accept invitation」をクリック。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>nikarasu-strategy リポジトリを開く</strong>
+              <p><code>github.com/nikarasu-inc/nikarasu-strategy</code> にアクセス。ファイル一覧と <code>.context/STATUS.md</code> が見えればOK。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Issue で @claude に依頼</strong>
+              <p>「Issues」タブ &rarr; 「New issue」 &rarr; タイトルと依頼内容を書き、本文に <code>@claude</code> を含める &rarr; Submit。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <strong>PR を確認してマージ</strong>
+              <p>数分後にClaudeがPRを作成する。内容を確認して「Merge pull request」をクリック。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow" style="margin-top: 8px;">
+    <p style="font-size: 13px; margin-bottom: 12px; color: var(--text-dim);">どちらのパスでも、基本フローは同じ:</p>
+    <div class="flow-steps">
+      <div class="flow-box">Issue 作成</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-box">@claude メンション</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-box">自動で PR 作成</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-box">レビュー &amp; マージ</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 5: DAILY WORKFLOW ===================== -->
+<section id="workflow">
+  <span class="section-label">Section 5 &mdash; Daily Workflow</span>
+  <h2>日常ワークフロー</h2>
+
+  <!-- Workflow Visual -->
+  <div class="workflow-visual">
+    <div class="wf-phases">
+      <div class="wf-phase" style="border-top: 3px solid var(--accent);">
+        <div class="wf-phase-title">セッション開始</div>
+        <div class="wf-phase-items">
+          <span>STATUS.md を読む</span>
+          <span>タスク確認</span>
+          <span>期日チェック</span>
+        </div>
+      </div>
+      <div class="wf-phase" style="border-top: 3px solid var(--success);">
+        <div class="wf-phase-title">作業</div>
+        <div class="wf-phase-items">
+          <span>ファイル操作</span>
+          <span>コード実装</span>
+          <span>テスト実行</span>
+        </div>
+      </div>
+      <div class="wf-phase" style="border-top: 3px solid var(--purple);">
+        <div class="wf-phase-title">セッション終了</div>
+        <div class="wf-phase-items">
+          <span>CHANGES.md 追記</span>
+          <span>コミット</span>
+          <span>push &rarr; PR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branch Strategy -->
+  <h3 style="margin-top: 28px; margin-bottom: 16px;">ブランチ戦略</h3>
+  <div class="branch-diagram">
+    <div class="branch-line">
+      <div class="branch-dot" style="background: var(--success);"></div>
+      <div style="flex:1;">
+        <strong style="color:var(--text);">main</strong>
+        <span style="font-size:13px;color:var(--text-muted);margin-left:8px;">&larr; 小竹が直接push可</span>
+      </div>
+    </div>
+    <div class="branch-connector"></div>
+    <div class="branch-sub">
+      <div class="branch-dot" style="background: var(--accent); width:10px; height:10px;"></div>
+      <div>
+        <code>feature/perin/xxx</code>
+        <span style="font-size:13px;color:var(--text-dim);margin-left:8px;">&rarr; PR &rarr; 小竹レビュー &rarr; マージ</span>
+      </div>
+    </div>
+    <div class="branch-connector"></div>
+    <div class="branch-sub">
+      <div class="branch-dot" style="background: var(--warning); width:10px; height:10px;"></div>
+      <div>
+        <code>feature/tsujii/xxx</code>
+        <span style="font-size:13px;color:var(--text-dim);margin-left:8px;">&rarr; PR &rarr; 小竹レビュー &rarr; マージ</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 6: RULES ===================== -->
+<section id="rules">
+  <span class="section-label">Section 6 &mdash; Rules</span>
+  <h2>5つのルール</h2>
+
+  <ol class="rules-list">
+    <li>
+      <div class="rule-num">1</div>
+      <div class="rule-text">
+        <code>STATUS.md</code> はPM（小竹）が管理 &mdash; 編集しない
+        <span>プロジェクトの状態はPMが責任を持つ。参照は自由。提案はPRで。</span>
+      </div>
+    </li>
+    <li>
+      <div class="rule-num">2</div>
+      <div class="rule-text">
+        <code>CHANGES.md</code> は追記のみ &mdash; 既存エントリを消さない
+        <span>履歴は積み重ね。誰の記録も消さないこと。Append-Only。</span>
+      </div>
+    </li>
+    <li>
+      <div class="rule-num">3</div>
+      <div class="rule-text">
+        PRにはレビュアーを指定する
+        <span>作成したPRには相手をレビュアーに設定。内容確認を経てからマージ。</span>
+      </div>
+    </li>
+    <li>
+      <div class="rule-num">4</div>
+      <div class="rule-text">
+        <code>main</code> に直接pushしない（小竹以外）&mdash; PR経由で
+        <span>mainは保護ブランチ。全ての変更はPRを経由する。</span>
+      </div>
+    </li>
+    <li>
+      <div class="rule-num">5</div>
+      <div class="rule-text">
+        困ったらIssueで相談
+        <span>判断に迷うこと、ブロッカー、疑問は全てIssueに書く。記録が残り、後から参照できる。</span>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 7: @claude ===================== -->
+<section id="claude-action">
+  <span class="section-label">Section 7 &mdash; @claude</span>
+  <h2>@claude の使い方</h2>
+
+  <div class="card">
+    <h3>claude-code-action とは</h3>
+    <p><code>@claude</code> は GitHub の Issue コメントや PR コメントに書くことで Claude Code を呼び出す仕組み。リポジトリに設定された GitHub Actions ワークフロー（<code>claude-code-action</code>）が自動で起動し、ブランチ作成・ファイル編集・PR作成まで行う。</p>
+    <p style="margin-bottom:0;">Issue の本文に書いても、コメント欄に書いてもOK。PRのレビューコメントでも使える。</p>
+  </div>
+
+  <div class="card">
+    <h3>依頼の書き方のコツ</h3>
+    <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;">
+      <li style="color:var(--text);">
+        <span class="highlight">具体的に書く</span>
+        <span style="color:var(--text-muted);"> &mdash; 「資料を作って」より「Q1の売上データを表形式でまとめて」</span>
+      </li>
+      <li style="color:var(--text);">
+        <span class="highlight">ファイル名を指定する</span>
+        <span style="color:var(--text-muted);"> &mdash; 「docs/report.md に書いて」と出力先を明示</span>
+      </li>
+      <li style="color:var(--text);">
+        <span class="highlight">1つの依頼に1つのタスク</span>
+        <span style="color:var(--text-muted);"> &mdash; 複数タスクは別Issueに分ける方が精度が上がる</span>
+      </li>
+      <li style="color:var(--text);">
+        <span class="highlight">修正はPRコメントで</span>
+        <span style="color:var(--text-muted);"> &mdash; PRのコメント欄に <code>@claude</code> で修正を依頼できる</span>
+      </li>
+    </ul>
+  </div>
+
+  <h3 style="margin-top:24px; margin-bottom:14px;">実行例</h3>
+  <div class="examples">
+    <div class="example">
+      <div class="example-label">例 1: レポート作成</div>
+      <code>@claude docs/report.md にQ1の売上データを表形式でまとめて。前年比も入れてください。</code>
+      <div class="desc">指定ファイルにデータを構造化して書き込む</div>
+    </div>
+    <div class="example">
+      <div class="example-label">例 2: 仕様書の修正</div>
+      <code>@claude この仕様書の「対象ユーザー」セクションを中小企業向けに修正して。具体的なペルソナを2つ追加してください。</code>
+      <div class="desc">既存ファイルの特定セクションを編集する</div>
+    </div>
+    <div class="example">
+      <div class="example-label">例 3: ステータス更新</div>
+      <code>@claude .context/CHANGES.md に「2026-03-12: GTM戦略書v4.0レビュー完了」を追記して。</code>
+      <div class="desc">変更履歴への追記（CHANGES.md は全員が追記可能）</div>
+    </div>
+    <div class="example">
+      <div class="example-label">例 4: 調査依頼</div>
+      <code>@claude docs/research/ に中小企業DX市場の調査レポートを作成して。市場規模、主要プレイヤー、トレンドをカバーしてください。</code>
+      <div class="desc">新規ファイルを作成して調査結果をまとめる</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 8: CC基盤構想 ===================== -->
+<section id="cc-foundation">
+  <span class="section-label">Section 8 &mdash; CC基盤構想</span>
+  <h2>AI経営OSビジョン</h2>
+  <p>これは単なるツール導入ではなく、<strong class="highlight-purple">会社の経営基盤そのもの</strong>をClaude Codeで構築するという構想。</p>
+
+  <!-- Vision Quote -->
+  <div class="vision-quote">
+    <blockquote>全員のメンバーに最強の秘書がいて、秘書同士が常にコミュニケーションを完璧にしている状態</blockquote>
+  </div>
+
+  <!-- Architecture Diagram -->
+  <h3 style="margin-bottom: 16px;">CC基盤アーキテクチャ</h3>
+  <div class="arch-container">
+    <!-- Top: Management Portal -->
+    <div class="arch-row">
+      <div class="arch-box full-width" style="border-color:var(--purple);background:rgba(167,139,250,0.06);">
+        <div class="box-title" style="color:var(--purple);">経営ポータル</div>
+        <p class="box-desc">全社KPI・戦略ダッシュボード・意思決定ログ</p>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#9660;</div>
+
+    <!-- Middle: 3 Business Portals -->
+    <div class="arch-row">
+      <div class="arch-box" style="flex:1;border-color:var(--accent);">
+        <div class="box-title" style="color:var(--accent-light);">にからす戦略</div>
+        <p class="box-desc">Physical AI + 中小DX + AI開発</p>
+      </div>
+      <div class="arch-box" style="flex:1;border-color:var(--success);">
+        <div class="box-title" style="color:var(--success);">LeCHECK</div>
+        <p class="box-desc">外国人雇用管理SaaS</p>
+      </div>
+      <div class="arch-box" style="flex:1;border-color:var(--warning);">
+        <div class="box-title" style="color:var(--warning);">awabar</div>
+        <p class="box-desc">バー経営・コミュニティ</p>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#9660;</div>
+
+    <!-- PJ Portals -->
+    <div class="arch-row">
+      <div class="arch-box" style="flex:1;min-width:100px;">
+        <div class="box-title">PJポータル</div>
+        <p class="box-desc">GTM戦略</p>
+      </div>
+      <div class="arch-box" style="flex:1;min-width:100px;">
+        <div class="box-title">PJポータル</div>
+        <p class="box-desc">Sharp攻略</p>
+      </div>
+      <div class="arch-box" style="flex:1;min-width:100px;">
+        <div class="box-title">PJポータル</div>
+        <p class="box-desc">機能開発</p>
+      </div>
+      <div class="arch-box" style="flex:1;min-width:100px;">
+        <div class="box-title">PJポータル</div>
+        <p class="box-desc">採用管理</p>
+      </div>
+      <div class="arch-box" style="flex:1;min-width:100px;">
+        <div class="box-title">PJポータル</div>
+        <p class="box-desc">店舗運営</p>
+      </div>
+      <div class="arch-box" style="flex:1;min-width:100px;">
+        <div class="box-title">PJポータル</div>
+        <p class="box-desc">イベント</p>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#9660;</div>
+
+    <!-- Personal Task Board -->
+    <div class="arch-row">
+      <div class="arch-box full-width" style="border-color:var(--text-dim);">
+        <div class="box-title">個人タスクボード</div>
+        <p class="box-desc">各メンバーの担当タスク一覧 &mdash; 全PJ横断で集約</p>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#9660;</div>
+
+    <!-- CC Foundation -->
+    <div class="arch-foundation">
+      <div class="arch-foundation-title">CC基盤</div>
+
+      <div class="arch-foundation-grid">
+        <div class="found-item" style="border-color:var(--accent);">
+          <div class="found-title">オーケストレーター</div>
+          <p class="found-desc">タスク分配・優先度制御・進捗監視</p>
+        </div>
+        <div class="found-item" style="border-color:var(--purple);">
+          <div class="found-title">秘書CC x メンバー数</div>
+          <p class="found-desc">小竹CC / ペりんCC / 辻井CC ...</p>
+        </div>
+        <div class="found-item" style="border-color:var(--success);">
+          <div class="found-title">タスク実行CC (並列)</div>
+          <p class="found-desc">コード実装 / 資料作成 / リサーチ</p>
+        </div>
+        <div class="found-item" style="border-color:var(--warning);">
+          <div class="found-title">マスタデータ</div>
+          <p class="found-desc">GitHub / JSON / STATUS.md</p>
+        </div>
+        <div class="found-item" style="border-color:var(--accent-light);">
+          <div class="found-title">連携サービス</div>
+          <p class="found-desc">Slack / Calendar / Gmail / freee</p>
+        </div>
+      </div>
+
+      <div class="auto-flow-bar">
+        <div class="flow-title">自動フロー</div>
+        <div class="flow-chain">
+          <span>会議</span>
+          <span class="arrow">&rarr;</span>
+          <span>議事録</span>
+          <span class="arrow">&rarr;</span>
+          <span>WBS更新</span>
+          <span class="arrow">&rarr;</span>
+          <span>タスク割り振り</span>
+          <span class="arrow">&rarr;</span>
+          <span>通知</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <h3 style="margin-top: 36px; margin-bottom: 16px;">ロードマップ</h3>
+  <p>にからすのCC基盤は6つのバージョンを経て進化する。</p>
+
+  <!-- v1: Current -->
+  <div class="roadmap-card" style="border-left-color: var(--success);">
+    <div class="roadmap-header">
+      <span class="roadmap-version">v1</span>
+      <span class="roadmap-period">3月</span>
+      <span class="tag tag-green">今ここ</span>
+    </div>
+    <p class="roadmap-desc"><strong>WBS + ダッシュボード + 手動CC運用</strong> &mdash; STATUS.md + CHANGES.md + CLAUDE.md の基本形。CCが毎回読み、文脈を引き継ぐ。WBS（wbs-complete.md）でタスク管理し、HTMLダッシュボードで可視化。</p>
+  </div>
+
+  <!-- v2 -->
+  <div class="roadmap-card" style="border-left-color: var(--accent);">
+    <div class="roadmap-header">
+      <span class="roadmap-version">v2</span>
+      <span class="roadmap-period">4月</span>
+      <span class="tag">次のステップ</span>
+    </div>
+    <p class="roadmap-desc"><strong>Agent Teams + 並列タスク実行</strong> &mdash; Issue &rarr; @claude（GitHub Actions） &rarr; 自動でブランチ+実装+PR。人間はレビューしてマージするだけ。複数タスクが並列で進む。</p>
+  </div>
+
+  <!-- v3 -->
+  <div class="roadmap-card" style="border-left-color: var(--accent); opacity: 0.9;">
+    <div class="roadmap-header">
+      <span class="roadmap-version">v3</span>
+      <span class="roadmap-period">5-6月</span>
+    </div>
+    <p class="roadmap-desc"><strong>会議 &rarr; 議事録 &rarr; WBS自動更新パイプライン</strong> &mdash; Zoom会議 &rarr; 録音 &rarr; 書き起こし &rarr; 議事録生成 &rarr; 決定事項をdecisions.mdに追記 &rarr; WBSのタスク・期限を自動更新 &rarr; 担当者に通知。</p>
+  </div>
+
+  <!-- v4 -->
+  <div class="roadmap-card" style="border-left-color: var(--purple); opacity: 0.85;">
+    <div class="roadmap-header">
+      <span class="roadmap-version">v4</span>
+      <span class="roadmap-period">Q3</span>
+    </div>
+    <p class="roadmap-desc"><strong>ポータル階層化（経営&rarr;事業&rarr;PJ&rarr;個人）</strong> &mdash; 上のアーキテクチャ図が実現。経営ポータルから各事業・PJ・個人まで、ドリルダウンで見られる。</p>
+  </div>
+
+  <!-- v5 -->
+  <div class="roadmap-card" style="border-left-color: var(--purple); opacity: 0.8;">
+    <div class="roadmap-header">
+      <span class="roadmap-version">v5</span>
+      <span class="roadmap-period">Q4</span>
+    </div>
+    <p class="roadmap-desc"><strong>秘書CC x N人（各メンバー専属AI）</strong> &mdash; 各メンバーに専属のClaude Codeが付き、個人のスタイル・文脈・優先度を完全に把握。秘書CC同士がコミュニケーションし、チーム全体が有機的に動く。</p>
+  </div>
+
+  <!-- v6 -->
+  <div class="roadmap-card" style="border-left-color: var(--purple); opacity: 0.75;">
+    <div class="roadmap-header">
+      <span class="roadmap-version">v6</span>
+      <span class="roadmap-period">Year 2</span>
+      <span class="tag tag-purple">ビジョン</span>
+    </div>
+    <p class="roadmap-desc"><strong>AI経営OSとしてプロダクト化・外販</strong> &mdash; にからす自身の運用実績をベースに、この仕組みを他社に提供する「AI経営OS」プロダクトへ。中小企業が3人チームでも大企業並みの経営管理を実現する世界。</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 9: ONBOARDING ===================== -->
+<section id="onboarding">
+  <span class="section-label">Section 9 &mdash; Onboarding</span>
+  <h2>メンバー追加手順</h2>
+  <p>新しいメンバーがチームに参加する際の手順。PM（小竹）が実施する。</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>GitHub Org 招待（nikarasu-inc）</strong>
+        <p>GitHub Orgの Settings &rarr; People &rarr; Invite member で新メンバーを招待。必要なリポジトリへのWrite権限を付与する。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Claude Code 契約確認</strong>
+        <p>Max Plan推奨。APIキーの発行が必要な場合は設定方法を案内する。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>環境セットアップ（パスを選択）</strong>
+        <p>A) <strong>CLIゼロ開始</strong> &rarr; GitHub Webだけで開始（上記Quick Start参照）<br>
+           B) <strong>フル開始</strong> &rarr; CLI インストール + リポジトリclone + CLAUDE.local.md作成</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>CLAUDE.local.md 作成</strong>
+        <p>テンプレート（<code>CLAUDE.local.md.template</code>）をコピーして、名前・役割・担当領域・作業スタイルを記入。<code>.gitignore</code> 対象なのでリポジトリにはpushされない。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>WBS + ダッシュボードに反映</strong>
+        <p><code>docs/wbs-complete.md</code> に担当タスクを追加。<code>docs/dashboard.html</code> に名前を追加。CLAUDE.md のチーム表も更新。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <strong>初回体験: Issue &rarr; @claude &rarr; PR &rarr; マージ</strong>
+        <p>テスト用のIssueを作成し、<code>@claude</code> で依頼。PR が作成されたらレビューしてマージ。このフローを一通り体験する。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <h3>チェックリスト</h3>
+    <ul class="check-list">
+      <li>GitHub Org 招待 &rarr; 承認済み</li>
+      <li>Claude Code 契約確認 &rarr; APIキー or Max Plan</li>
+      <li>CC インストール &rarr; <code>claude --version</code> 成功（CLI利用の場合）</li>
+      <li><code>CLAUDE.local.md</code> 作成 &rarr; 個人設定記入</li>
+      <li>WBS にタスク追加 &rarr; コミット</li>
+      <li>ダッシュボードに反映 &rarr; GitHub Pages 確認</li>
+      <li>CLAUDE.md チーム表更新 &rarr; コミット</li>
+      <li>初回 Issue &rarr; @claude &rarr; PR &rarr; マージ 成功</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===================== SECTION 10: FAQ ===================== -->
+<section id="faq">
+  <span class="section-label">Section 10 &mdash; FAQ</span>
+  <h2>よくある質問</h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        @claude が反応しない
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          以下を確認してください:<br>
+          1. リポジトリに <code>.github/workflows/claude-code.yml</code> が存在するか<br>
+          2. GitHub リポジトリの Settings &rarr; Secrets に <code>ANTHROPIC_API_KEY</code> が設定されているか<br>
+          3. Actions タブでワークフローが有効になっているか<br>
+          4. コメントに <code>@claude</code> が正確に含まれているか（大文字小文字に注意）<br>
+          <br>
+          解決しない場合は Issue で小竹に相談してください。
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        PR の内容を修正したい
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          PR のコメント欄に <code>@claude [修正内容]</code> と書けば、Claude が修正を加えてコミットします。具体的に書くほど精度が上がります。<br>
+          <br>
+          例: <code>@claude 表の3列目を「前年比」から「成長率(%)」に変更して</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        自分で直接ファイルを編集したい
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          GitHub Web 上でファイルを開き、右上の鉛筆アイコン（Edit this file）をクリックすれば直接編集できます。編集後は「Commit changes」で保存。<br>
+          <br>
+          ただし <code>main</code> ブランチに直接コミットせず、「Create a new branch for this commit and start a pull request」を選択して PR 経由でマージしてください。
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        大きな変更をしたい
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          複数ファイルにまたがる大きな変更や、ビルド・テストが必要な作業は Desktop App / CLI の導入を検討してください。<br>
+          <br>
+          Windows: <code>winget install Anthropic.ClaudeCode</code><br>
+          Mac: <code>brew install claude-code</code> または <code>npm install -g @anthropic-ai/claude-code</code><br>
+          <br>
+          インストール後: リポジトリ clone &rarr; <code>CLAUDE.local.md</code> 作成 &rarr; <code>claude</code> 起動。
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Geminiと併用していい？
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          もちろん。アイデア出し・ブレスト・リサーチにはGeminiを使い、実装・ファイル作成・Git操作・チーム成果物の管理にはClaude Codeを使う。「考える」と「作る」を分離するのが効率的。<br>
+          <br>
+          ポイント: チームで共有する成果物（コード、ドキュメント、設計書）は必ずClaude Code経由でGitにコミットすること。Geminiで考えたことも、最終的にはCCで実体化する流れ。
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        MCP連携って何？
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          MCP（Model Context Protocol）はClaude Codeを外部サービスと接続する仕組み。これにより、CCから直接Googleカレンダーの予定を確認したり、Slackにメッセージを送ったりできる。<br>
+          <br>
+          現在稼働中:<br>
+          &bull; <strong>Google Calendar</strong> &mdash; 会議予定の確認・作成<br>
+          <br>
+          将来導入予定:<br>
+          &bull; <strong>Slack</strong> &mdash; メッセージ送受信・通知<br>
+          &bull; <strong>freee</strong> &mdash; 会計データ参照<br>
+          &bull; <strong>Gmail</strong> &mdash; メール送受信<br>
+          <br>
+          設定は <code>.mcp.json</code>（PJ別、Git管理）または <code>~/.claude/settings.json</code>（グローバル）に記載する。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
-<!-- Footer -->
+<!-- ===================== FOOTER ===================== -->
 <footer>
-  <p>このガイドは <code>docs/collaboration-spec.md</code> に基づいています。</p>
-  <p style="margin-top: 6px;">最終更新: 2026-03-10</p>
+  <p>このガイドは <a href="collaboration-spec.md">collaboration-spec.md</a> + <a href="cc-onboarding-briefing.md">cc-onboarding-briefing.md</a> に基づいています。</p>
+  <p style="margin-top: 8px;">最終更新: 2026-03-12 &nbsp;|&nbsp; v2.0</p>
 </footer>
 
+<!-- ===================== JAVASCRIPT ===================== -->
 <script>
+// FAQ Accordion
 function toggleFaq(btn) {
-  const item = btn.parentElement;
-  const wasOpen = item.classList.contains('open');
+  var item = btn.parentElement;
+  var wasOpen = item.classList.contains('open');
 
   // Close all
   document.querySelectorAll('.faq-item').forEach(function(el) {
@@ -1193,6 +2168,68 @@ function toggleFaq(btn) {
     item.classList.add('open');
   }
 }
+
+// Tab Switching
+function switchTab(containerId, panelId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  // Deactivate all tabs and panels within this container
+  container.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  container.querySelectorAll('.tab-panel').forEach(function(panel) {
+    panel.classList.remove('active');
+  });
+
+  // Activate the clicked tab button
+  event.target.classList.add('active');
+
+  // Activate the target panel
+  var panel = document.getElementById(panelId);
+  if (panel) {
+    panel.classList.add('active');
+  }
+}
+
+// Nav scroll shadow
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('navbar');
+  if (window.scrollY > 10) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// Active nav link on scroll
+(function() {
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.nav-link');
+
+  function updateActiveLink() {
+    var scrollPos = window.scrollY + 100;
+
+    sections.forEach(function(section) {
+      var top = section.offsetTop;
+      var bottom = top + section.offsetHeight;
+      var id = section.getAttribute('id');
+
+      navLinks.forEach(function(link) {
+        if (link.getAttribute('href') === '#' + id) {
+          if (scrollPos >= top && scrollPos < bottom) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        }
+      });
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink);
+  updateActiveLink();
+})();
 </script>
 
 </body>
