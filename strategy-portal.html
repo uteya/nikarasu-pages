@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす — 戦略資料ポータル</title>
+<link rel="icon" href="assets/icon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+JP:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF8;
+  --white: #FFFFFF;
+  --text: #1A1A1A;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --accent: #333333;
+  --border: #E0E0E0;
+  --border-light: #F0F0F0;
+  --sidebar-w: 280px;
+  --hover-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 40px 28px 32px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sidebar-logo {
+  display: block;
+  width: 120px;
+  margin-bottom: 16px;
+}
+
+.sidebar-tagline {
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.sidebar-vision {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sidebar-mission {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 24px 0;
+}
+
+.sidebar-nav-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 0 28px;
+  margin-bottom: 12px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 28px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-nav a:hover {
+  color: var(--text);
+  background: var(--bg);
+  border-left-color: var(--accent);
+}
+
+.sidebar-nav a.active {
+  color: var(--text);
+  background: var(--bg);
+  border-left-color: var(--text);
+  font-weight: 500;
+}
+
+.sidebar-nav a .nav-icon {
+  width: 16px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.sidebar-nav .nav-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 16px 28px;
+}
+
+.sidebar-footer {
+  padding: 20px 28px;
+  border-top: 1px solid var(--border-light);
+}
+
+.sidebar-footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sidebar-footer a:hover {
+  color: var(--text);
+}
+
+.sidebar-footer .excel-icon {
+  font-size: 14px;
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 48px 56px 80px;
+  max-width: calc(100% - var(--sidebar-w));
+}
+
+/* Hero */
+.hero {
+  margin-bottom: 56px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.hero h1 {
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+/* KPI Grid */
+.section-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 16px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px;
+  transition: box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+  box-shadow: var(--hover-shadow);
+}
+
+.kpi-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.kpi-unit {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  margin-left: 2px;
+}
+
+.kpi-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 8px;
+}
+
+/* Milestones */
+.milestones-section {
+  margin-bottom: 56px;
+}
+
+.milestone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.milestone-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: 72px 1fr 200px 80px;
+  align-items: center;
+  gap: 20px;
+  transition: box-shadow 0.2s ease;
+}
+
+.milestone-item:hover {
+  box-shadow: var(--hover-shadow);
+}
+
+.ms-id {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.ms-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ms-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ms-date {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.ms-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ms-progress-bar {
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ms-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.ms-progress-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+.ms-status {
+  font-size: 11px;
+  text-align: center;
+  padding: 4px 12px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+}
+
+.ms-status.active {
+  color: var(--text);
+  background: #F0F0F0;
+  border: 1px solid var(--border);
+}
+
+.ms-status.future {
+  color: var(--text-tertiary);
+  background: transparent;
+  border: 1px solid var(--border-light);
+}
+
+.ms-status.done {
+  color: var(--text);
+  background: #F0F0F0;
+  border: 1px solid var(--accent);
+}
+
+/* Document Cards */
+.docs-section {
+  margin-bottom: 56px;
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.doc-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc-card:hover {
+  box-shadow: var(--hover-shadow);
+  border-color: var(--accent);
+}
+
+.doc-card-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.doc-card-title {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.doc-card-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.doc-card-arrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--text-tertiary);
+  margin-top: auto;
+  transition: transform 0.2s ease;
+}
+
+.doc-card:hover .doc-card-arrow {
+  transform: translateX(4px);
+  color: var(--text);
+}
+
+/* Revenue Breakdown */
+.revenue-section {
+  margin-bottom: 56px;
+}
+
+.revenue-table {
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.revenue-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.revenue-table th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+
+.revenue-table td {
+  padding: 14px 24px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.revenue-table tr:last-child td {
+  border-bottom: none;
+}
+
+.revenue-table .total-row td {
+  font-weight: 500;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.revenue-table .amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Quarterly */
+.quarterly-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.quarter-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.quarter-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.quarter-period {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.quarter-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Footer */
+.portal-footer {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.portal-footer-left {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.portal-footer-right {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 2px;
+}
+
+/* Mobile toggle */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 200;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .docs-grid { grid-template-columns: 1fr; }
+  .milestone-item { grid-template-columns: 60px 1fr 140px 70px; }
+  .quarterly-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle { display: block; }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  }
+  .main {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 80px 24px 60px;
+  }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .milestone-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .hero h1 { font-size: 22px; }
+  .quarterly-row { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .quarterly-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <img src="assets/logo.png" alt="にからす" class="sidebar-logo">
+      <div class="sidebar-tagline">AIで現実を変える</div>
+      <div class="sidebar-vision">Generative Adaptation</div>
+      <div class="sidebar-mission">企業の「いろは」を次のステージへ</div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="sidebar-nav-label">Documents</div>
+      <a href="strategy-portal.html" class="active">
+        <span class="nav-icon">&#9670;</span>
+        ポータル
+      </a>
+      <a href="business-plan.html">
+        <span class="nav-icon">01</span>
+        事業計画書
+      </a>
+      <a href="company-intro.html">
+        <span class="nav-icon">02</span>
+        会社紹介
+      </a>
+      <a href="ai-dev-service.html">
+        <span class="nav-icon">03</span>
+        AI駆動開発サービス
+      </a>
+      <a href="wazaai-service.html">
+        <span class="nav-icon">04</span>
+        WazaAI / Physical AI
+      </a>
+      <a href="financial-model-guide.html">
+        <span class="nav-icon">05</span>
+        財務モデル解説
+      </a>
+      <div class="nav-divider"></div>
+      <div class="sidebar-nav-label">Team</div>
+      <a href="wbs-perin.html">
+        <span class="nav-icon">&#9654;</span>
+        ペりんタスク
+      </a>
+      <a href="wbs-tsujii.html">
+        <span class="nav-icon">&#9654;</span>
+        辻井タスク
+      </a>
+      <a href="claude-code-team-guide.html">
+        <span class="nav-icon">&#9654;</span>
+        CCチームガイド
+      </a>
+      <div class="nav-divider"></div>
+      <div class="sidebar-nav-label">Operations</div>
+      <a href="wbs-complete.md">
+        <span class="nav-icon">&#9654;</span>
+        WBS完全版
+      </a>
+      <a href="decisions.md">
+        <span class="nav-icon">&#9654;</span>
+        意思決定ログ
+      </a>
+      <a href="operation-rules.md">
+        <span class="nav-icon">&#9654;</span>
+        運用ルール
+      </a>
+      <a href="dashboard.html">
+        <span class="nav-icon">&#9654;</span>
+        詳細ダッシュボード
+      </a>
+      <div class="nav-divider"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="nikarasu_financial_model_v3.xlsx" download>
+        <span class="excel-icon">&#9634;</span>
+        nikarasu_financial_model_v3.xlsx
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-eyebrow">Strategy Portal</div>
+      <h1>にからす戦略資料ポータル</h1>
+      <p class="hero-sub">全戦略資料のハブ。Year 1 KPI概況とマイルストーン進捗を一覧。</p>
+    </section>
+
+    <!-- KPI Summary -->
+    <div class="section-label">Key Performance Indicators &mdash; Year 1</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Year 1 売上目標</div>
+        <div class="kpi-value">&yen;1.27<span class="kpi-unit">億</span></div>
+        <div class="kpi-note">既存 &yen;5,500万 + 新規 &yen;7,200万</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">新規事業比率</div>
+        <div class="kpi-value">57<span class="kpi-unit">%</span></div>
+        <div class="kpi-note">4事業からの新規売上構成</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">営業利益率</div>
+        <div class="kpi-value">79.6<span class="kpi-unit">%</span></div>
+        <div class="kpi-note">&yen;10,120万 / &yen;12,700万</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">事業数</div>
+        <div class="kpi-value">4<span class="kpi-unit">事業</span></div>
+        <div class="kpi-note">AI駆動 / 中小DX / Physical AI / プロダクト</div>
+      </div>
+    </div>
+
+    <!-- Quarterly Revenue -->
+    <div class="section-label">Quarterly Revenue Plan</div>
+    <div class="quarterly-row">
+      <div class="quarter-card">
+        <div class="quarter-label">Q1</div>
+        <div class="quarter-period">3月 &ndash; 5月</div>
+        <div class="quarter-value">&yen;1,560<span class="kpi-unit">万</span></div>
+      </div>
+      <div class="quarter-card">
+        <div class="quarter-label">Q2</div>
+        <div class="quarter-period">6月 &ndash; 8月</div>
+        <div class="quarter-value">&yen;2,830<span class="kpi-unit">万</span></div>
+      </div>
+      <div class="quarter-card">
+        <div class="quarter-label">Q3</div>
+        <div class="quarter-period">9月 &ndash; 11月</div>
+        <div class="quarter-value">&yen;3,560<span class="kpi-unit">万</span></div>
+      </div>
+      <div class="quarter-card">
+        <div class="quarter-label">Q4</div>
+        <div class="quarter-period">12月 &ndash; 2月</div>
+        <div class="quarter-value">&yen;4,770<span class="kpi-unit">万</span></div>
+      </div>
+    </div>
+
+    <!-- Revenue Breakdown -->
+    <div class="revenue-section" style="margin-top: 32px;">
+      <div class="section-label">Revenue Breakdown</div>
+      <div class="revenue-table">
+        <table>
+          <thead>
+            <tr>
+              <th>事業</th>
+              <th>Year 1 売上</th>
+              <th>構成</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>既存事業</td>
+              <td class="amount">&yen;5,500万</td>
+              <td>43%</td>
+            </tr>
+            <tr>
+              <td>AI駆動開発</td>
+              <td class="amount">&yen;3,600万</td>
+              <td>28%</td>
+            </tr>
+            <tr>
+              <td>中小DX（税理士ファースト）</td>
+              <td class="amount">&yen;1,500万</td>
+              <td>12%</td>
+            </tr>
+            <tr>
+              <td>Physical AI（WazaAI）</td>
+              <td class="amount">&yen;1,500万</td>
+              <td>12%</td>
+            </tr>
+            <tr>
+              <td>プロダクト（KataribeAI等）</td>
+              <td class="amount">&yen;600万</td>
+              <td>5%</td>
+            </tr>
+            <tr class="total-row">
+              <td>合計</td>
+              <td class="amount">&yen;12,700万</td>
+              <td>100%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="milestones-section">
+      <div class="section-label">Milestones</div>
+      <div class="milestone-list">
+        <div class="milestone-item">
+          <div class="ms-id">MS-A</div>
+          <div class="ms-info">
+            <div class="ms-name">戦略完成</div>
+            <div class="ms-date">3/14</div>
+          </div>
+          <div class="ms-progress-container">
+            <div class="ms-progress-bar">
+              <div class="ms-progress-fill" style="width: 80%"></div>
+            </div>
+            <div class="ms-progress-text">80%</div>
+          </div>
+          <div class="ms-status active">進行中</div>
+        </div>
+        <div class="milestone-item">
+          <div class="ms-id">MS-B</div>
+          <div class="ms-info">
+            <div class="ms-name">実行開始</div>
+            <div class="ms-date">3月末</div>
+          </div>
+          <div class="ms-progress-container">
+            <div class="ms-progress-bar">
+              <div class="ms-progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="ms-progress-text">0%</div>
+          </div>
+          <div class="ms-status future">予定</div>
+        </div>
+        <div class="milestone-item">
+          <div class="ms-id">MS-C</div>
+          <div class="ms-info">
+            <div class="ms-name">仕組み一周</div>
+            <div class="ms-date">4月末</div>
+          </div>
+          <div class="ms-progress-container">
+            <div class="ms-progress-bar">
+              <div class="ms-progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="ms-progress-text">0%</div>
+          </div>
+          <div class="ms-status future">予定</div>
+        </div>
+        <div class="milestone-item">
+          <div class="ms-id">MS-D</div>
+          <div class="ms-info">
+            <div class="ms-name">展示会出展</div>
+            <div class="ms-date">10月末</div>
+          </div>
+          <div class="ms-progress-container">
+            <div class="ms-progress-bar">
+              <div class="ms-progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="ms-progress-text">0%</div>
+          </div>
+          <div class="ms-status future">予定</div>
+        </div>
+        <div class="milestone-item">
+          <div class="ms-id">MS-E</div>
+          <div class="ms-info">
+            <div class="ms-name">Year 1 完了</div>
+            <div class="ms-date">12月末</div>
+          </div>
+          <div class="ms-progress-container">
+            <div class="ms-progress-bar">
+              <div class="ms-progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="ms-progress-text">0%</div>
+          </div>
+          <div class="ms-status future">予定</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Cards -->
+    <div class="docs-section">
+      <div class="section-label">Documents</div>
+      <div class="docs-grid">
+        <a href="business-plan.html" class="doc-card">
+          <div class="doc-card-eyebrow">D1 &ndash; D7</div>
+          <div class="doc-card-title">事業計画書</div>
+          <div class="doc-card-desc">エグゼクティブサマリー、MVV、事業全体像、市場分析、サービス設計、GTM戦略、財務計画、ロードマップ、チーム構成を包括的に収録。投資家向けの完全版。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="company-intro.html" class="doc-card">
+          <div class="doc-card-eyebrow">Overview</div>
+          <div class="doc-card-title">会社紹介</div>
+          <div class="doc-card-desc">にからす合同会社の概要、代表プロフィール、事業領域、実績を1ページにまとめた紹介資料。初回面談やDM添付に使用。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="ai-dev-service.html" class="doc-card">
+          <div class="doc-card-eyebrow">Service</div>
+          <div class="doc-card-title">AI駆動開発サービス</div>
+          <div class="doc-card-desc">自律型PO代行モデルによるAI駆動開発サービスの詳細。月額&yen;60万のサービス設計、導入プロセス、事例を紹介。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="wazaai-service.html" class="doc-card">
+          <div class="doc-card-eyebrow">Product</div>
+          <div class="doc-card-title">WazaAI / Physical AI</div>
+          <div class="doc-card-desc">製造業の技能伝承をAIで解決するWazaAIプロダクト。3ティア商品構成、ROI試算、Privacy対応の競合優位性を解説。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="financial-model-guide.html" class="doc-card">
+          <div class="doc-card-eyebrow">Finance</div>
+          <div class="doc-card-title">財務モデル解説</div>
+          <div class="doc-card-desc">3年間の財務モデル（Excel）の使い方ガイド。P&L、予実管理、CF計画の構造と入力方法を解説。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="nikarasu_financial_model_v3.xlsx" class="doc-card" download>
+          <div class="doc-card-eyebrow">Excel</div>
+          <div class="doc-card-title">財務モデル v3</div>
+          <div class="doc-card-desc">nikarasu_financial_model_v3.xlsx &mdash; P&L、予実管理、KPIツリー、CF計画を含む完全版Excelモデル。</div>
+          <div class="doc-card-arrow">&darr;</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="docs-section">
+      <div class="section-label">Team</div>
+      <div class="docs-grid">
+        <a href="wbs-perin.html" class="doc-card">
+          <div class="doc-card-eyebrow">CTO</div>
+          <div class="doc-card-title">ペりん タスクビュー</div>
+          <div class="doc-card-desc">3PJ横断（nikarasu-strategy / lisse-lecheck / crosstech-awabar）のタスク一覧。フィルタ付き。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="wbs-tsujii.html" class="doc-card">
+          <div class="doc-card-eyebrow">CSO</div>
+          <div class="doc-card-title">辻井 タスクビュー</div>
+          <div class="doc-card-desc">営業・事業開発タスク一覧。DM、提案書、財務Excel、クライアント対応。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="claude-code-team-guide.html" class="doc-card">
+          <div class="doc-card-eyebrow">Guide</div>
+          <div class="doc-card-title">Claude Code チームガイド</div>
+          <div class="doc-card-desc">CC駆動開発のチーム運用ガイド。CLAUDE.md構造、ブランチ戦略、セッションルーチン。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="dashboard.html" class="doc-card">
+          <div class="doc-card-eyebrow">Dashboard</div>
+          <div class="doc-card-title">詳細ダッシュボード</div>
+          <div class="doc-card-desc">全タスク一覧、担当フィルタ、リスク管理。パスワード: nikarasu</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Operations Section -->
+    <div class="docs-section">
+      <div class="section-label">Operations</div>
+      <div class="docs-grid">
+        <a href="wbs-complete.md" class="doc-card">
+          <div class="doc-card-eyebrow">WBS</div>
+          <div class="doc-card-title">WBS完全版</div>
+          <div class="doc-card-desc">&sect;0-&sect;15: 3年目標、マイルストーン、タスク分解、クリティカルパス、担当領域。全体の主参照。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="decisions.md" class="doc-card">
+          <div class="doc-card-eyebrow">Decisions</div>
+          <div class="doc-card-title">意思決定ログ</div>
+          <div class="doc-card-desc">D1-D29+の意思決定記録。根拠チェーンと経緯を追跡可能な形式で記録。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="operation-rules.md" class="doc-card">
+          <div class="doc-card-eyebrow">Rules</div>
+          <div class="doc-card-title">運用ルール定義書</div>
+          <div class="doc-card-desc">会議体、WBS変更プロセス、PR運用、STATUS.md更新、FAQ。チーム運用の基盤。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+        <a href="collaboration-spec.md" class="doc-card">
+          <div class="doc-card-eyebrow">Spec</div>
+          <div class="doc-card-title">チーム協業仕様</div>
+          <div class="doc-card-desc">&sect;1-&sect;13: オンボーディング、ブランチ戦略、レビュー、SessionEndフック。CC駆動チームの設計書。</div>
+          <div class="doc-card-arrow">&rarr;</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="portal-footer">
+      <div class="portal-footer-left">
+        にからす合同会社 &mdash; 戦略資料ポータル<br>
+        最終更新: 2026年3月
+      </div>
+      <div class="portal-footer-right">NIKARASU</div>
+    </footer>
+  </main>
+</div>
+
+</body>
+</html>

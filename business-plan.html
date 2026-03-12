@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にからす — 事業計画書</title>
+<link rel="icon" href="assets/icon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+JP:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF8;
+  --white: #FFFFFF;
+  --text: #1A1A1A;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --accent: #333333;
+  --border: #E0E0E0;
+  --border-light: #F0F0F0;
+  --sidebar-w: 260px;
+  --hover-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout */
+.layout { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 32px 24px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sidebar-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  margin-bottom: 16px;
+  transition: color 0.2s;
+}
+
+.sidebar-back:hover { color: var(--text); }
+
+.sidebar-title {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 24px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+  line-height: 1.5;
+}
+
+.sidebar-nav a:hover {
+  color: var(--text);
+  background: var(--bg);
+  border-left-color: var(--accent);
+}
+
+.sidebar-nav a.active {
+  color: var(--text);
+  background: var(--bg);
+  border-left-color: var(--text);
+  font-weight: 500;
+}
+
+.sidebar-nav .nav-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  min-width: 20px;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  max-width: calc(100% - var(--sidebar-w));
+}
+
+/* Slide Section */
+.slide {
+  min-height: 100vh;
+  padding: 64px 72px 80px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.slide:last-child { border-bottom: none; }
+
+.slide-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.slide h2 {
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+
+.slide-lead {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  max-width: 640px;
+}
+
+/* Content blocks */
+.content-block {
+  margin-bottom: 40px;
+}
+
+.content-block h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.content-block h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  margin-top: 24px;
+}
+
+.content-block p {
+  margin-bottom: 12px;
+  max-width: 720px;
+}
+
+.content-block ul, .content-block ol {
+  margin: 8px 0 16px 20px;
+  max-width: 720px;
+}
+
+.content-block li {
+  margin-bottom: 6px;
+}
+
+/* Highlight Box */
+.highlight-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 16px 0;
+}
+
+.highlight-box.accent {
+  border-left: 3px solid var(--accent);
+}
+
+/* KPI Row */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.kpi-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.kpi-item .label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.kpi-item .value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.kpi-item .unit {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+
+.kpi-item .note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* Tables */
+.data-table {
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+
+.data-table td {
+  padding: 12px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+
+.data-table .total-row td {
+  font-weight: 500;
+  border-top: 1px solid var(--border);
+}
+
+.data-table .amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.data-table .sub-row td {
+  padding-left: 40px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Value cards */
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.value-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px 28px;
+  transition: box-shadow 0.2s;
+}
+
+.value-card:hover { box-shadow: var(--hover-shadow); }
+
+.value-card .v-id {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.value-card .v-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.value-card .v-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+  margin: 16px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--border);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 24px;
+  padding-left: 8px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+.timeline-item.future::before {
+  background: var(--border);
+}
+
+.timeline-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+
+.timeline-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.timeline-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Two Column */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+/* Team card */
+.team-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 12px 0;
+}
+
+.team-name {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.team-bio {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.team-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.team-tag {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 2px 10px;
+}
+
+/* Positioning map */
+.pos-map {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 32px;
+  margin: 16px 0;
+  position: relative;
+  min-height: 320px;
+}
+
+.pos-map-title {
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.pos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  height: 280px;
+  position: relative;
+}
+
+.pos-quadrant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-light);
+  padding: 12px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.pos-quadrant.highlight {
+  background: rgba(26,26,26,0.03);
+  border-color: var(--border);
+}
+
+.pos-axis-x, .pos-axis-y {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.pos-axis-x {
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Mobile toggle */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 200;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Footer */
+.slide-footer {
+  margin-top: auto;
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.slide-footer .page-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .slide { padding: 48px 40px 60px; }
+  .two-col { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .value-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle { display: block; }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  }
+  .main {
+    margin-left: 0;
+    max-width: 100%;
+  }
+  .slide {
+    padding: 80px 24px 48px;
+    min-height: auto;
+  }
+  .slide h2 { font-size: 20px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .pos-grid { height: 200px; }
+}
+
+@media (max-width: 480px) {
+  .kpi-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <a href="strategy-portal.html" class="sidebar-back">&larr; ポータルに戻る</a>
+      <div class="sidebar-title">事業計画書</div>
+      <div class="sidebar-subtitle">Business Plan FY2026</div>
+    </div>
+    <div class="sidebar-nav">
+      <a href="#sec1"><span class="nav-num">01</span>エグゼクティブサマリー</a>
+      <a href="#sec2"><span class="nav-num">02</span>ミッション・ビジョン・バリュー</a>
+      <a href="#sec3"><span class="nav-num">03</span>事業の全体像</a>
+      <a href="#sec4"><span class="nav-num">04</span>市場分析</a>
+      <a href="#sec5"><span class="nav-num">05</span>サービス設計</a>
+      <a href="#sec6"><span class="nav-num">06</span>GTM戦略</a>
+      <a href="#sec7"><span class="nav-num">07</span>財務計画</a>
+      <a href="#sec8"><span class="nav-num">08</span>ロードマップ</a>
+      <a href="#sec9"><span class="nav-num">09</span>チーム</a>
+      <a href="#sec10"><span class="nav-num">10</span>判断基準と撤退ライン</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Section 1: Executive Summary -->
+    <section class="slide" id="sec1">
+      <div class="slide-eyebrow">Section 01</div>
+      <h2>エグゼクティブサマリー</h2>
+      <p class="slide-lead">にからすは、生成AIを活用して企業の業務・技能・意思決定を次のステージへ進化させるAIインテグレーターです。</p>
+
+      <div class="highlight-box accent">
+        <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">一文定義</p>
+        <p style="font-size: 14px; color: var(--text-secondary);">にからすは、生成AIの力で企業の「いろは」&mdash;&mdash;業務のやり方、ノウハウ、意思決定プロセス&mdash;&mdash;を再構築し、持続的な競争優位を生み出すAIネイティブ企業です。</p>
+      </div>
+
+      <div class="content-block">
+        <p><strong>タグライン:</strong> AIで現実を変える</p>
+        <p><strong>Vision:</strong> Generative Adaptation &mdash; 生成AIによる適応的進化</p>
+        <p><strong>Mission:</strong> 企業の「いろは」を次のステージへ</p>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-item">
+          <div class="label">Year 1 売上目標</div>
+          <div class="value">&yen;1.27<span class="unit">億</span></div>
+        </div>
+        <div class="kpi-item">
+          <div class="label">営業利益</div>
+          <div class="value">&yen;1.01<span class="unit">億</span></div>
+          <div class="note">営業利益率 79.6%</div>
+        </div>
+        <div class="kpi-item">
+          <div class="label">事業数</div>
+          <div class="value">4<span class="unit">事業</span></div>
+        </div>
+        <div class="kpi-item">
+          <div class="label">新規事業比率</div>
+          <div class="value">57<span class="unit">%</span></div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>4事業ポートフォリオ</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>事業</th><th>Year 1 売上</th><th>モデル</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>既存事業</td><td class="amount">&yen;5,500万</td><td>受託開発継続</td></tr>
+              <tr><td>AI駆動開発</td><td class="amount">&yen;3,600万</td><td>&yen;60万/月 &times; 5社</td></tr>
+              <tr><td>中小DX</td><td class="amount">&yen;1,500万</td><td>&yen;300万/年 &times; 5社</td></tr>
+              <tr><td>Physical AI</td><td class="amount">&yen;1,500万</td><td>&yen;500万/年 &times; 3社</td></tr>
+              <tr><td>プロダクト</td><td class="amount">&yen;600万</td><td>&yen;300万/年 &times; 2社</td></tr>
+              <tr class="total-row"><td>合計</td><td class="amount">&yen;12,700万</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">01 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 2: Mission, Vision, Values -->
+    <section class="slide" id="sec2">
+      <div class="slide-eyebrow">Section 02</div>
+      <h2>ミッション・ビジョン・バリュー</h2>
+      <p class="slide-lead">にからすが目指す世界と、そこに至るための行動指針。</p>
+
+      <div class="content-block">
+        <div class="two-col">
+          <div class="highlight-box">
+            <p style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 8px;">Vision</p>
+            <p style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; letter-spacing: 1px;">Generative Adaptation</p>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">生成AIによる適応的進化。AIが企業のDNAに組み込まれ、環境変化に対して自律的に適応・進化していく世界を目指す。</p>
+          </div>
+          <div class="highlight-box">
+            <p style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 8px;">Mission</p>
+            <p style="font-size: 18px; font-weight: 500;">企業の「いろは」を次のステージへ</p>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">「いろは」= 業務の基本・ノウハウ・意思決定の型。これらをAIで再構築し、企業が本来持つポテンシャルを最大化する。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>5 Values</h3>
+        <div class="value-grid">
+          <div class="value-card">
+            <div class="v-id">V1</div>
+            <div class="v-title">目的が先</div>
+            <div class="v-desc">技術は手段。課題が先。どんなに美しい技術でも、解決すべき課題がなければ意味がない。常に「何のために」を問い続ける。</div>
+          </div>
+          <div class="value-card">
+            <div class="v-id">V2</div>
+            <div class="v-title">言われる前に作る</div>
+            <div class="v-desc">顧客の「ほしい」を想像して創造する。要件定義を待つのではなく、顧客がまだ言語化できていないニーズを先回りして形にする。</div>
+          </div>
+          <div class="value-card">
+            <div class="v-id">V3</div>
+            <div class="v-title">自分の足で、自分の手で</div>
+            <div class="v-desc">現場に行く。リモートだけでは分からない現場の空気、匂い、手触りを大切にする。技能伝承も、DXも、現場を知らなければ始まらない。</div>
+          </div>
+          <div class="value-card">
+            <div class="v-id">V4</div>
+            <div class="v-title">身の丈を超える</div>
+            <div class="v-desc">メンバーにも求める。今の能力で「できること」だけをやっていたら成長はない。少し背伸びした挑戦を意図的に設計する。</div>
+          </div>
+          <div class="value-card">
+            <div class="v-id">V5</div>
+            <div class="v-title">義</div>
+            <div class="v-desc">ダサいことはやらない。人としての正しさ。短期的な利益のために信頼を損なう行為をしない。長期的な関係構築を最優先する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">02 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 3: Business Overview -->
+    <section class="slide" id="sec3">
+      <div class="slide-eyebrow">Section 03</div>
+      <h2>事業の全体像</h2>
+      <p class="slide-lead">4事業を「ぐるぐるモデル」で循環させ、二層構造で安定成長を実現する。</p>
+
+      <div class="content-block">
+        <h3>ぐるぐるモデル</h3>
+        <div class="highlight-box">
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">4事業が相互に顧客・知見・データを循環させるフライホイール構造。一つの事業で得たインサイトが他の事業の競争力を高める。</p>
+          <div style="text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 14px; line-height: 2.2; color: var(--text-secondary);">
+            <div style="display: inline-block; text-align: left; background: var(--bg); padding: 24px 40px; border-radius: 4px; border: 1px solid var(--border-light);">
+              AI駆動開発 &mdash;&mdash;&mdash;&gt; 中小DX<br>
+              &nbsp;&nbsp;&nbsp;&uarr;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+              プロダクト &lt;&mdash;&mdash;&mdash; Physical AI<br>
+              <br>
+              <span style="font-size: 12px; color: var(--text-tertiary);">知見・顧客・データが循環するフライホイール</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>二層構造</h3>
+        <div class="two-col">
+          <div class="highlight-box">
+            <p style="font-size: 12px; letter-spacing: 1px; color: var(--text-tertiary); margin-bottom: 8px;">Layer 1 &mdash; 安定基盤</p>
+            <p style="font-size: 15px; font-weight: 500; margin-bottom: 8px;">既存事業 + AI駆動開発</p>
+            <p style="font-size: 13px; color: var(--text-secondary);">月額課金・継続契約によるキャッシュフロー基盤。Year 1で&yen;9,100万（72%）を占める安定収益層。</p>
+          </div>
+          <div class="highlight-box">
+            <p style="font-size: 12px; letter-spacing: 1px; color: var(--text-tertiary); margin-bottom: 8px;">Layer 2 &mdash; 成長ドライバー</p>
+            <p style="font-size: 15px; font-weight: 500; margin-bottom: 8px;">中小DX + Physical AI + プロダクト</p>
+            <p style="font-size: 13px; color: var(--text-secondary);">新規市場開拓と将来のスケーラブル収益源。Year 2以降の成長エンジンとなる事業群。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>4事業軸</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>事業</th><th>概要</th><th>収益モデル</th><th>Year 1目標</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>AI駆動開発</strong></td>
+                <td>自律型PO代行によるAI活用の開発支援</td>
+                <td>月額&yen;60万</td>
+                <td>&yen;3,600万</td>
+              </tr>
+              <tr>
+                <td><strong>中小DX</strong></td>
+                <td>税理士チャネルを活用した中小企業DX支援</td>
+                <td>年額&yen;300万</td>
+                <td>&yen;1,500万</td>
+              </tr>
+              <tr>
+                <td><strong>Physical AI</strong></td>
+                <td>WazaAIによる製造業の技能伝承AI化</td>
+                <td>PoC + 月額SaaS</td>
+                <td>&yen;1,500万</td>
+              </tr>
+              <tr>
+                <td><strong>プロダクト</strong></td>
+                <td>KataribeAI等の自社プロダクト</td>
+                <td>SaaS</td>
+                <td>&yen;600万</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">03 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 4: Market Analysis -->
+    <section class="slide" id="sec4">
+      <div class="slide-eyebrow">Section 04</div>
+      <h2>市場分析</h2>
+      <p class="slide-lead">急成長するPhysical AI市場とエッジAI市場。にからすはPrivacy対応で差別化。</p>
+
+      <div class="content-block">
+        <h3>TAM / SAM / SOM</h3>
+        <div class="kpi-row">
+          <div class="kpi-item">
+            <div class="label">Physical AI 世界市場</div>
+            <div class="value" style="font-size: 22px;">$5.4B &rarr; $61B</div>
+            <div class="note">CAGR 31%</div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">日本エッジAI市場</div>
+            <div class="value" style="font-size: 22px;">&yen;1,800億 &rarr; &yen;1.2兆</div>
+            <div class="note">CAGR 27%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>競合分析</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>競合</th><th>領域</th><th>Privacy対応</th><th>にからすの優位性</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>HACARUS</td>
+                <td>外観検査AI</td>
+                <td style="color: #c00;">&times;</td>
+                <td>技能伝承特化 + オンプレミス対応</td>
+              </tr>
+              <tr>
+                <td>VRAIN</td>
+                <td>製造AI</td>
+                <td style="color: #c00;">&times;</td>
+                <td>中小規模対応 + 段階導入</td>
+              </tr>
+              <tr>
+                <td>Safie</td>
+                <td>映像クラウド</td>
+                <td style="color: #c00;">&times;</td>
+                <td>AI解析内蔵 + エッジ処理</td>
+              </tr>
+              <tr>
+                <td>COCOMITE</td>
+                <td>マニュアル作成</td>
+                <td style="color: #c00;">&times;</td>
+                <td>映像AI + 暗黙知の定量化</td>
+              </tr>
+              <tr>
+                <td>Glory mirAI-EYE</td>
+                <td>技能伝承</td>
+                <td style="color: #c00;">&times;</td>
+                <td>Privacy対応 + 低価格PoC</td>
+              </tr>
+              <tr style="background: rgba(26,26,26,0.02);">
+                <td><strong>にからす</strong></td>
+                <td><strong>技能伝承AI</strong></td>
+                <td style="color: #1A1A1A;"><strong>&check;</strong></td>
+                <td><strong>唯一のPrivacy対応プレイヤー</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size: 12px; color: var(--text-tertiary); margin-top: 8px;">全競合がPrivacy対応を欠く中、にからすは工場内データのオンプレミス処理・匿名化を標準装備。製造業のデータ主権ニーズに唯一応える。</p>
+      </div>
+
+      <div class="content-block">
+        <h3>ポジショニングマップ</h3>
+        <div class="pos-map">
+          <div class="pos-map-title">AI導入の深度 &times; 対象企業規模</div>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <div style="flex: 1;"></div>
+            <div class="pos-axis-x" style="flex: 2; text-align: center;">大企業向け</div>
+          </div>
+          <div style="display: flex;">
+            <div class="pos-axis-y" style="writing-mode: vertical-rl; text-orientation: mixed; padding-right: 8px;">深い統合</div>
+            <div class="pos-grid" style="flex: 1;">
+              <div class="pos-quadrant">VRAIN<br>HACARUS</div>
+              <div class="pos-quadrant">Safie<br>Glory mirAI-EYE</div>
+              <div class="pos-quadrant highlight"><strong style="color: var(--text);">にからす</strong><br><span style="font-size: 10px;">Privacy対応 &times; 段階導入<br>&times; 中小対応</span></div>
+              <div class="pos-quadrant">COCOMITE</div>
+            </div>
+          </div>
+          <div style="display: flex; margin-top: 4px;">
+            <div style="width: 20px;"></div>
+            <div style="flex: 1; display: flex; justify-content: space-between;">
+              <div class="pos-axis-x">中小企業向け</div>
+              <div class="pos-axis-y" style="writing-mode: horizontal-tb; font-size: 10px;">浅い導入</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>各市場の数字</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>市場</th><th>現在規模</th><th>将来規模</th><th>CAGR</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Physical AI（グローバル）</td><td>$5.4B</td><td>$61B</td><td>31%</td></tr>
+              <tr><td>日本エッジAI</td><td>&yen;1,800億</td><td>&yen;1.2兆</td><td>27%</td></tr>
+              <tr><td>日本AI開発市場</td><td>&yen;2.1兆</td><td>&yen;5.6兆</td><td>22%</td></tr>
+              <tr><td>中小企業DX市場</td><td>&yen;4,000億</td><td>&yen;1.2兆</td><td>25%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">04 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 5: Service Design -->
+    <section class="slide" id="sec5">
+      <div class="slide-eyebrow">Section 05</div>
+      <h2>サービス設計</h2>
+      <p class="slide-lead">4事業それぞれの商品設計、ICP（理想顧客像）、価格戦略。</p>
+
+      <!-- 5-1: 中小DX -->
+      <div class="content-block">
+        <h3>中小DX &mdash; 税理士ファースト戦略</h3>
+        <p>税理士事務所をチャネルパートナーとして活用し、その顧問先である中小企業にDXソリューションを展開する「3段ロケット」モデル。</p>
+
+        <h4>3段ロケットモデル</h4>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>段階</th><th>内容</th><th>目的</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>第1段</strong></td><td>税理士事務所自体のDX（業務効率化）</td><td>信頼構築 + 成功体験の創出</td></tr>
+              <tr><td><strong>第2段</strong></td><td>顧問先企業への横展開</td><td>税理士の紹介でリード獲得コストゼロ</td></tr>
+              <tr><td><strong>第3段</strong></td><td>Claude Code経営パッケージ導入</td><td>高単価 + 長期継続</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>ICP（理想顧客像）</h4>
+        <ul>
+          <li>従業員10-50名の税理士事務所</li>
+          <li>顧問先100-500社を持つ中規模事務所</li>
+          <li>IT化に前向きだがリソース不足の事務所</li>
+        </ul>
+
+        <h4>価格</h4>
+        <p>年額&yen;300万/社（月額&yen;25万相当）。Year 1目標: 5社 = &yen;1,500万</p>
+
+        <h4>杉江商会事例（実績）</h4>
+        <div class="highlight-box">
+          <div class="data-table" style="margin: 0;">
+            <table>
+              <thead>
+                <tr><th>Phase</th><th>内容</th><th>金額</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Phase 1</td><td>FAQ検索PoC（LINE Bot &times; RAG）</td><td>&yen;205万</td></tr>
+                <tr><td>Phase 2</td><td>Notion導入・業務フロー整備</td><td>&mdash;</td></tr>
+                <tr><td>Phase 3</td><td>AI研修プログラム</td><td>&mdash;</td></tr>
+                <tr><td>Phase 4</td><td>Claude Code経営パッケージ</td><td>&yen;200-400万</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top: 12px; display: flex; gap: 24px;">
+            <div>
+              <span style="font-size: 11px; color: var(--text-tertiary);">累計売上</span><br>
+              <span style="font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600;">&yen;250万</span>
+            </div>
+            <div>
+              <span style="font-size: 11px; color: var(--text-tertiary);">ROI</span><br>
+              <span style="font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600;">4,400%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-2: AI駆動開発 -->
+      <div class="content-block">
+        <h3>AI駆動開発 &mdash; 自律型PO代行</h3>
+        <p>顧客企業のプロダクト開発を、AIを活用した自律型PO（プロダクトオーナー）代行モデルで支援。従来の受託開発とは異なり、要件定義からリリースまでを主体的に推進する。</p>
+
+        <h4>サービス概要</h4>
+        <ul>
+          <li>Claude Code/Cursorを駆使した高速プロトタイピング</li>
+          <li>要件定義・設計・実装・テスト・デプロイの一気通貫</li>
+          <li>週次のスプリントレビューとKPI報告</li>
+          <li>AI活用によるドキュメント自動生成</li>
+        </ul>
+
+        <h4>ICP（理想顧客像）</h4>
+        <ul>
+          <li>社内エンジニア0-3名のスタートアップ・中小企業</li>
+          <li>DX推進を掲げているがPM/POリソースが不足している企業</li>
+          <li>新規事業のMVP開発を早期に実現したい企業</li>
+        </ul>
+
+        <h4>価格</h4>
+        <p>&yen;60万/月（税別）。Year 1目標: 5社 = &yen;3,600万</p>
+      </div>
+
+      <!-- 5-3: WazaAI / Physical AI -->
+      <div class="content-block">
+        <h3>WazaAI / Physical AI &mdash; 3ティア商品</h3>
+        <p>製造業の技能伝承課題をAI映像解析で解決。段階導入を可能にする3ティア構成。</p>
+
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>ティア</th><th>商品</th><th>内容</th><th>価格</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>A</strong></td>
+                <td>PoC</td>
+                <td>1工程の映像収集・AI分析・レポート</td>
+                <td class="amount">&yen;50万</td>
+              </tr>
+              <tr>
+                <td><strong>B</strong></td>
+                <td>技能記録</td>
+                <td>複数工程の技能データベース構築</td>
+                <td class="amount">&yen;50-150万<span style="font-size: 11px; color: var(--text-tertiary);">/工程</span></td>
+              </tr>
+              <tr>
+                <td><strong>C</strong></td>
+                <td>トレーニングツール</td>
+                <td>AIトレーナーによる継続的技能訓練</td>
+                <td class="amount">&yen;3万<span style="font-size: 11px; color: var(--text-tertiary);">/ライン/月</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>ROI試算</h4>
+        <div class="highlight-box">
+          <p style="font-size: 13px; color: var(--text-secondary);">熟練技能者1名の退職コスト（採用・教育・生産性低下）= 年間&yen;500-1,000万。WazaAI導入コスト&yen;200-400万に対し、<strong>ROI 150-400%</strong>を実現。</p>
+        </div>
+
+        <h4>ICP（理想顧客像）</h4>
+        <ul>
+          <li>従業員50-500名の製造業</li>
+          <li>熟練技能者の高齢化・退職が課題の工場</li>
+          <li>品質管理の属人化を解消したい企業</li>
+        </ul>
+
+        <p>Year 1目標: 3社 = &yen;1,500万</p>
+      </div>
+
+      <!-- 5-4: KataribeAI -->
+      <div class="content-block">
+        <h3>KataribeAI &mdash; Year 2開始計画</h3>
+        <p>WazaAIの技能記録技術を応用した、組織ナレッジの自動構造化・共有プラットフォーム。Year 2から本格開発を開始予定。</p>
+        <ul>
+          <li>Year 1: 技術検証・プロトタイプ開発</li>
+          <li>Year 2: &beta;テスト・初期顧客獲得</li>
+          <li>Year 3: 本格展開・SaaSモデル確立</li>
+        </ul>
+        <p>Year 1は&yen;300万/年 &times; 2社 = &yen;600万（プロダクト枠）で計上。</p>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">05 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 6: GTM Strategy -->
+    <section class="slide" id="sec6">
+      <div class="slide-eyebrow">Section 06</div>
+      <h2>GTM戦略</h2>
+      <p class="slide-lead">全社共通の営業基盤と、事業別チャネル設計、展示会計画、補助金活用。</p>
+
+      <div class="content-block">
+        <h3>全社GTM方針</h3>
+        <div class="highlight-box">
+          <ul>
+            <li><strong>コンテンツ主導:</strong> 技術ブログ・事例記事で信頼を構築し、インバウンドリードを獲得</li>
+            <li><strong>展示会:</strong> 年4回の展示会出展でPhysical AI・WazaAIの認知を拡大</li>
+            <li><strong>DM:</strong> ターゲットリスト100件に対するDM + フォローアップ</li>
+            <li><strong>紹介:</strong> 税理士チャネル + 既存クライアントからの紹介</li>
+            <li><strong>補助金:</strong> ものづくり補助金・持続化補助金を活用した導入障壁の低減</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>事業別チャネル設計</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>事業</th><th>主要チャネル</th><th>サブチャネル</th><th>KPI</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AI駆動開発</td>
+                <td>紹介 + コンテンツ</td>
+                <td>技術ブログ、GitHub</td>
+                <td>月1件リード</td>
+              </tr>
+              <tr>
+                <td>中小DX</td>
+                <td>税理士紹介</td>
+                <td>DM、セミナー</td>
+                <td>Q2までに3事務所</td>
+              </tr>
+              <tr>
+                <td>Physical AI</td>
+                <td>展示会 + DM</td>
+                <td>補助金連携</td>
+                <td>展示会リード20件</td>
+              </tr>
+              <tr>
+                <td>プロダクト</td>
+                <td>HP + コンテンツ</td>
+                <td>&beta;テスト参加者</td>
+                <td>&beta;ユーザー10社</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>展示会計画</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>展示会</th><th>日程</th><th>優先度</th><th>目的</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>ものづくりワールド</strong></td>
+                <td>7/1-3</td>
+                <td style="font-weight: 500;">S</td>
+                <td>WazaAI初お披露目、製造業リード獲得</td>
+              </tr>
+              <tr>
+                <td><strong>CEATEC</strong></td>
+                <td>10/13-16</td>
+                <td style="font-weight: 500;">A</td>
+                <td>テクノロジー企業としての認知拡大</td>
+              </tr>
+              <tr>
+                <td><strong>H.C.R.</strong></td>
+                <td>10/7-9</td>
+                <td style="font-weight: 500;">A</td>
+                <td>介護・福祉領域へのPhysical AI展開</td>
+              </tr>
+              <tr>
+                <td><strong>RoboNext</strong></td>
+                <td>12/2-4</td>
+                <td>B</td>
+                <td>ロボティクス連携パートナー探索</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>補助金活用</h3>
+        <div class="two-col">
+          <div class="highlight-box">
+            <p style="font-weight: 500; margin-bottom: 8px;">ものづくり補助金（第23次）</p>
+            <p style="font-size: 13px; color: var(--text-secondary);">申請期限: 5/8<br>用途: WazaAIのHW調達・プロト開発<br>補助額: 最大&yen;750万</p>
+          </div>
+          <div class="highlight-box">
+            <p style="font-weight: 500; margin-bottom: 8px;">持続化補助金（第19回）</p>
+            <p style="font-size: 13px; color: var(--text-secondary);">申請期限: 4/30<br>用途: 展示会出展費・マーケティング<br>補助額: 最大&yen;200万</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">06 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 7: Financial Plan -->
+    <section class="slide" id="sec7">
+      <div class="slide-eyebrow">Section 07</div>
+      <h2>財務計画</h2>
+      <p class="slide-lead">Year 1-3の売上・コスト・利益計画と悲観シナリオ検証。</p>
+
+      <div class="content-block">
+        <h3>Year 1 &ndash; 3 サマリー</h3>
+        <div class="kpi-row">
+          <div class="kpi-item">
+            <div class="label">Year 1</div>
+            <div class="value">&yen;1.27<span class="unit">億</span></div>
+            <div class="note">営業利益率 79.6%</div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">Year 2</div>
+            <div class="value" style="font-size: 22px;">&yen;1.67-1.95<span class="unit">億</span></div>
+            <div class="note">成長率 32-54%</div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">Year 3</div>
+            <div class="value" style="font-size: 22px;">&yen;2.4-3.0<span class="unit">億</span></div>
+            <div class="note">成長率 44-54%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>Year 1 売上内訳</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>事業</th><th>金額</th><th>算出根拠</th><th>構成比</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>既存事業</td><td class="amount">&yen;5,500万</td><td>継続契約ベース</td><td>43%</td></tr>
+              <tr><td>AI駆動開発</td><td class="amount">&yen;3,600万</td><td>&yen;60万/月 &times; 5社 &times; 12ヶ月</td><td>28%</td></tr>
+              <tr><td>中小DX</td><td class="amount">&yen;1,500万</td><td>&yen;300万/年 &times; 5社</td><td>12%</td></tr>
+              <tr><td>Physical AI</td><td class="amount">&yen;1,500万</td><td>&yen;500万/年 &times; 3社</td><td>12%</td></tr>
+              <tr><td>プロダクト</td><td class="amount">&yen;600万</td><td>&yen;300万/年 &times; 2社</td><td>5%</td></tr>
+              <tr class="total-row"><td><strong>合計</strong></td><td class="amount"><strong>&yen;12,700万</strong></td><td></td><td><strong>100%</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>四半期推移</h3>
+        <div class="kpi-row" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="kpi-item">
+            <div class="label">Q1（3-5月）</div>
+            <div class="value" style="font-size: 22px;">&yen;1,560<span class="unit">万</span></div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">Q2（6-8月）</div>
+            <div class="value" style="font-size: 22px;">&yen;2,830<span class="unit">万</span></div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">Q3（9-11月）</div>
+            <div class="value" style="font-size: 22px;">&yen;3,560<span class="unit">万</span></div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">Q4（12-2月）</div>
+            <div class="value" style="font-size: 22px;">&yen;4,770<span class="unit">万</span></div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-tertiary);">Q1からQ4にかけて段階的に売上が拡大。後半に展示会リードからの受注が集中。</p>
+      </div>
+
+      <div class="content-block">
+        <h3>コスト構造</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>項目</th><th>月額</th><th>年額</th><th>備考</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>固定費</strong></td><td class="amount">&yen;165万</td><td class="amount">&yen;1,980万</td><td>人件費・業務委託・インフラ</td></tr>
+              <tr class="sub-row"><td>役員報酬</td><td></td><td></td><td>小竹</td></tr>
+              <tr class="sub-row"><td>業務委託（辻井）</td><td>&yen;75万+税</td><td></td><td>CSO/営業</td></tr>
+              <tr class="sub-row"><td>業務委託（ペりん）</td><td>&yen;50万</td><td></td><td>CTO</td></tr>
+              <tr class="sub-row"><td>ツール・インフラ</td><td></td><td></td><td>Claude, AWS, etc.</td></tr>
+              <tr><td><strong>変動費</strong></td><td>&mdash;</td><td class="amount">&yen;260万</td><td>案件規模に応じて発生</td></tr>
+              <tr><td><strong>特別支出</strong></td><td>&mdash;</td><td class="amount">&yen;360万</td><td>展示会出展・HW購入</td></tr>
+              <tr class="total-row"><td><strong>コスト合計</strong></td><td>&mdash;</td><td class="amount"><strong>&yen;2,600万</strong></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="kpi-row" style="margin-top: 24px;">
+          <div class="kpi-item">
+            <div class="label">売上</div>
+            <div class="value" style="font-size: 24px;">&yen;12,700<span class="unit">万</span></div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">コスト</div>
+            <div class="value" style="font-size: 24px;">&yen;2,600<span class="unit">万</span></div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">営業利益</div>
+            <div class="value" style="font-size: 24px;">&yen;10,120<span class="unit">万</span></div>
+          </div>
+          <div class="kpi-item">
+            <div class="label">営業利益率</div>
+            <div class="value" style="font-size: 24px;">79.6<span class="unit">%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>悲観シナリオ検証</h3>
+        <div class="two-col">
+          <div class="highlight-box accent">
+            <p style="font-weight: 500; margin-bottom: 8px;">シナリオ A: 新規ゼロ</p>
+            <p style="font-size: 13px; color: var(--text-secondary);">新規事業からの売上がゼロの場合でも、既存事業&yen;5,500万で固定費&yen;1,980万をカバー。<strong>12ヶ月生存可能。</strong></p>
+          </div>
+          <div class="highlight-box accent">
+            <p style="font-weight: 500; margin-bottom: 8px;">シナリオ B: 全クライアント50%減 + 新規ゼロ</p>
+            <p style="font-size: 13px; color: var(--text-secondary);">既存クライアントが半減（&yen;2,750万）かつ新規ゼロでも、固定費をカバーし<strong>12ヶ月生存可能。</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">07 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 8: Roadmap -->
+    <section class="slide" id="sec8">
+      <div class="slide-eyebrow">Section 08</div>
+      <h2>ロードマップ</h2>
+      <p class="slide-lead">3年間のタイムラインとマイルストーン。スプリント駆動で実行。</p>
+
+      <div class="content-block">
+        <h3>3年タイムライン</h3>
+        <div class="two-col">
+          <div>
+            <h4>Year 1（FY2026）&mdash; 基盤構築</h4>
+            <ul>
+              <li>4事業の立ち上げとPoC獲得</li>
+              <li>WazaAIプロトタイプ完成</li>
+              <li>展示会4回出展</li>
+              <li>売上&yen;1.27億達成</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Year 2（FY2027）&mdash; 拡大</h4>
+            <ul>
+              <li>WazaAI本格展開・SaaS化</li>
+              <li>KataribeAI &beta;リリース</li>
+              <li>チーム拡大（エンジニア採用）</li>
+              <li>売上&yen;1.67-1.95億</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <h4>Year 3（FY2028）&mdash; スケール</h4>
+          <ul>
+            <li>プロダクト事業の収益化</li>
+            <li>AI広報・自動マーケティング基盤</li>
+            <li>論文発表・学術連携</li>
+            <li>売上&yen;2.4-3.0億</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>マイルストーン</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-label">MS-A &mdash; 3/14</div>
+            <div class="timeline-title">戦略完成</div>
+            <div class="timeline-desc">D1-D8 v4.0完成、WBS完全版、CC駆動自走環境構築、営業・プロダクト準備完了</div>
+          </div>
+          <div class="timeline-item future">
+            <div class="timeline-label">MS-B &mdash; 3月末</div>
+            <div class="timeline-title">実行開始</div>
+            <div class="timeline-desc">WBSに基づく実行が進行中、営業・事業の実行結果、運用ルール+CC更新</div>
+          </div>
+          <div class="timeline-item future">
+            <div class="timeline-label">MS-C &mdash; 4月末</div>
+            <div class="timeline-title">仕組み一周</div>
+            <div class="timeline-desc">初受注+パイプライン構築、マーケ・発信サイクル確立、プロダクトプロト完成、月次管理サイクル稼働</div>
+          </div>
+          <div class="timeline-item future">
+            <div class="timeline-label">MS-D &mdash; 10月末</div>
+            <div class="timeline-title">展示会出展</div>
+            <div class="timeline-desc">ものづくりワールド・CEATEC出展完了、WazaAI PoC 2件実施、PoC協力先確保</div>
+          </div>
+          <div class="timeline-item future">
+            <div class="timeline-label">MS-E &mdash; 12月末</div>
+            <div class="timeline-title">Year 1 完了</div>
+            <div class="timeline-desc">売上&yen;1.27億判定、Year 2計画策定、チーム体制レビュー、D1-D7 v5.0方針確定</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>Sprint概要</h3>
+        <p>全タスクは1-2週間のSprint単位で管理。週2回の戦略定例（火・木）でスプリントの進捗を確認し、ブロッカーを即時解消する。</p>
+        <div class="highlight-box">
+          <ul>
+            <li><strong>Sprint期間:</strong> 2週間</li>
+            <li><strong>定例会議:</strong> 週2回（火・木 30分）</li>
+            <li><strong>月次レビュー:</strong> 毎月末 30分（予実+KPI+翌月計画）</li>
+            <li><strong>MSレビュー:</strong> MS日に60分（達成基準の判定）</li>
+            <li><strong>管理ツール:</strong> WBS（docs/wbs-complete.md）+ ダッシュボードHTML</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">08 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 9: Team -->
+    <section class="slide" id="sec9">
+      <div class="slide-eyebrow">Section 09</div>
+      <h2>チーム</h2>
+      <p class="slide-lead">少数精鋭の創業チーム。AIネイティブな実行力で事業を推進。</p>
+
+      <div class="content-block">
+        <div class="team-card">
+          <div class="team-name">小竹 泉里ブレイニー</div>
+          <div class="team-role">CEO / Founder &mdash; 28歳</div>
+          <div class="team-bio">
+            代表取締役。慶應義塾大学中退後に起業。生成AIの社会実装に特化し、企画から実装までを一気通貫で手がける。しまじろうAI（ベネッセ）、大阪万博パビリオンAI体験設計、トヨタ商談分析AI等の大型案件を実績として持つ。LedgeAI最優秀賞、Sharpハッカソン優勝。技術と事業の両面を理解し、顧客の課題を起点にプロダクトを設計する。
+          </div>
+          <div class="team-tags">
+            <span class="team-tag">生成AI</span>
+            <span class="team-tag">プロダクト設計</span>
+            <span class="team-tag">フルスタック開発</span>
+            <span class="team-tag">事業戦略</span>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top: 16px;">
+          <div class="team-card">
+            <div class="team-name">辻井</div>
+            <div class="team-role">CSO / Sales</div>
+            <div class="team-bio">
+              事業開発・営業を統括。クライアント折衝、市場戦略の実行、財務モデルの運用を担当。展示会出展やDM施策の実行リーダー。
+            </div>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--text-tertiary);">
+              業務委託: &yen;75万+税/月
+            </div>
+          </div>
+
+          <div class="team-card">
+            <div class="team-name">ペりん</div>
+            <div class="team-role">CTO / Engineering</div>
+            <div class="team-bio">
+              技術設計・実装方針を統括。WazaAIのプロトタイプ開発、税理士パッケージの技術設計、ビジネスモデルの技術的妥当性検証を担当。
+            </div>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--text-tertiary);">
+              業務委託: &yen;50万/月
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">09 / 10</span>
+      </div>
+    </section>
+
+    <!-- Section 10: Criteria & Exit -->
+    <section class="slide" id="sec10">
+      <div class="slide-eyebrow">Section 10</div>
+      <h2>判断基準と撤退ライン</h2>
+      <p class="slide-lead">数字に基づく冷静な判断。感情ではなくデータで意思決定する。</p>
+
+      <div class="content-block">
+        <h3>事業継続判断基準</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr><th>判断時期</th><th>基準</th><th>アクション</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>6ヶ月（8月末）</strong></td>
+                <td>新規事業からの売上が計画の30%未満</td>
+                <td>チャネル戦略の全面見直し、またはピボット検討</td>
+              </tr>
+              <tr>
+                <td><strong>9ヶ月（11月末）</strong></td>
+                <td>パイプラインが目標の50%未満</td>
+                <td>事業ポートフォリオの再構成</td>
+              </tr>
+              <tr>
+                <td><strong>12ヶ月（2月末）</strong></td>
+                <td>Year 1売上が目標の60%未満</td>
+                <td>Year 2計画の大幅修正、縮小均衡への移行</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>撤退ライン</h3>
+        <div class="highlight-box accent">
+          <ul>
+            <li><strong>キャッシュ残高が3ヶ月分の固定費（&yen;495万）を下回った場合:</strong> 事業縮小・撤退を検討</li>
+            <li><strong>12ヶ月連続で新規案件ゼロの場合:</strong> 事業モデルの根本的見直し</li>
+            <li><strong>主要メンバーの離脱:</strong> 即時の人員補充計画を策定、不可能な場合は事業範囲を縮小</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>生存保証</h3>
+        <div class="two-col">
+          <div class="highlight-box">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;"><strong>新規ゼロでも12ヶ月生存</strong></p>
+            <p style="font-size: 12px; color: var(--text-tertiary);">既存事業&yen;5,500万で固定費&yen;1,980万を十分にカバー。新規事業が全く立ち上がらなくても、既存の収益基盤で12ヶ月以上の事業継続が可能。</p>
+          </div>
+          <div class="highlight-box">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;"><strong>全クライアント50%減 + 新規ゼロでも12ヶ月生存</strong></p>
+            <p style="font-size: 12px; color: var(--text-tertiary);">既存クライアントが半減して&yen;2,750万となり、かつ新規がゼロでも、年間固定費&yen;1,980万をカバー可能。最悪シナリオでも12ヶ月の猶予がある。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <h3>判断プロセス</h3>
+        <div class="highlight-box">
+          <ol>
+            <li>月次レビューでKPI・予実を確認</li>
+            <li>乖離が20%以上の場合、原因分析を実施</li>
+            <li>翌月の修正アクションを策定</li>
+            <li>MS時点で達成基準を判定し、Go/No-Goを決定</li>
+            <li>全判断をdocs/decisions.mdに記録（根拠チェーン付き）</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Final Footer -->
+      <div style="margin-top: auto; padding-top: 56px; text-align: center;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; letter-spacing: 3px; color: var(--accent); margin-bottom: 8px;">NIKARASU</div>
+        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">AIで現実を変える</div>
+        <div style="font-size: 11px; color: var(--text-tertiary);">にからす合同会社 &mdash; 事業計画書 FY2026</div>
+      </div>
+
+      <div class="slide-footer">
+        <span>にからす合同会社 &mdash; 事業計画書</span>
+        <span class="page-num">10 / 10</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// Sidebar active state on scroll
+const sections = document.querySelectorAll('.slide[id]');
+const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', updateActiveNav);
+window.addEventListener('load', updateActiveNav);
+
+// Smooth scroll
+navLinks.forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Close mobile sidebar
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

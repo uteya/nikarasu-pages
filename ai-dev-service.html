@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI駆動開発サービス — 株式会社にからす</title>
+<link rel="icon" href="assets/icon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF8;
+  --text: #1A1A1A;
+  --accent: #333333;
+  --muted: #666666;
+  --light: #999999;
+  --border: #E0E0E0;
+  --card: #FFFFFF;
+  --slide-max: 960px;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Serif JP', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.9;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.en { font-family: 'Cormorant Garamond', serif; }
+
+/* Navigation */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(250, 250, 248, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.nav-bar .nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+.nav-bar .nav-logo img {
+  height: 28px;
+  width: auto;
+}
+.nav-bar .nav-logo span {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.nav-back {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-slides {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+.nav-dot:hover { background: var(--light); }
+.nav-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
+
+/* Slide */
+.slide {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 2rem 3rem;
+  position: relative;
+}
+.slide:nth-child(even) { background: #F5F5F3; }
+.slide-inner {
+  max-width: var(--slide-max);
+  width: 100%;
+}
+.slide-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: var(--light);
+  letter-spacing: 0.15em;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+/* Typography */
+h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.5rem;
+}
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.sub-tagline {
+  font-size: 0.95rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.section-label {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--light);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin-bottom: 1.5rem;
+}
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+  margin: 2rem 0;
+}
+
+/* Cover Slide */
+.cover {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.cover-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 3rem;
+  opacity: 0.9;
+}
+.cover h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.5rem;
+}
+.cover .tagline {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+}
+.cover .sub-tagline {
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+.cover-date {
+  margin-top: 4rem;
+  font-size: 0.85rem;
+  color: var(--light);
+  letter-spacing: 0.1em;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.card-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--border);
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+.card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* Comparison */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+.compare-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+}
+.compare-box.highlight {
+  border: 2px solid var(--accent);
+}
+.compare-box h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+.compare-box ul {
+  list-style: none;
+  padding: 0;
+}
+.compare-box ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.compare-box ul li:last-child { border-bottom: none; }
+
+/* Value cards */
+.value-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.value-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+}
+.value-card .value-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 0.8rem;
+}
+.value-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.value-card p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* Table */
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+.service-table thead th {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+.service-table tbody td {
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  background: var(--card);
+  vertical-align: top;
+}
+.service-table tbody tr:hover td {
+  background: #F9F9F7;
+}
+.service-table .price {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Process */
+.process-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 2rem 0;
+}
+.process-step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: 2rem;
+}
+.process-step:last-child { padding-bottom: 0; }
+.process-step::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+.process-step:last-child::before { display: none; }
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--card);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.step-content {
+  flex: 1;
+  padding-top: 6px;
+}
+.step-content h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.step-content p {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.step-content .step-duration {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.8rem;
+  color: var(--light);
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+.process-result {
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.process-result p {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Case list */
+.case-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.case-item:last-child { border-bottom: none; }
+.case-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 160px;
+}
+.case-desc {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding-left: 1.5rem;
+}
+
+/* ICP */
+.icp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.icp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.8rem;
+  text-align: center;
+}
+.icp-card h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.icp-card p {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.fit-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+.fit-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+.fit-list li:last-child { border-bottom: none; }
+.fit-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+.fit-icon.yes { color: var(--accent); }
+.fit-icon.no { color: var(--light); }
+
+/* Why us */
+.why-item {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.why-item:last-child { border-bottom: none; }
+.why-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--border);
+  min-width: 32px;
+  line-height: 1;
+}
+.why-content h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.why-content p {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Onboarding */
+.onboard-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.onboard-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.8rem 1.2rem;
+  text-align: center;
+  position: relative;
+}
+.onboard-step::after {
+  content: '\2192';
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--light);
+}
+.onboard-step:last-child::after { display: none; }
+.onboard-step .ob-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--border);
+  margin-bottom: 0.8rem;
+  line-height: 1;
+}
+.onboard-step h3 {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+.onboard-step p {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Contact */
+.contact-slide {
+  text-align: center;
+}
+.contact-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+.contact-name {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.contact-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide { padding: 70px 1.2rem 2rem; min-height: 100vh; }
+  .card-grid, .compare-grid, .value-row { grid-template-columns: 1fr; }
+  .icp-grid { grid-template-columns: 1fr; }
+  .onboard-steps { grid-template-columns: 1fr 1fr; }
+  .onboard-step::after { display: none; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+  .cover h1 { font-size: 1.5rem; }
+  .cover .tagline { font-size: 1.1rem; }
+  .cover-logo { width: 100px; }
+  .case-item { flex-direction: column; gap: 0.3rem; }
+  .case-desc { padding-left: 0; }
+  .nav-slides { display: none; }
+  .service-table { font-size: 0.8rem; }
+  .service-table thead th, .service-table tbody td { padding: 0.7rem; }
+}
+@media (max-width: 480px) {
+  .onboard-steps { grid-template-columns: 1fr; }
+}
+
+/* Print */
+@media print {
+  .nav-bar { display: none; }
+  .slide { min-height: auto; page-break-after: always; padding: 2rem; }
+  .slide:nth-child(even) { background: white; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <a href="strategy-portal.html" class="nav-back">&larr; 戻る</a>
+  <a href="#" class="nav-logo">
+    <img src="assets/icon.png" alt="">
+    <span>AI駆動開発サービス</span>
+  </a>
+  <div class="nav-slides">
+    <button class="nav-dot active" onclick="scrollToSlide(0)" title="表紙"></button>
+    <button class="nav-dot" onclick="scrollToSlide(1)" title="AI駆動開発とは"></button>
+    <button class="nav-dot" onclick="scrollToSlide(2)" title="提供価値"></button>
+    <button class="nav-dot" onclick="scrollToSlide(3)" title="サービスメニュー"></button>
+    <button class="nav-dot" onclick="scrollToSlide(4)" title="開発プロセス"></button>
+    <button class="nav-dot" onclick="scrollToSlide(5)" title="実績"></button>
+    <button class="nav-dot" onclick="scrollToSlide(6)" title="ICP"></button>
+    <button class="nav-dot" onclick="scrollToSlide(7)" title="なぜにからすか"></button>
+    <button class="nav-dot" onclick="scrollToSlide(8)" title="導入フロー"></button>
+    <button class="nav-dot" onclick="scrollToSlide(9)" title="お問い合わせ"></button>
+  </div>
+</nav>
+
+<!-- Slide 1: Cover -->
+<section class="slide" id="slide-0">
+  <div class="cover">
+    <img src="assets/logo.png" alt="にからす" class="cover-logo">
+    <h1>AI駆動開発サービス</h1>
+    <div class="tagline">「言われなくても作る」自律型PO代行</div>
+    <p class="sub-tagline">株式会社にからす</p>
+    <p class="cover-date en">March 2026</p>
+  </div>
+</section>
+
+<!-- Slide 2: What is AI-Driven Development -->
+<section class="slide" id="slide-1">
+  <div class="slide-inner">
+    <div class="slide-number en">02 / 10 &mdash; What is AI-Driven Development</div>
+    <h2>AI駆動開発とは</h2>
+
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="section-label en">Definition</div>
+      <h3 style="font-size: 1.1rem;">にからすのAI駆動開発 = AIエージェントを活用した自律型プロダクトオーナー（PO）代行</h3>
+      <p style="color: var(--muted); font-size: 0.92rem; margin-top: 0.8rem;">
+        仕様策定からコード生成、テスト、デプロイまで、AIと人間が協働する新しい開発パラダイム。<br>
+        「クライアントが言わなくても、先回りして作る」——それがにからすのAI駆動開発。
+      </p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-box">
+        <div class="section-label en">Conventional</div>
+        <h3>従来のSIer / 受託開発</h3>
+        <ul>
+          <li>要件定義 → 設計 → 実装 → テスト</li>
+          <li>ウォーターフォール or アジャイル</li>
+          <li>クライアントの指示に従って作る</li>
+          <li>「言われたものを、言われた通りに」</li>
+          <li>大人数のチーム体制</li>
+          <li>長い開発サイクル</li>
+        </ul>
+      </div>
+      <div class="compare-box highlight">
+        <div class="section-label en">Nikarasu AI-Driven</div>
+        <h3>にからすのAI駆動開発</h3>
+        <ul>
+          <li>課題発見 → AI仕様策定 → 高速実装 → 即テスト</li>
+          <li>AIエージェント + 人間のハイブリッド</li>
+          <li>先回りして提案・実装する</li>
+          <li>「言わなくても、最適解を作る」</li>
+          <li>2名の少数精鋭体制</li>
+          <li>通常の3-5倍速の開発サイクル</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 3: Value Proposition -->
+<section class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-number en">03 / 10 &mdash; Value Proposition</div>
+    <h2>提供価値</h2>
+
+    <div class="value-row">
+      <div class="value-card">
+        <div class="value-num en">01</div>
+        <h3>開発スピード</h3>
+        <p>AIエージェント（Claude Code等）を開発プロセスの中核に据え、通常の<strong style="color: var(--text);">3-5倍速</strong>で開発。仕様書の自動生成、コードの自動実装、テストの自動化により、圧倒的なスピードを実現。</p>
+      </div>
+      <div class="value-card">
+        <div class="value-num en">02</div>
+        <h3>品質</h3>
+        <p>AIによる一次生成 + 人間エンジニアによるレビューの<strong style="color: var(--text);">ダブルチェック体制</strong>。AIが見落としやすいエッジケースを人間が補完し、人間が見落としやすい一貫性をAIが担保する。</p>
+      </div>
+    </div>
+
+    <div class="value-row">
+      <div class="value-card">
+        <div class="value-num en">03</div>
+        <h3>コスト</h3>
+        <p><strong style="color: var(--text);">2名の少数精鋭</strong>チームで、大手SIerの10名チームと同等以上のアウトプットを実現。AIエージェントが「仮想チームメンバー」として機能するため、人件費を抑えながら高品質を維持。</p>
+      </div>
+      <div class="value-card">
+        <div class="value-num en">04</div>
+        <h3>先回り提案</h3>
+        <p>技術トレンドと市場動向を常に追跡し、クライアントの事業課題に対する<strong style="color: var(--text);">自律的な提案</strong>を実施。「言われてから作る」ではなく、「あるべき姿を先に示す」パートナー。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4: Service Menu -->
+<section class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-number en">04 / 10 &mdash; Service Menu</div>
+    <h2>サービスメニュー</h2>
+    <p style="color: var(--muted); margin-bottom: 2rem; font-size: 0.92rem;">
+      課題の規模とフェーズに応じて、最適なサービスを選択いただけます。
+    </p>
+
+    <table class="service-table">
+      <thead>
+        <tr>
+          <th style="width: 18%;">サービス</th>
+          <th style="width: 52%;">内容</th>
+          <th style="width: 30%;">価格</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>PO代行</strong></td>
+          <td>事業企画 → 要件定義 → 開発 → 運用までをワンストップで代行。プロダクトオーナーとしてクライアントの事業成長にコミットする。継続的な改善提案を含む。</td>
+          <td><span class="price en">&yen;60万/月〜</span></td>
+        </tr>
+        <tr>
+          <td><strong>MVP開発</strong></td>
+          <td>3-6ヶ月でMVP（最小限の実用的プロダクト）を構築。市場検証に必要十分な機能を高速に実装し、ユーザーフィードバックを得られる状態まで伴走する。</td>
+          <td><span class="price en">&yen;300-2,000万</span></td>
+        </tr>
+        <tr>
+          <td><strong>AI PoC</strong></td>
+          <td>2-4週間で技術検証を完了。「AIで本当に解決できるか」を最小コストで実証し、本開発への意思決定を支援する。</td>
+          <td><span class="price en">&yen;100-300万</span></td>
+        </tr>
+        <tr>
+          <td><strong>技術顧問</strong></td>
+          <td>月次アドバイザリー。AI戦略の策定、技術選定の助言、開発チームへの知見共有。経営層とエンジニアの橋渡し役としても機能。</td>
+          <td><span class="price en">&yen;30-50万/月</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Slide 5: Development Process -->
+<section class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-number en">05 / 10 &mdash; Development Process</div>
+    <h2>開発プロセス</h2>
+
+    <div class="process-flow">
+      <div class="process-step">
+        <div class="step-num en">1</div>
+        <div class="step-content">
+          <h3>課題ヒアリング</h3>
+          <p>ビジネスの本質的な課題を深掘りする。技術ありきではなく、「何を解決すべきか」を明確にする。</p>
+          <div class="step-duration en">1-2 days</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num en">2</div>
+        <div class="step-content">
+          <h3>AI駆動で仕様策定</h3>
+          <p>Claude Codeで仕様書を自動生成。要件の抜け漏れをAIが検出し、網羅的な仕様書を高速に作成する。人間がレビュー・調整を行い、品質を担保。</p>
+          <div class="step-duration en">3-5 days</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num en">3</div>
+        <div class="step-content">
+          <h3>プロトタイプ</h3>
+          <p>AIエージェントで高速実装。Claude Codeがコード生成・テスト作成を担い、人間がアーキテクチャ判断とコードレビューを行う。動くものを最速で作る。</p>
+          <div class="step-duration en">1-2 weeks</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num en">4</div>
+        <div class="step-content">
+          <h3>ユーザーテスト</h3>
+          <p>実際のユーザーにプロトタイプを触ってもらい、フィードバックを収集。データに基づく改善点を特定する。</p>
+          <div class="step-duration en">1 week</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num en">5</div>
+        <div class="step-content">
+          <h3>改善サイクル</h3>
+          <p>フィードバックを元に継続的に改善。PO代行として事業成長にコミットし、機能追加・最適化を繰り返す。</p>
+          <div class="step-duration en">Continuous</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="process-result">
+      <p>従来3ヶ月かかるMVPを、<strong>1ヶ月</strong>で実現</p>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 6: Track Record -->
+<section class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-number en">06 / 10 &mdash; Track Record</div>
+    <h2>実績</h2>
+    <p style="color: var(--muted); margin-bottom: 2rem; font-size: 0.92rem;">
+      大手企業から成長スタートアップまで、多様な業種でAI駆動開発を提供。
+    </p>
+
+    <div class="card" style="padding: 0;">
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">Chibic型案件</span>
+        <span class="case-desc">SaaS企業向けAI統合プロジェクト。既存プロダクトへのAI機能追加を設計から実装まで一気通貫で担当。1プロジェクトあたり &yen;700-900万規模。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">しまじろうAI<br><span style="font-size: 0.8rem; color: var(--light);">（ベネッセ）</span></span>
+        <span class="case-desc">子供向けAI対話システム。しまじろうキャラクターとの自然な対話体験を設計・実装。数百万人の子供たちが利用するサービスへ成長。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">万博パビリオン</span>
+        <span class="case-desc">AIガイドシステム。来場者一人ひとりに合わせたインタラクティブなAI案内体験を提供。大規模イベントでのAI活用事例。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">トヨタ</span>
+        <span class="case-desc">商談分析AI。営業商談データをAIで解析し、成約率向上に貢献するインサイトを自動抽出。営業プロセスのDXを推進。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">こども新聞AI</span>
+        <span class="case-desc">新聞社向けAIソリューション。子供向けニュースコンテンツをAIで最適化し、読解力に応じた記事生成を実現。</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 7: ICP -->
+<section class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-number en">07 / 10 &mdash; Ideal Customer Profile</div>
+    <h2>ICP（理想的な顧客像）</h2>
+
+    <div class="icp-grid">
+      <div class="icp-card">
+        <div class="section-label en">SaaS</div>
+        <h3>SaaS企業</h3>
+        <p>既存プロダクトへのAI機能追加。チャットボット、レコメンド、自動分析等。プロダクトの競争力を一段上げたい企業。</p>
+      </div>
+      <div class="icp-card">
+        <div class="section-label en">Startup</div>
+        <h3>VC / 起業家</h3>
+        <p>AI-firstなMVP開発。アイデアを最速でプロダクトにし、市場検証したいスタートアップ。資金調達に向けたデモ構築にも対応。</p>
+      </div>
+      <div class="icp-card">
+        <div class="section-label en">Enterprise</div>
+        <h3>中堅企業</h3>
+        <p>DX推進部門のAI活用。業務効率化、データ分析、社内ツールのAI化。IT部門だけでなく事業部門と直接連携。</p>
+      </div>
+    </div>
+
+    <div class="card-grid" style="margin-top: 2rem;">
+      <div class="card">
+        <div class="section-label en">Good Fit</div>
+        <h3>適合条件</h3>
+        <ul class="fit-list">
+          <li><span class="fit-icon yes">&#10003;</span> AIで解決できる具体的な課題がある</li>
+          <li><span class="fit-icon yes">&#10003;</span> 意思決定が速い（社長 or CTO直結）</li>
+          <li><span class="fit-icon yes">&#10003;</span> 「一緒に作る」マインドがある</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="section-label en">Not a Fit</div>
+        <h3>不適合</h3>
+        <ul class="fit-list">
+          <li><span class="fit-icon no">&#10005;</span> 価格だけで比較する</li>
+          <li><span class="fit-icon no">&#10005;</span> 要件が全て固まっていて「作るだけ」</li>
+          <li><span class="fit-icon no">&#10005;</span> 事業方向と無関係な「何でもIT屋」案件</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 8: Why Nikarasu -->
+<section class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-number en">08 / 10 &mdash; Why Nikarasu</div>
+    <h2>なぜにからすか</h2>
+
+    <div class="card" style="padding: 1rem 2rem;">
+      <div class="why-item">
+        <div class="why-num en">1</div>
+        <div class="why-content">
+          <h3>自社でAIを使い倒している</h3>
+          <p>「AIの使い方を教えるコンサル」ではなく、「AIで作る会社」。自社の事業運営そのものがAI駆動であり、開発・営業・戦略策定すべてにAIエージェントを活用。実践から得たノウハウをクライアントに還元する。</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-num en">2</div>
+        <div class="why-content">
+          <h3>Claude Code + AI駆動開発の先駆者</h3>
+          <p>LedgeAI最優秀賞を受賞。AI駆動開発の方法論を確立し、実プロジェクトで磨き込んできた実績がある。Claude Codeを活用した開発プロセスのベストプラクティスを保有。</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-num en">3</div>
+        <div class="why-content">
+          <h3>Physical AIの経験</h3>
+          <p>ソフトウェアだけでなくハードウェアも理解する。ソフトバンクロボティクスでのPepper開発経験、WazaAIでのエッジデバイス設計経験により、ソフトウェアの限界と可能性を正確に把握した上でのソリューション設計が可能。</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-num en">4</div>
+        <div class="why-content">
+          <h3>セキュアAI開発</h3>
+          <p>Privacy by Designを設計原則に据え、OWASP Top 10に対応したセキュアな開発を標準とする。個人情報保護、データガバナンス、AIの倫理的利用に配慮した設計・実装を行う。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 9: Onboarding -->
+<section class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-number en">09 / 10 &mdash; Getting Started</div>
+    <h2>導入フロー</h2>
+    <p style="color: var(--muted); margin-bottom: 2.5rem; font-size: 0.92rem;">
+      最短2週間で開発を開始できます。まずはお気軽にご相談ください。
+    </p>
+
+    <div class="onboard-steps">
+      <div class="onboard-step">
+        <div class="ob-num en">1</div>
+        <h3>無料相談</h3>
+        <p>30分のオンラインミーティング。課題感をヒアリングし、AI駆動開発の可能性を議論します。</p>
+      </div>
+      <div class="onboard-step">
+        <div class="ob-num en">2</div>
+        <h3>課題整理 + 提案</h3>
+        <p>1週間で課題を構造化し、最適なアプローチを提案。概算見積もりとスケジュールを提示します。</p>
+      </div>
+      <div class="onboard-step">
+        <div class="ob-num en">3</div>
+        <h3>お試し1ヶ月</h3>
+        <p>&yen;60万で1ヶ月のトライアル。実際の開発体験を通じて、相性と価値を確認いただけます。</p>
+      </div>
+      <div class="onboard-step">
+        <div class="ob-num en">4</div>
+        <h3>本契約</h3>
+        <p>&yen;60万/月〜、年間契約推奨。継続的なPO代行として事業成長にコミットします。</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 2.5rem; text-align: center; padding: 2rem;">
+      <p style="font-size: 0.95rem; color: var(--muted);">
+        お試し期間中に成果が出なかった場合、本契約への移行義務はありません。<br>
+        <strong style="color: var(--text);">リスクなく、AI駆動開発を体験いただけます。</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10: Contact -->
+<section class="slide" id="slide-9">
+  <div class="slide-inner contact-slide">
+    <img src="assets/logo.png" alt="にからす" class="contact-logo">
+    <div class="contact-name">株式会社にからす</div>
+    <div class="divider" style="margin: 1.5rem auto;"></div>
+    <p style="color: var(--muted); font-size: 0.95rem; margin-bottom: 0.8rem;">AI駆動開発サービス</p>
+    <div class="contact-tagline en">"Generative Adaptation"</div>
+    <p style="color: var(--light); margin-top: 2rem; font-size: 0.85rem;">AIで現実を変える</p>
+  </div>
+</section>
+
+<script>
+// Slide navigation
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.nav-dot');
+
+function scrollToSlide(index) {
+  slides[index].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Update active dot on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const index = Array.from(slides).indexOf(entry.target);
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+  });
+}, { threshold: 0.4 });
+
+slides.forEach(slide => observer.observe(slide));
+</script>
+</body>
+</html>

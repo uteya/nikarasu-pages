@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ペりんタスクビュー — にからす事業WBS</title>
+<link rel="icon" href="assets/icon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+JP:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF8;
+  --white: #FFFFFF;
+  --text: #1A1A1A;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --accent: #333333;
+  --border: #E0E0E0;
+  --border-light: #F0F0F0;
+  --hover-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --green: #2E7D32;
+  --green-bg: rgba(46,125,50,0.08);
+  --blue: #1565C0;
+  --blue-bg: rgba(21,101,192,0.08);
+  --yellow: #F57F17;
+  --yellow-bg: rgba(245,127,23,0.08);
+  --gray: #9E9E9E;
+  --gray-bg: rgba(158,158,158,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+
+/* Header */
+header {
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.header-logo {
+  height: 36px;
+  width: auto;
+}
+
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.header-meta a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+
+.header-meta a:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12px;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--text);
+  color: var(--white);
+  border-color: var(--text);
+}
+
+/* Section */
+.section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.section-title .section-num {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Table */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 2px solid var(--border);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: rgba(0,0,0,0.015);
+}
+
+.pj-tag {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--border-light);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.task-id {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.dep {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.badge-completed {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.badge-pending {
+  background: var(--blue-bg);
+  color: var(--blue);
+}
+
+.badge-in_progress {
+  background: var(--yellow-bg);
+  color: var(--yellow);
+}
+
+.badge-backlog {
+  background: var(--gray-bg);
+  color: var(--gray);
+}
+
+/* Cards */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--card-shadow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+.card-role {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.card-field {
+  margin-bottom: 16px;
+}
+
+.card-field:last-child {
+  margin-bottom: 0;
+}
+
+.card-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.card-value {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.card-value code {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+  background: var(--border-light);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--text);
+}
+
+.task-detail {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.task-detail:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.task-detail-id {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-right: 8px;
+}
+
+.task-detail-name {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.task-detail-date {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-left: 4px;
+}
+
+.task-detail-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  padding-left: 0;
+}
+
+.ref-list {
+  list-style: none;
+  padding: 0;
+}
+
+.ref-list li {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 3px 0;
+}
+
+.ref-list li code {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 11px;
+  background: var(--border-light);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--text-secondary);
+}
+
+/* Quick links */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.link-group {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 20px;
+  box-shadow: var(--card-shadow);
+}
+
+.link-group-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.link-group a {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  margin-right: 12px;
+  margin-bottom: 4px;
+  transition: all 0.2s;
+}
+
+.link-group a:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+/* Footer */
+footer {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Tech stack tag */
+.tech-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  margin-right: 6px;
+  margin-bottom: 4px;
+  background: var(--bg);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    padding: 24px 16px 60px;
+  }
+
+  .header-title {
+    font-size: 22px;
+  }
+
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .header-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  thead th, tbody td {
+    padding: 8px 6px;
+  }
+
+  .links-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-bar {
+    gap: 6px;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <img src="assets/logo.png" alt="にからす" class="header-logo">
+      <h1 class="header-title">Perin Task View</h1>
+    </div>
+    <div class="header-meta">
+      <span>最終更新: 2026-03-12</span>
+      <span>CTO — 技術設計・実装方針・ビジネスモデル</span>
+      <a href="strategy-portal.html">&larr; 戦略ポータルに戻る</a>
+    </div>
+  </header>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all" onclick="filterTasks('all')">全て</button>
+    <button class="filter-btn" data-filter="pending" onclick="filterTasks('pending')">Pending</button>
+    <button class="filter-btn" data-filter="in_progress" onclick="filterTasks('in_progress')">In Progress</button>
+    <button class="filter-btn" data-filter="completed" onclick="filterTasks('completed')">Completed</button>
+    <button class="filter-btn" data-filter="backlog" onclick="filterTasks('backlog')">Backlog</button>
+  </div>
+
+  <!-- Section 1: All Tasks -->
+  <div class="section">
+    <h2 class="section-title">
+      <span class="section-num">Section 01</span>
+      全タスク一覧（優先度順）
+    </h2>
+    <div class="table-wrap">
+      <table id="taskTable">
+        <thead>
+          <tr>
+            <th>PJ</th>
+            <th>ID</th>
+            <th>タスク</th>
+            <th>期限</th>
+            <th>依存</th>
+            <th>状態</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 本日完了 -->
+          <tr data-status="in_progress">
+            <td><span class="pj-tag">awabar</span></td>
+            <td class="task-id">AW-1</td>
+            <td>報告会資料完成（既存資料+ペりん資料マージ）</td>
+            <td>3/12</td>
+            <td class="dep">—</td>
+            <td><span class="badge badge-in_progress">&#x1F7E1; in_progress</span></td>
+          </tr>
+          <tr data-status="in_progress">
+            <td><span class="pj-tag">awabar</span></td>
+            <td class="task-id">AW-2</td>
+            <td>報告会成功</td>
+            <td>3/12</td>
+            <td class="dep">AW-1</td>
+            <td><span class="badge badge-in_progress">&#x1F7E1; in_progress</span></td>
+          </tr>
+          <tr data-status="in_progress">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-1</td>
+            <td>CCオンボーディング完了</td>
+            <td>3/12</td>
+            <td class="dep">—</td>
+            <td><span class="badge badge-in_progress">&#x1F7E1; in_progress</span></td>
+          </tr>
+          <tr data-status="in_progress">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-30</td>
+            <td>製品戦略1on1（週2）セッティング</td>
+            <td>3/12</td>
+            <td class="dep">—</td>
+            <td><span class="badge badge-in_progress">&#x1F7E1; in_progress</span></td>
+          </tr>
+          <!-- 今週中 -->
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-31</td>
+            <td>仕様検討会議（週1、辻井含む）セッティング</td>
+            <td>今週中</td>
+            <td class="dep">—</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <!-- lecheck -->
+          <tr data-status="pending">
+            <td><span class="pj-tag">lecheck</span></td>
+            <td class="task-id">L-1</td>
+            <td>カスタムレビュープロンプト改善（v4→v5）</td>
+            <td>3/19</td>
+            <td class="dep">辻井引継完了</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <tr data-status="pending">
+            <td><span class="pj-tag">lecheck</span></td>
+            <td class="task-id">L-2</td>
+            <td>矛盾チェック提案方針レビュー</td>
+            <td>3月末</td>
+            <td class="dep">—</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <!-- strategy: 3月末 -->
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-27</td>
+            <td>Sharp報告+提案設計（来週前半方針→来週中連絡→再来週アポ）</td>
+            <td>3月末</td>
+            <td class="dep">—</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-29</td>
+            <td>税理士パッケージ要件定義完了（商品設計レビュー+要件リード）</td>
+            <td>3月末</td>
+            <td class="dep">A-T4(3/13)</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-26</td>
+            <td>プロダクト定義: Physical AI戦略アラインのプロダクト決定</td>
+            <td>3/31</td>
+            <td class="dep">C-30</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <!-- strategy: 4月 -->
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-5</td>
+            <td>税理士パッケージ商品設計 v2.0（3/13ドラフト→来週レビュー→来週末磨き上げ）</td>
+            <td>3/21</td>
+            <td class="dep">A-T4(辻井3/13)</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-19</td>
+            <td>WazaAI HW統合MVP完成</td>
+            <td>4/28</td>
+            <td class="dep">C-26</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <!-- strategy: 継続 -->
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">C-28</td>
+            <td>CC駆動事業経営の設計レビュー</td>
+            <td>継続</td>
+            <td class="dep">C-31</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+          <tr data-status="pending">
+            <td><span class="pj-tag">strategy</span></td>
+            <td class="task-id">—</td>
+            <td>戦略定例参加（火・木）※セッティングは辻井タスク(今週中)</td>
+            <td>継続</td>
+            <td class="dep">辻井</td>
+            <td><span class="badge badge-pending">&#x1F535; pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Legend -->
+    <div style="margin-top: 16px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: var(--text-tertiary);">
+      <span><span class="badge badge-completed">&#x1F7E2; completed</span> 緑</span>
+      <span><span class="badge badge-pending">&#x1F535; pending</span> 青</span>
+      <span><span class="badge badge-in_progress">&#x1F7E1; in_progress</span> 黄色</span>
+      <span><span class="badge badge-backlog">&#x26AA; backlog</span> グレー</span>
+    </div>
+  </div>
+
+  <!-- Section 2: nikarasu-strategy -->
+  <div class="section">
+    <h2 class="section-title">
+      <span class="section-num">Section 02</span>
+      nikarasu-strategy
+    </h2>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">nikarasu-strategy</div>
+        <span class="card-role">CTO — 技術設計、実装方針、ビジネスモデル</span>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">ブランチ戦略</div>
+        <div class="card-value">
+          <code>feature/perin/xxx</code> → PR → 小竹マージ
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">タスク詳細</div>
+        <div class="card-value">
+          <div class="task-detail">
+            <span class="task-detail-id">C-1</span>
+            <span class="task-detail-name">CCオンボーディング完了</span>
+            <span class="task-detail-date">(3/12 本日)</span>
+            <div class="task-detail-desc">本日完了</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-30</span>
+            <span class="task-detail-name">製品戦略1on1（週2）セッティング</span>
+            <span class="task-detail-date">(3/12 本日)</span>
+            <div class="task-detail-desc">小竹との1on1を週2で設定。C-26プロダクト定義のための会議体</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-31</span>
+            <span class="task-detail-name">仕様検討会議（週1、辻井含む）セッティング</span>
+            <span class="task-detail-date">(今週中)</span>
+            <div class="task-detail-desc">仕様駆動経営の仕様検討会議。辻井も参加。C-28のベース</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-27</span>
+            <span class="task-detail-name">Sharp報告+提案設計</span>
+            <span class="task-detail-date">(3月末)</span>
+            <div class="task-detail-desc">来週前半: 報告方針決定 → 来週中: 連絡 → 再来週: アポで話す</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-29</span>
+            <span class="task-detail-name">税理士パッケージ要件定義完了</span>
+            <span class="task-detail-date">(3月末)</span>
+            <div class="task-detail-desc">3/13辻井ドラフト → 来週小竹+ペりんで商品設計レビュー → 来週末辻井磨き上げ → 再来週から開発開始に向けて要件定義リード</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-26</span>
+            <span class="task-detail-name">プロダクト定義: Physical AI戦略アラインのプロダクト決定</span>
+            <span class="task-detail-date">(3/31)</span>
+            <div class="task-detail-desc">1on1(週2)→条件設定→MVP要件確定。ペりんがワクワクするものを</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-5</span>
+            <span class="task-detail-name">税理士パッケージ商品設計 v2.0</span>
+            <span class="task-detail-date">(3/21)</span>
+            <div class="task-detail-desc">3/13辻井ドラフト → 来週小竹+ペりんレビュー → 来週末辻井磨き上げ</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-19</span>
+            <span class="task-detail-name">WazaAI HW統合MVP完成</span>
+            <span class="task-detail-date">(4/28)</span>
+            <div class="task-detail-desc">RPi5上リアルタイム骨格推定動作</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">C-28</span>
+            <span class="task-detail-name">CC駆動事業経営の設計レビュー</span>
+            <span class="task-detail-date">(継続)</span>
+            <div class="task-detail-desc">まず仕様検討会議(週1)をセッティング(C-31) → 小竹の設計をレビュー・改善提案</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">参照ドキュメント</div>
+        <ul class="ref-list">
+          <li><code>docs/wbs-complete.md</code> &sect;13</li>
+          <li><code>docs/service-design.md</code></li>
+          <li><code>.context/STATUS.md</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: lisse-lecheck -->
+  <div class="section">
+    <h2 class="section-title">
+      <span class="section-num">Section 03</span>
+      lisse-lecheck
+    </h2>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">lisse-lecheck</div>
+        <span class="card-role">技術実装メイン（辻井はPM継続）</span>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">ブランチ戦略</div>
+        <div class="card-value">
+          <code>feature/perin/xxx</code> → PR → 小竹マージ
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">タスク詳細</div>
+        <div class="card-value">
+          <div class="task-detail">
+            <span class="task-detail-id">L-1</span>
+            <span class="task-detail-name">カスタムレビュープロンプト改善</span>
+            <span class="task-detail-date">(3/19)</span>
+            <div class="task-detail-desc">v4→v5、辻井から引き継ぎ</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">L-2</span>
+            <span class="task-detail-name">矛盾チェック提案方針レビュー</span>
+            <span class="task-detail-date">(3月末)</span>
+            <div class="task-detail-desc">小竹の方針案をレビュー</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">技術スタック</div>
+        <div class="card-value">
+          <span class="tech-tag">AWS Bedrock</span>
+          <span class="tech-tag">Claude 3 Sonnet</span>
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">参照ドキュメント</div>
+        <ul class="ref-list">
+          <li><code>docs/カスタムレビュー/PLAN.md</code></li>
+          <li><code>docs/矛盾チェック/PROPOSAL.md</code></li>
+          <li><code>.context/STATUS.md</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: crosstech-awabar -->
+  <div class="section">
+    <h2 class="section-title">
+      <span class="section-num">Section 04</span>
+      crosstech-awabar
+    </h2>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">crosstech-awabar</div>
+        <span class="card-role">R&amp;Dリード+PM（小笠原さん報告含む、戦略は小竹）</span>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">ブランチ戦略</div>
+        <div class="card-value">
+          <code>feature/perin/xxx</code> → PR → 小竹マージ
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">タスク詳細</div>
+        <div class="card-value">
+          <div class="task-detail">
+            <span class="task-detail-id">AW-1</span>
+            <span class="task-detail-name">報告会資料完成</span>
+            <span class="task-detail-date">(3/12)</span>
+            <div class="task-detail-desc">既存資料+ペりん資料マージ</div>
+          </div>
+          <div class="task-detail">
+            <span class="task-detail-id">AW-2</span>
+            <span class="task-detail-name">報告会成功</span>
+            <span class="task-detail-date">(3/12)</span>
+            <div class="task-detail-desc">本日の報告会を成功させる</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">技術スタック</div>
+        <div class="card-value">
+          <span class="tech-tag">さくらのAI Engine</span>
+          <span class="tech-tag">OR-Tools</span>
+          <span class="tech-tag">Notion API</span>
+          <span class="tech-tag">Slack API</span>
+          <span class="tech-tag">スマレジAPI</span>
+        </div>
+      </div>
+
+      <div class="card-field">
+        <div class="card-label">参照ドキュメント</div>
+        <ul class="ref-list">
+          <li><code>docs/shift-agent-plan.md</code></li>
+          <li><code>docs/shift-agent-decisions.html</code></li>
+          <li><code>.context/STATUS.md</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Quick Links -->
+  <div class="section">
+    <h2 class="section-title">
+      <span class="section-num">Section 05</span>
+      Quick Links
+    </h2>
+
+    <div class="links-grid">
+      <div class="link-group">
+        <div class="link-group-title">nikarasu-strategy</div>
+        <a href="../.context/STATUS.md">STATUS.md</a>
+        <a href="../.context/CHANGES.md">CHANGES.md</a>
+        <a href="wbs-complete.md">WBS</a>
+      </div>
+      <div class="link-group">
+        <div class="link-group-title">lisse-lecheck</div>
+        <a href="../../lisse-lecheck/.context/STATUS.md">STATUS.md</a>
+        <a href="../../lisse-lecheck/.context/CHANGES.md">CHANGES.md</a>
+      </div>
+      <div class="link-group">
+        <div class="link-group-title">crosstech-awabar</div>
+        <a href="../../crosstech-awabar/.context/STATUS.md">STATUS.md</a>
+        <a href="../../crosstech-awabar/.context/CHANGES.md">CHANGES.md</a>
+      </div>
+      <div class="link-group">
+        <div class="link-group-title">Tools</div>
+        <a href="strategy-portal.html">戦略ポータル</a>
+        <a href="financial-model-guide.html">財務Excel</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    このファイルは <code>wbs-complete.md</code> &sect;13 と連動。更新は小竹（PM）がオーナー。
+  </footer>
+
+</div>
+
+<script>
+function filterTasks(status) {
+  // Update active button
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-filter') === status) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Filter table rows
+  var rows = document.querySelectorAll('#taskTable tbody tr');
+  rows.forEach(function(row) {
+    var rowStatus = row.getAttribute('data-status');
+    if (status === 'all' || rowStatus === status) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+</script>
+
+</body>
+</html>

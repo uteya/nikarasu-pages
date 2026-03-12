@@ -5,30 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>にからす — 事業管理ポータル</title>
 <style>
-:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--purple:#bc8cff}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
-.container{max-width:480px;padding:40px 20px;text-align:center}
+.container{max-width:520px;padding:40px 20px;text-align:center}
 h1{font-size:24px;margin-bottom:8px}
 .sub{color:var(--text-dim);font-size:14px;margin-bottom:32px}
-.links{display:flex;flex-direction:column;gap:12px}
-a{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;color:var(--text);text-decoration:none;font-size:15px;transition:all .2s}
+h2{font-size:14px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 12px;text-align:left}
+.links{display:flex;flex-direction:column;gap:10px}
+a{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;color:var(--text);text-decoration:none;font-size:15px;transition:all .2s;text-align:left}
 a:hover{border-color:var(--accent);background:rgba(88,166,255,.05)}
 a .desc{color:var(--text-dim);font-size:12px;margin-top:4px}
+a.primary{border-left:3px solid var(--accent)}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>にからす事業管理</h1>
-  <p class="sub">パスワード保護されたページです</p>
+  <p class="sub">株式会社にからす — 内部ポータル</p>
+
+  <h2>メイン</h2>
   <div class="links">
-    <a href="dashboard.html">
-      事業ダッシュボード
-      <div class="desc">マイルストーン進捗・タスク・売上目標</div>
+    <a href="strategy-portal.html" class="primary">
+      戦略ポータル
+      <div class="desc">全資料のハブ。戦略書・チーム・運用・KPI</div>
     </a>
+  </div>
+
+  <h2>チーム</h2>
+  <div class="links">
     <a href="wbs-tsujii.html">
       辻井タスクビュー
       <div class="desc">辻井のWBSタスク一覧・期限・資料</div>
+    </a>
+    <a href="wbs-perin.html">
+      ペりんタスクビュー
+      <div class="desc">ペりんの3PJ横断タスク一覧</div>
+    </a>
+  </div>
+
+  <h2>戦略資料</h2>
+  <div class="links">
+    <a href="business-plan.html">
+      事業計画書
+      <div class="desc">D1-D8統合。外部プレゼン向け</div>
+    </a>
+    <a href="company-intro.html">
+      会社紹介
+      <div class="desc">にからすの概要・ビジョン・実績</div>
+    </a>
+    <a href="ai-dev-service.html">
+      AI駆動開発サービス
+      <div class="desc">自律型PO代行サービスの紹介</div>
+    </a>
+    <a href="wazaai-service.html">
+      WazaAI サービス
+      <div class="desc">製造業向け技術継承AI</div>
+    </a>
+  </div>
+
+  <h2>運用</h2>
+  <div class="links">
+    <a href="dashboard.html">
+      詳細ダッシュボード
+      <div class="desc">KPIサマリー・マイルストーン進捗</div>
+    </a>
+    <a href="financial-model-guide.html">
+      財務モデル操作ガイド
+      <div class="desc">Excel財務モデルの使い方</div>
     </a>
     <a href="claude-code-team-guide.html">
       Claude Code チームガイド

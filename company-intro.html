@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株式会社にからす — 会社紹介</title>
+<link rel="icon" href="assets/icon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF8;
+  --text: #1A1A1A;
+  --accent: #333333;
+  --muted: #666666;
+  --light: #999999;
+  --border: #E0E0E0;
+  --card: #FFFFFF;
+  --slide-max: 960px;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Serif JP', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.9;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.en { font-family: 'Cormorant Garamond', serif; }
+
+/* Navigation */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(250, 250, 248, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.nav-bar .nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+.nav-bar .nav-logo img {
+  height: 28px;
+  width: auto;
+}
+.nav-bar .nav-logo span {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.nav-back {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-slides {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+.nav-dot:hover { background: var(--light); }
+.nav-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
+
+/* Slide */
+.slide {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 2rem 3rem;
+  position: relative;
+}
+.slide:nth-child(even) { background: #F5F5F3; }
+.slide-inner {
+  max-width: var(--slide-max);
+  width: 100%;
+}
+.slide-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: var(--light);
+  letter-spacing: 0.15em;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+/* Typography */
+h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.5rem;
+}
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.sub-tagline {
+  font-size: 0.95rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.section-label {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--light);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin-bottom: 1.5rem;
+}
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+  margin: 2rem 0;
+}
+
+/* Cover Slide */
+.cover {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.cover-logo {
+  width: 160px;
+  height: auto;
+  margin-bottom: 3rem;
+  opacity: 0.9;
+}
+.cover h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+.cover .tagline {
+  font-size: 1.8rem;
+  margin-bottom: 0.8rem;
+}
+.cover .sub-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+}
+.cover-date {
+  margin-top: 4rem;
+  font-size: 0.85rem;
+  color: var(--light);
+  letter-spacing: 0.1em;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.card-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.card-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--border);
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+.card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* Value cards */
+.value-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.8rem 2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.value-id {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--light);
+  min-width: 36px;
+  line-height: 1;
+  padding-top: 2px;
+}
+.value-content h3 {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+.value-content p {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+/* Business axis */
+.biz-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+}
+.biz-card .biz-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 0.8rem;
+}
+.biz-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.biz-card p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* Cycle diagram */
+.cycle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 2rem 0;
+}
+.cycle-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem 2.5rem;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+.cycle-box h3 {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+.cycle-box p {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.cycle-arrow {
+  font-size: 1.5rem;
+  color: var(--light);
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.cycle-arrow-label {
+  font-size: 0.75rem;
+  color: var(--light);
+  letter-spacing: 0.05em;
+}
+
+/* Case list */
+.case-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.case-item:last-child { border-bottom: none; }
+.case-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 140px;
+}
+.case-desc {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding-left: 1.5rem;
+}
+.case-highlight {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 500;
+  white-space: nowrap;
+  padding-left: 1rem;
+}
+
+/* Team */
+.team-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1.2rem;
+}
+.team-card .team-role {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 0.3rem;
+}
+.team-card .team-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.team-card .team-bio {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* Strengths */
+.strength-item {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.strength-item:last-child { border-bottom: none; }
+.strength-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--border);
+  min-width: 32px;
+  line-height: 1;
+}
+.strength-content h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.strength-content p {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Numbers */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.num-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+}
+.num-item .num-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.num-item .num-label {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* Contact */
+.contact-slide {
+  text-align: center;
+}
+.contact-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+.contact-name {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.contact-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide { padding: 70px 1.2rem 2rem; min-height: auto; min-height: 100vh; }
+  .card-grid, .card-grid-3 { grid-template-columns: 1fr; }
+  .num-grid { grid-template-columns: 1fr 1fr; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+  .cover h1 { font-size: 1.5rem; }
+  .cover .tagline { font-size: 1.3rem; }
+  .cover-logo { width: 120px; }
+  .case-item { flex-direction: column; gap: 0.3rem; }
+  .case-desc { padding-left: 0; }
+  .case-highlight { padding-left: 0; }
+  .nav-slides { display: none; }
+  .value-card { flex-direction: column; gap: 0.5rem; }
+}
+@media (max-width: 480px) {
+  .num-grid { grid-template-columns: 1fr; }
+}
+
+/* Print */
+@media print {
+  .nav-bar { display: none; }
+  .slide { min-height: auto; page-break-after: always; padding: 2rem; }
+  .slide:nth-child(even) { background: white; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <a href="strategy-portal.html" class="nav-back">&larr; 戻る</a>
+  <a href="#" class="nav-logo">
+    <img src="assets/icon.png" alt="">
+    <span>株式会社にからす</span>
+  </a>
+  <div class="nav-slides">
+    <button class="nav-dot active" onclick="scrollToSlide(0)" title="表紙"></button>
+    <button class="nav-dot" onclick="scrollToSlide(1)" title="ミッション・ビジョン"></button>
+    <button class="nav-dot" onclick="scrollToSlide(2)" title="バリュー"></button>
+    <button class="nav-dot" onclick="scrollToSlide(3)" title="事業概要"></button>
+    <button class="nav-dot" onclick="scrollToSlide(4)" title="ビジネスモデル"></button>
+    <button class="nav-dot" onclick="scrollToSlide(5)" title="実績・事例"></button>
+    <button class="nav-dot" onclick="scrollToSlide(6)" title="チーム"></button>
+    <button class="nav-dot" onclick="scrollToSlide(7)" title="強み・差別化"></button>
+    <button class="nav-dot" onclick="scrollToSlide(8)" title="数字で見る"></button>
+    <button class="nav-dot" onclick="scrollToSlide(9)" title="お問い合わせ"></button>
+  </div>
+</nav>
+
+<!-- Slide 1: Cover -->
+<section class="slide" id="slide-0">
+  <div class="cover">
+    <img src="assets/logo.png" alt="にからす" class="cover-logo">
+    <h1>株式会社にからす</h1>
+    <div class="tagline en">"Generative Adaptation"</div>
+    <p class="sub-tagline">AIで現実を変える</p>
+    <p class="cover-date en">March 2026</p>
+  </div>
+</section>
+
+<!-- Slide 2: Mission & Vision -->
+<section class="slide" id="slide-1">
+  <div class="slide-inner">
+    <div class="slide-number en">02 / 10 &mdash; Mission &amp; Vision</div>
+    <h2>ミッション・ビジョン</h2>
+
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="section-label en">Vision</div>
+      <h3 style="font-size: 1.2rem; margin-bottom: 0.8rem;">
+        <span class="en" style="font-size: 1.4rem; font-weight: 400; font-style: italic;">"Generative Adaptation"</span>
+      </h3>
+      <p style="color: var(--muted); font-size: 0.92rem;">
+        AIと人間の共生による創造的適応。テクノロジーに人間が適応するのではなく、人間の創造性をAIが拡張する世界を目指す。
+      </p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="section-label en">Mission</div>
+        <h3>企業の「いろは」を次のステージへ</h3>
+        <p style="color: var(--muted); font-size: 0.88rem;">
+          事業の基礎となる「いろは」——業務プロセス、意思決定、技能——をAIの力で次の段階に引き上げる。
+        </p>
+      </div>
+      <div class="card">
+        <div class="section-label en">Anti-Mission</div>
+        <h3>ドリルの使い方を共に考える</h3>
+        <p style="color: var(--muted); font-size: 0.88rem;">
+          「ドリルを売るな、穴を売れ」の先。穴を開ける最適な方法を、クライアントと一緒に見つけ出す。ツール提供ではなく、課題解決の伴走者。
+        </p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card" style="background: transparent; border: none; padding: 0;">
+      <div class="section-label en">Origin</div>
+      <p style="color: var(--muted); font-size: 0.88rem; line-height: 2;">
+        「にからす」の名は、いろは歌の<strong style="color: var(--text);">「に」</strong>から<strong style="color: var(--text);">「す」</strong>へ——物事の始まりから本質へ至る道程を意味する。<br>
+        また、北欧神話の主神オーディンに仕える二羽の鴉、<strong style="color: var(--text);">フギン（Huginn＝思考）</strong>と<strong style="color: var(--text);">ムニン（Muninn＝記憶）</strong>に由来する。<br>
+        思考と記憶——AIと人間の知を融合させ、世界を見渡す「二羽の鴉」として在る。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 3: Values -->
+<section class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-number en">03 / 10 &mdash; Values</div>
+    <h2>バリュー</h2>
+
+    <div class="value-card">
+      <div class="value-id en">V1</div>
+      <div class="value-content">
+        <h3>目的が先</h3>
+        <p>技術は手段であり、目的ではない。常に「何のために」を起点に思考する。課題を明確にしてから、最適な技術を選ぶ。</p>
+      </div>
+    </div>
+
+    <div class="value-card">
+      <div class="value-id en">V2</div>
+      <div class="value-content">
+        <h3>言われる前に作る</h3>
+        <p>顧客が「ほしい」と言う前に、その先にある本当のニーズを想像して形にする。受け身ではなく、自律的に価値を創造する。</p>
+      </div>
+    </div>
+
+    <div class="value-card">
+      <div class="value-id en">V3</div>
+      <div class="value-content">
+        <h3>自分の足で、自分の手で</h3>
+        <p>現場に行く。実物に触れる。机上の空論ではなく、リアルな体験から課題を理解し、解決策を生み出す。</p>
+      </div>
+    </div>
+
+    <div class="value-card">
+      <div class="value-id en">V4</div>
+      <div class="value-content">
+        <h3>身の丈を超える</h3>
+        <p>現状に満足しない。チーム全員に「今の自分を超える」ことを求める。成長は快適圏の外にしかない。</p>
+      </div>
+    </div>
+
+    <div class="value-card">
+      <div class="value-id en">V5</div>
+      <div class="value-content">
+        <h3>義</h3>
+        <p>ダサいことはやらない。短期的な利益のために信頼を損なう行為はしない。人としての正しさを判断基準に据える。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4: Business Overview -->
+<section class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-number en">04 / 10 &mdash; Business Overview</div>
+    <h2>事業概要</h2>
+    <p style="color: var(--muted); margin-bottom: 2rem; font-size: 0.92rem;">
+      4つの事業軸で、AIの可能性を多角的に展開する。資金を生む事業と未来を創る事業の両輪で、持続的な成長を実現。
+    </p>
+
+    <div class="card-grid">
+      <div class="biz-card">
+        <div class="biz-num en">01</div>
+        <h3>AI駆動開発</h3>
+        <p>自律型PO代行で事業を加速。AIエージェントを活用し、仕様策定からデプロイまでをワンストップで提供。クライアントが「言わなくても」先回りして作る開発パートナー。</p>
+      </div>
+      <div class="biz-card">
+        <div class="biz-num en">02</div>
+        <h3>中小企業DX</h3>
+        <p>税理士ファーストで地域の中小企業をデジタル化。税理士・士業事務所を起点に、その顧問先企業群へAIソリューションを展開する独自のチャネル戦略。</p>
+      </div>
+      <div class="biz-card">
+        <div class="biz-num en">03</div>
+        <h3>WazaAI</h3>
+        <p>製造業の技能継承をAIで解決。熟練工の暗黙知をマルチモーダルAI（映像・音・振動）で形式知化。エッジ処理でプライバシーを完全保護しながら、次世代への技能伝達を実現。</p>
+      </div>
+      <div class="biz-card">
+        <div class="biz-num en">04</div>
+        <h3>KataribeAI</h3>
+        <p>高齢者の人生の物語をAIで記録。対話型AIが「聞き手」となり、一人ひとりの人生経験・知恵・思い出を構造化して次世代に残す。デジタル遺産の新しい形。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 5: Business Model -->
+<section class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-number en">05 / 10 &mdash; Business Model</div>
+    <h2>ビジネスモデル</h2>
+    <p style="color: var(--muted); margin-bottom: 2.5rem; font-size: 0.92rem;">
+      「ぐるぐるモデル」——資金エンジンが生んだキャッシュでプロダクトを育て、プロダクトの実績がブランドを作り、ブランドが新たな資金を呼ぶ好循環。
+    </p>
+
+    <div class="cycle-container">
+      <div class="cycle-box">
+        <h3>資金エンジン</h3>
+        <p>AI駆動開発 + 中小企業DX</p>
+        <p style="font-size: 0.8rem; color: var(--light); margin-top: 0.3rem;">高利益率の受託・コンサル事業でキャッシュを創出</p>
+      </div>
+      <div class="cycle-arrow">
+        <span>&darr;</span>
+        <span class="cycle-arrow-label">資金を生む</span>
+      </div>
+      <div class="cycle-box">
+        <h3>Physical AI プロダクト</h3>
+        <p>WazaAI + KataribeAI</p>
+        <p style="font-size: 0.8rem; color: var(--light); margin-top: 0.3rem;">自社プロダクトに投資し、スケーラブルな事業を構築</p>
+      </div>
+      <div class="cycle-arrow">
+        <span>&darr;</span>
+        <span class="cycle-arrow-label">実績・ブランドを作る</span>
+      </div>
+      <div class="cycle-box">
+        <h3>ブランド</h3>
+        <p>技術力 + 実績 + 信頼</p>
+        <p style="font-size: 0.8rem; color: var(--light); margin-top: 0.3rem;">「AIで現実を変える会社」としてのポジションを確立</p>
+      </div>
+      <div class="cycle-arrow">
+        <span>&darr;</span>
+        <span class="cycle-arrow-label">新規案件を呼ぶ</span>
+      </div>
+      <div class="cycle-box" style="border: 2px solid var(--accent);">
+        <h3>循環</h3>
+        <p>資金エンジンに還流</p>
+        <p style="font-size: 0.8rem; color: var(--light); margin-top: 0.3rem;">好循環が加速し、事業規模が拡大していく</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 6: Track Record -->
+<section class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-number en">06 / 10 &mdash; Track Record</div>
+    <h2>実績・事例</h2>
+    <p style="color: var(--muted); margin-bottom: 2rem; font-size: 0.92rem;">
+      大手企業から中小企業まで、幅広い業種・規模でAIソリューションを提供。
+    </p>
+
+    <div class="card" style="padding: 0;">
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">クロステック</span>
+        <span class="case-desc">AIシステム開発。業務プロセスへのAI統合を設計・実装。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">ビズリンク</span>
+        <span class="case-desc">AIコンサルティング。事業戦略へのAI活用方針を策定・伴走支援。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">ディプルメント</span>
+        <span class="case-desc">AI統合開発。複数システムを横断するAI基盤の設計・構築。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem; background: #F9F9F7;">
+        <span class="case-name">杉江商会</span>
+        <span class="case-desc">中小企業DXモデルケース。FAQ Bot + Notion導入 + AI研修を一体提供。</span>
+        <span class="case-highlight en">ROI 4,400%</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">しまじろうAI<br><span style="font-size: 0.8rem; color: var(--light);">（ベネッセ）</span></span>
+        <span class="case-desc">子供向けAI対話システム。しまじろうキャラクターとの自然な対話体験を実現。数百万人の子供たちが利用。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">万博パビリオン</span>
+        <span class="case-desc">AIガイドシステム。来場者に対してAIによるインタラクティブな案内体験を提供。</span>
+      </div>
+      <div class="case-item" style="padding: 1.5rem 2rem;">
+        <span class="case-name">トヨタ</span>
+        <span class="case-desc">商談分析AI。営業商談データをAIで分析し、成約率向上のインサイトを自動抽出。</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 7: Team -->
+<section class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-number en">07 / 10 &mdash; Team</div>
+    <h2>チーム</h2>
+
+    <div class="team-card">
+      <div class="team-role en">CEO / Founder</div>
+      <div class="team-name">小竹 泉里 ブレイニー</div>
+      <div class="team-bio">
+        28歳。代表取締役。ソフトバンクロボティクス → ABEJA → 博報堂DY ONEを経て独立。<br>
+        ソフトウェアとハードウェアの両方を自ら設計・実装できる稀有なAIエンジニア。<br>
+        LedgeAI最優秀賞受賞、Sharpハッカソン優勝。<br>
+        事業戦略からプロダクト設計、技術実装まで一気通貫で担う。
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="team-card">
+        <div class="team-role en">CSO / Sales</div>
+        <div class="team-name">辻井</div>
+        <div class="team-bio">
+          事業開発・クライアント折衝・市場戦略を統括。<br>
+          ビジネスサイドの要として、事業計画の策定から顧客開拓、パートナーシップ構築までを推進。
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-role en">CTO</div>
+        <div class="team-name">ペりん</div>
+        <div class="team-bio">
+          技術設計・実装方針を統括。<br>
+          アーキテクチャ設計から技術選定、開発フロー構築まで、プロダクトの技術基盤を担う。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 8: Competitive Advantages -->
+<section class="slide" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-number en">08 / 10 &mdash; Competitive Advantages</div>
+    <h2>強み・差別化</h2>
+
+    <div class="card" style="padding: 1rem 2rem;">
+      <div class="strength-item">
+        <div class="strength-num en">1</div>
+        <div class="strength-content">
+          <h3>ハードウェアを自作設計可能</h3>
+          <p>代表の泉里がソフトウェアだけでなくハードウェア（基板設計・筐体設計・3Dプリンティング）まで自ら設計・製造できる。ソフトウェアのみの競合とは根本的に異なるケイパビリティ。</p>
+        </div>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num en">2</div>
+        <div class="strength-content">
+          <h3>Privacy by Design</h3>
+          <p>エッジ処理を前提とした設計思想。映像・音声データをクラウドに送信せず、デバイス上で処理・匿名化。製造業の機密情報や個人のプライバシーを技術的に保護する。</p>
+        </div>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num en">3</div>
+        <div class="strength-content">
+          <h3>二毛作モデル</h3>
+          <p>WazaAIで蓄積される技能継承データは、そのままヒューマノイドロボットの学習データとしても活用可能。1つの事業活動から2つの価値を生み出す。</p>
+        </div>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num en">4</div>
+        <div class="strength-content">
+          <h3>AIエージェント活用</h3>
+          <p>Claude Code等のAIエージェントを開発プロセスに深く統合。2名の少数精鋭チームで、大規模チームと同等以上の複数プロジェクト並行運営を実現。</p>
+        </div>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num en">5</div>
+        <div class="strength-content">
+          <h3>自動ブランディングパイプライン</h3>
+          <p>事業活動そのものがコンテンツとなり、自動的にブランド価値を蓄積するパイプラインを構築。意図的なマーケティング投資なしに認知が拡大する仕組み。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 9: Numbers -->
+<section class="slide" id="slide-8">
+  <div class="slide-inner">
+    <div class="slide-number en">09 / 10 &mdash; Numbers</div>
+    <h2>数字で見るにからす</h2>
+
+    <div class="num-grid">
+      <div class="num-item">
+        <div class="num-value en">&yen;1.27<span style="font-size: 1.2rem;">億</span></div>
+        <div class="num-label">Year 1 売上目標</div>
+      </div>
+      <div class="num-item">
+        <div class="num-value en">79.6<span style="font-size: 1.2rem;">%</span></div>
+        <div class="num-label">営業利益率</div>
+      </div>
+      <div class="num-item">
+        <div class="num-value en">4<span style="font-size: 1.2rem;">事業</span></div>
+        <div class="num-label">新規事業を同時展開</div>
+      </div>
+    </div>
+
+    <div class="num-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="num-item">
+        <div class="num-value en">5<span style="font-size: 1.2rem;">社</span></div>
+        <div class="num-label">既存クライアント</div>
+        <p style="font-size: 0.8rem; color: var(--light); margin-top: 0.5rem;">月額 &yen;460万の安定収益</p>
+      </div>
+      <div class="num-item">
+        <div class="num-value en">&yen;2.4-3.0<span style="font-size: 1.2rem;">億</span></div>
+        <div class="num-label">3年後の売上目標</div>
+        <p style="font-size: 0.8rem; color: var(--light); margin-top: 0.5rem;">持続的成長を見込む</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10: Contact -->
+<section class="slide" id="slide-9">
+  <div class="slide-inner contact-slide">
+    <img src="assets/logo.png" alt="にからす" class="contact-logo">
+    <div class="contact-name">株式会社にからす</div>
+    <div class="divider" style="margin: 1.5rem auto;"></div>
+    <div class="contact-tagline en">"Generative Adaptation"</div>
+    <p style="color: var(--muted); margin-top: 1rem; font-size: 0.92rem;">AIで現実を変える</p>
+  </div>
+</section>
+
+<script>
+// Slide navigation
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.nav-dot');
+
+function scrollToSlide(index) {
+  slides[index].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Update active dot on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const index = Array.from(slides).indexOf(entry.target);
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+  });
+}, { threshold: 0.4 });
+
+slides.forEach(slide => observer.observe(slide));
+</script>
+</body>
+</html>
